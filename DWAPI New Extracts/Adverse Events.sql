@@ -1,4 +1,9 @@
-select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,0 AS FacilityId,'KenyaEMR' as Emr,'HMIS' as Project,s.FacilityName as FacilityName,v.visit_date,
+select v.patient_id as PatientPK,
+  s.siteCode as SiteCode,
+  de.unique_patient_no as PatientID,
+  0 AS FacilityId,'KenyaEMR' as Emr,'HMIS' as Project,
+  s.FacilityName as FacilityName,
+  v.visit_date,
        group_concat(case if(o1.obs_group =121760 and o1.concept_id = 1193,o1.value_coded,null)
            when 70056 then 'Abicavir' when 162298 then 'ACE inhibitors' when 70878 then 'Allopurinol' when 155060 then 'Aminoglycosides' when 162299 then 'ARBs (angiotensin II receptor blockers)' when 103727 then 'Aspirin' when 71647 then 'Atazanavir' when 72822 then 'Carbamazepine' when 162301 then 'Cephalosporins' when 73300 then 'Chloroquine'  when 73667 then 'Codeine' when 74807 then 'Didanosine' when 75523 then 'Efavirenz' when 162302 then 'Erythromycins' when
            75948 then 'Ethambutol' when 77164 then 'Griseofulvin' when 162305 then 'Heparins' when 77675 then 'Hydralazine' when 78280 then 'Isoniazid' when 794 then 'Lopinavir/ritonavir' when 80106 then 'Morphine' when 80586 then 'Nevirapine' when 80696 then 'Nitrofurans' when 162306 then 'Non-steroidal anti-inflammatory drugs' when 81723 then 'Penicillamine' when 81724 then 'Penicillin' when 81959 then 'Phenolphthaleins' when 82023 then 'Phenytoin' when
