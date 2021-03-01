@@ -2,10 +2,9 @@ select
        '' AS SatelliteName,
        0 AS FacilityId,
        d.unique_patient_no as PatientID,
-       d.patient_id as PatientPK,(select value_reference from location_attribute
-                                  where location_id in (select property_value from global_property where property='kenyaemr.defaultLocation') and attribute_type_id=1) as siteCode, (select name from location where location_id in (select property_value
-                                                                                                                                                                                                                                     from global_property
-                                                                                                                                                                                                                                     where property='kenyaemr.defaultLocation')) as FacilityName,
+       d.patient_id as PatientPK,
+      (select siteCode from kenyaemr_etl.etl_default_facility_info) as siteCode,
+      (select FacilityName from kenyaemr_etl.etl_default_facility_info) as FacilityName,
        '' as ExitDescription,
        'KenyaEMR' as Emr,
        'Kenya HMIS II' as Project,
