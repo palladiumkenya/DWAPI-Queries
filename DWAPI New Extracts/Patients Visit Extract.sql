@@ -8,8 +8,8 @@ select distinct
                 (select value_reference from location_attribute
                  where location_id in (select property_value
                                        from global_property
-                                       where property='kenyaemr.defaultLocation') and attribute_type_id=1) as siteCode,
-                fup.visit_id as VisitID,
+                                       where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
+                fup.visit_id as VisitId,
                 case when fup.visit_date < '1990-01-01' then null else CAST(fup.visit_date AS DATE) end  AS VisitDate,
                 'Out Patient' as Service,
                 fup.visit_scheduled as VisitType,
@@ -39,7 +39,7 @@ select distinct
                 fup.pulse_rate as PulseRate,
                 fup.respiratory_rate as RespiratoryRate,
                 fup.oxygen_saturation as OxygenSaturation,
-                fup.muac,
+                fup.muac as Muac,
                 fup.nutritional_status,
                 (case fup.ever_had_menses when 1065 then "Yes" when 1066 then "No" when 1175 then "N/A" end) as EverHadMenses,
                 null as Breastfeeding,
@@ -79,7 +79,7 @@ select distinct
                   case fup.screened_for_sti
                     when 1065 then 'Screened for STI'
                     else ''
-                      end )as PWP,
+                      end )as PwP,
                 if(fup.last_menstrual_period is not null, timestampdiff(week,fup.last_menstrual_period,fup.visit_date),'') as GestationAge,
                 case when fup.next_appointment_date < '1990-01-01' then null else CAST(fup.next_appointment_date AS DATE) end  AS NextAppointmentDate,
                 'KenyaEMR' as Emr,
@@ -105,9 +105,9 @@ select distinct
                   WHEN 160579  THEN 'FSW'
                   WHEN 1175 THEN 'N/A'
                   ELSE fup.key_population_type  END as KeyPopulationType,
-
-                fup.date_created,
-                GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified), COALESCE(fup.date_last_modified, d.date_last_modified)) as date_last_modified
+                  '' as HCWConcern,
+                fup.date_created as Date_Created,
+                GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified), COALESCE(fup.date_last_modified, d.date_last_modified)) as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=d.patient_id
        left join concept_name dc on dc.concept_id =  fup.differentiated_care and dc.concept_name_type='FULLY_SPECIFIED'

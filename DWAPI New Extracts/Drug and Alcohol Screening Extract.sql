@@ -8,7 +8,7 @@ select v.patient_id as PatientPK,
        (case v.smoking_frequency when 1090 then 'Never smoked' when 156358 then 'Former cigarette smoker' when 163197 then 'Current some day smoker' when 163196 then 'Current light tobacco smoker'
                                  when 163195 then 'Current heavy tobacco smoker' when 163200 then 'Unknown if ever smoked' end) as Smoking,
        (case v.drugs_use_frequency when 1090 then 'Never' when 1091 then 'Monthly or less' when 1092 then '2 to 4 times a month' when 1093 then '2 to 3 times a week' when 1094 then '4 or More Times a Week' end) as DrugUse,
-       v.date_created as date_created, v.date_last_modified as date_last_modified
+       v.date_created as Date_Created, v.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_alcohol_drug_abuse_screening v
        inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
        inner join (select e.patient_id, max(e.visit_date) as latest_enrolment_date from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id)e on v.patient_id = e.patient_id

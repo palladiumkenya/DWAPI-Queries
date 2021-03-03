@@ -4,7 +4,7 @@ select v.patient_id as PatientPK,
                                                                                                     0 AS FacilityId,'KenyaEMR' as Emr,
                                                                                                     'HMIS' as Project,
                                                                                                     s.FacilityName as FacilityName,
-                                                                                               v.visit_date,
+                                                                                               v.visit_date as VisitDate,
                                                                                                     group_concat(case if(o1.obs_group =159392 and o1.concept_id = 1284,o1.value_coded,null)
                                                                                                                  when 149019 then 'Alzheimers Disease and other Dementias'
                                                                                                                  when 148432 then 'Arthritis'
@@ -80,7 +80,7 @@ select v.patient_id as PatientPK,
                                                                                                group_concat(case if(o1.obs_group =121689 and o1.concept_id = 162760,o1.value_coded,null)
                                                                                                             when 160754 then 'Mild' when 160755 then 'Moderate' when 160756 then 'Severe' when 160758 then 'Fatal' when 1067 then 'Unknown'
                                                                                                             end SEPARATOR '|') as AllergySeverity, group_concat(if(o1.obs_group =121689 and o1.concept_id = 160753,date(o1.value_datetime),null) SEPARATOR '|') as AllergyOnsetDate,'' as Skin, '' as Eyes,'' as ENT, '' as Chest, '' as CVS,'' as Abdomen, '' as CNS, '' AS Genitourinary,
-                                                                                               v.date_created as date_created, v.date_last_modified as date_last_modified
+                                                                                               v.date_created as Date_Created, v.date_last_modified as Date_Last_Modified
                                                                                              from kenyaemr_etl.etl_patient_hiv_followup v
                                                                                                inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
                                                                                                inner join (select e.patient_id, max(e.visit_date) as latest_enrolment_date from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id)e on v.patient_id = e.patient_id

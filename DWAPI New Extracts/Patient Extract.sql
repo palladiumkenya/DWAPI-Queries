@@ -6,11 +6,11 @@ select
        '' AS SatelliteName,
        0 AS FacilityId,d.unique_patient_no as PatientID,
        d.patient_id as PatientPK,
-       pkv.PKV as pkv,
+       pkv.PKV as Pkv,
        (select value_reference from location_attribute
         where location_id in (select property_value
                               from global_property
-                              where property='kenyaemr.defaultLocation') and attribute_type_id=1) as siteCode,
+                              where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
        (select name from location
         where location_id in (select property_value
                               from global_property
@@ -50,7 +50,7 @@ select
 
        CAST(min(hiv.date_confirmed_hiv_positive) as Date) as DateConfirmedHIVPositive,
        max(hiv.arv_status) as PreviousARTExposure,
-       NULL as PreviousARTStartDate,
+       NULL as DatePreviousARTStart,
        'KenyaEMR' as Emr,
        'Kenya HMIS II' as Project,
        CASE hiv.patient_type
@@ -83,12 +83,12 @@ select
        patAd.address4 AS PatientResidentWard,
        patAd.city_village AS PatientResidentVillage,
        cast(min(hiv.transfer_in_date) as Date) as TransferInDate,
-       hiv.date_created,
+       hiv.date_created as Date_Created,
        GREATEST(
          COALESCE(d.date_last_modified, hiv.date_last_modified, prg.date_last_modified),
          COALESCE(hiv.date_last_modified, prg.date_last_modified, d.date_last_modified),
          COALESCE(prg.date_last_modified, d.date_last_modified, hiv.date_last_modified)
-           ) as date_last_modified,d.occupation as Occupation
+           ) as Date_Last_Modified,d.occupation as Occupation
 from kenyaemr_etl.etl_hiv_enrollment hiv
        inner join  kenyaemr_etl.etl_patient_demographics d on hiv.patient_id=d.patient_id
        left outer join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=d.patient_id

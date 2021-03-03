@@ -8,17 +8,17 @@ select distinct
                 (select value_reference from location_attribute
                  where location_id in (select property_value
                                        from global_property
-                                       where property='kenyaemr.defaultLocation') and attribute_type_id=1) as siteCode,
+                                       where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
                 ph.visit_id as VisitID,
 -- if(cn2.name is not null, cn2.name,cn.name) as Drug,
                 case
                   when is_arv=1 then ph.drugreg
                   else if(cn2.name is not null, cn2.name,cn.name) END as Drug,
                 ph.visit_date as DispenseDate,
-                ph.duration AS duration,
+                ph.duration AS Duration,
                 ph.duration AS PeriodTaken,
                 fup.next_appointment_date as ExpectedReturn,
-                fup.next_appointment_date as ExpectedReturn,
+                -- fup.next_appointment_date as ExpectedReturn,
                 'KenyaEMR' as Emr,
                 'Kenya HMIS II' as Project,
                 CASE WHEN is_arv=1 THEN 'ARV'
@@ -26,9 +26,9 @@ select distinct
                 ph.RegimenLine,
                 CASE WHEN is_ctx=1 THEN 'CTX'
                      WHEN is_dapsone =1 THEN 'DAPSON' END AS ProphylaxisType,
-                CAST(now() as Date) AS DateExtracted,
-                ph.date_created,
-                GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified), COALESCE(d.date_last_modified, ph.date_last_modified)) as date_last_modified
+                -- CAST(now() as Date) AS DateExtracted,
+                ph.date_created as Date_Created,
+                GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified), COALESCE(d.date_last_modified, ph.date_last_modified)) as Date_Last_Modified
 from (SELECT * FROM (
                     select patient_id, visit_id,visit_date,encounter_id,drug,is_arv, is_ctx,is_dapsone,drug_name as drugreg,frequency,
                            '' as DispenseDate,duration, duration PeriodTaken,

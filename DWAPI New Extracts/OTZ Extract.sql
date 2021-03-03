@@ -1,12 +1,12 @@
 select a.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'HMIS' as Project,s.FacilityName as FacilityName,
-       a.visit_id as VisitId,a.visit_date as VisitDate,e.OTZEnrolmentDate,e.TransferInStatus, e.ModulesPreviouslyCovered
+       a.visit_id as VisitID,a.visit_date as VisitDate,e.OTZEnrollmentDate,e.TransferInStatus, e.ModulesPreviouslyCovered
     ,concat_ws(',',NULLIF(if(a.orientation='Yes','OTZ Orientation',null),''),NULLIF(if(a.participation='Yes','OTZ Participation',''),''),NULLIF(if(a.making_decision_future='Yes','OTZ Making decisions for the future',''),'')
        ,NULLIF(if(a.transition_to_adult_care='Yes','OTZ Transition to Adult care',''),''),NULLIF(if(a.treatment_literacy='Yes','OTZ Treatment literacy',''),''),NULLIF(if(a.srh='Yes','OTZ SRH',''),''),
                NULLIF(if(a.beyond_third_ninety='Yes','OTZ Beyond the 3rd 90',null),'')) as ModulesCompletedToday,a.attended_support_group as SupportGroupInvolvement,
-       a.remarks as Remarks,d.attrition_reason as TransitionAttritionReason, d.Outcome_date as OutcomeDate, a.date_created as date_created, greatest(NULLIF(a.date_last_modified,'0000-00-00'),NULLIF(a.date_last_modified,'0000-00-00')) as date_last_modified
+       a.remarks as Remarks,d.attrition_reason as TransitionAttritionReason, d.Outcome_date as OutcomeDate, a.date_created as Date_Created, greatest(NULLIF(a.date_last_modified,'0000-00-00'),NULLIF(a.date_last_modified,'0000-00-00')) as Date_Last_Modified
 from kenyaemr_etl.etl_otz_activity a
        inner join kenyaemr_etl.etl_patient_demographics de on a.patient_id = de.patient_id
-       inner join (select e.patient_id, greatest(max(e.visit_date),'0000-00-00') as OTZEnrolmentDate,mid(max(concat(e.visit_date,e.transfer_in)),11) as TransferInStatus,
+       inner join (select e.patient_id, greatest(max(e.visit_date),'0000-00-00') as OTZEnrollmentDate,mid(max(concat(e.visit_date,e.transfer_in)),11) as TransferInStatus,
                           concat_ws(',',NULLIF(if(e.orientation='Yes','OTZ Orientation',null),''),NULLIF(if(e.participation='Yes','OTZ Participation',''),''),NULLIF(if(e.making_decision_future='Yes','OTZ Making decisions for the future',''),''),
                                     NULLIF(if(e.transition_to_adult_care='Yes','OTZ Transition to Adult care',''),''),NULLIF(if(e.treatment_literacy='Yes','OTZ Treatment literacy',''),''),NULLIF(if(e.srh='Yes','OTZ SRH',''),''),
                                     NULLIF(if(e.beyond_third_ninety='Yes','OTZ Beyond the 3rd 90',null),'')) as ModulesPreviouslyCovered,e.date_created as date_created, e.date_last_modified as date_last_modified

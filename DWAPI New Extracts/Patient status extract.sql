@@ -3,12 +3,12 @@ select
        0 AS FacilityId,
        d.unique_patient_no as PatientID,
        d.patient_id as PatientPK,
-      (select siteCode from kenyaemr_etl.etl_default_facility_info) as siteCode,
+      (select siteCode from kenyaemr_etl.etl_default_facility_info) as SiteCode,
       (select FacilityName from kenyaemr_etl.etl_default_facility_info) as FacilityName,
        '' as ExitDescription,
        'KenyaEMR' as Emr,
        'Kenya HMIS II' as Project,
-       CAST(now() as Date) AS DateExtracted,
+       --CAST(now() as Date) AS DateExtracted,
        max(disc.visit_date) AS ExitDate,
        mid(max(concat(visit_date,(case discontinuation_reason
                                     when 159492 then "Transfer Out"
@@ -20,8 +20,8 @@ select
                                     else "" end), "" )),20) as ExitReason,
        (case mid(max(concat(date(disc.visit_date),disc.trf_out_verified)),11) when 1065 then 'Yes' when 1066 then 'No' end) as TOVerified,
        mid(max(concat(date(disc.visit_date),disc.trf_out_verification_date)),11) as TOVerifiedDate,
-       disc.date_created,
-       disc.date_last_modified as date_last_modified
+       disc.date_created as Date_Created,
+       disc.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_patient_program_discontinuation disc
        join kenyaemr_etl.etl_patient_demographics d on d.patient_id=disc.patient_id
 where d.unique_patient_no is not null and disc.program_name='HIV'

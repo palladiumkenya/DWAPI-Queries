@@ -14,7 +14,7 @@ select v.patient_id as PatientPK,
        v.patient_worried_of_accidental_disclosure as EACEconBarrier_5, v.patient_treated_differently as EACEconBarrier_6,v.stigma_hinders_adherence as EACEconBarrier_7,v.patient_tried_faith_healing as EACEconBarrier_8,
        v.patient_adherence_improved as EACReviewImprovement,v.patient_doses_missed as EACReviewMissedDoses,v.review_and_barriers_to_adherence as EACReviewStrategy,v.other_referrals as EACReferral,
        v.appointments_honoured as EACReferralApp,v.referral_experience as EACReferralExperience,v.home_visit_benefit as EACHomevisit,v.adherence_plan as EACAdherencePlan,v.next_appointment_date as EACFollowupDate,
-       v.date_created as date_created, v.date_last_modified as date_last_modified
+       v.date_created as Date_Created, v.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_enhanced_adherence v
        inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
        inner join (select e.patient_id, max(e.visit_date) as latest_enrolment_date from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id)e on v.patient_id = e.patient_id
