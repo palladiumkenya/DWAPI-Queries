@@ -1,7 +1,7 @@
 select v.patient_related_to as PatientPK,
   s.siteCode as SiteCode,
   de.unique_patient_no as PatientID,
-  'KenyaEMR' as Emr,'HMIS' as Project,
+  'KenyaEMR' as Emr,'Kenya HMIS II' as Project,
   s.FacilityName as FacilityName,
        v.patient_id as PartnerPersonID,timestampdiff(YEAR,date(v.birth_date),current_date()) as ContactAge,v.sex as ContactSex,
        (case v.marital_status when 1057 then 'Single' when 5555 then 'Married Monogamous' when 159715 then 'Married Polygamous'

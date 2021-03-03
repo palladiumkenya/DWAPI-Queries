@@ -2,7 +2,7 @@ select v.patient_id as PatientPK,
                                                                                                     s.siteCode as SiteCode,
                                                                                                     de.unique_patient_no as PatientID,
                                                                                                     0 AS FacilityId,'KenyaEMR' as Emr,
-                                                                                                    'HMIS' as Project,
+                                                                                                    'Kenya HMIS II' as Project,
                                                                                                     s.FacilityName as FacilityName,
                                                                                                v.visit_date as VisitDate,
                                                                                                     group_concat(case if(o1.obs_group =159392 and o1.concept_id = 1284,o1.value_coded,null)

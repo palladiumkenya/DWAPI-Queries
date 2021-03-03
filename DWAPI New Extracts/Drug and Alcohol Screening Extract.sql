@@ -1,7 +1,7 @@
 select v.patient_id as PatientPK,
        s.siteCode as SiteCode,
        de.unique_patient_no as PatientID,
-       'KenyaEMR' as Emr,'HMIS' as Project,
+       'KenyaEMR' as Emr,'Kenya HMIS II' as Project,
        s.FacilityName as FacilityName,
        v.visit_id as VisitID,v.visit_date as VisitDate,
        (case v.alcohol_drinking_frequency when 1090 then 'Never' when 1091 then 'Monthly or less' when 1092 then '2 to 4 times a month' when 1093 then '2 to 3 times a week' when 1094 then '4 or More Times a Week' end) as DrinkingAlcohol,
