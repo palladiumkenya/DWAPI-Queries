@@ -27,6 +27,7 @@ select distinct
                 CASE WHEN is_ctx=1 THEN 'CTX'
                      WHEN is_dapsone =1 THEN 'DAPSON' END AS ProphylaxisType,
                 -- CAST(now() as Date) AS DateExtracted,
+                '' as RegimenChangedSwitched,'' as RegimenChangeSwitchReason,'' as StopRegimenReason,null as StopRegimenDate,
                 ph.date_created as Date_Created,
                 GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified), COALESCE(d.date_last_modified, ph.date_last_modified)) as Date_Last_Modified
 from (SELECT * FROM (

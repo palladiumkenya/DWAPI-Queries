@@ -1,6 +1,6 @@
-select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
+select v.patient_id as PatientPK,0 AS FacilityId,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
        v.encounter_id as VisitID,v.visit_date as VisitDate,v.visit_date as OVCEnrollmentDate,coalesce(v.relationship_to_client,r.b_is_to_a) as RelationshipToClient,v.client_enrolled_cpims,
-       de.CPIMS_unique_identifier as CPIMSUniqueIdentifier,v.partner_offering_ovc as PartnerOfferingOVCServices,
+       de.CPIMS_unique_identifier as CPIMSUniqueIdentifier,v.partner_offering_ovc as PartnerOfferingOVCServices,'' as EnrolledinCPIMS,
        concat_ws(',',NULLIF(if(v.ovc_comprehensive_program='Yes','OVC Comprehensive',''),''),
                  NULLIF(if(v.dreams_program='Yes','DREAMS',''),''),
                  NULLIF(if(v.ovc_preventive_program='Yes','OVC Preventive',''),'')) as ProgramModel,d.attrition_reason as OVCExitReason, d.Outcome_date as ExitDate, v.date_created as Date_Created, greatest(v.date_last_modified,v.date_last_modified) as Date_Last_Modified

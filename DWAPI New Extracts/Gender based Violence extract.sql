@@ -1,4 +1,4 @@
-select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
+select v.patient_id as PatientPK,s.siteCode as SiteCode,0 AS FacilityId,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
        v.visit_id as VisitID,v.visit_date as VisitDate,
        (case v.ipv when 1065 then 'Yes' when 1066 then 'No' end) as IPV,
        (case v.physical_ipv when 158358 then 'Yes' when 1066 then 'No' end) as PhysicalIPV,

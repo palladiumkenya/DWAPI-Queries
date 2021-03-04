@@ -5,6 +5,7 @@ select v.patient_id as PatientPK,
                                                                                                     'Kenya HMIS II' as Project,
                                                                                                     s.FacilityName as FacilityName,
                                                                                                v.visit_date as VisitDate,
+                                                                                               0 as VisitID,
                                                                                                     group_concat(case if(o1.obs_group =159392 and o1.concept_id = 1284,o1.value_coded,null)
                                                                                                                  when 149019 then 'Alzheimers Disease and other Dementias'
                                                                                                                  when 148432 then 'Arthritis'

@@ -40,7 +40,7 @@ select distinct
                 fup.respiratory_rate as RespiratoryRate,
                 fup.oxygen_saturation as OxygenSaturation,
                 fup.muac as Muac,
-                fup.nutritional_status,
+                fup.nutritional_status as NutritionalStatus,
                 (case fup.ever_had_menses when 1065 then 'Yes' when 1066 then 'No' when 1175 then 'N/A' end) as EverHadMenses,
                 null as Breastfeeding,
                 (case menopausal when 113928 then 'Yes' end) as Menopausal,
