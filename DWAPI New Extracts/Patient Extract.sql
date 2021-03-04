@@ -50,7 +50,7 @@ select
 
        CAST(min(hiv.date_confirmed_hiv_positive) as Date) as DateConfirmedHIVPositive,
        max(hiv.arv_status) as PreviousARTExposure,
-       NULL as DatePreviousARTStart,
+       NULL as PreviousARTStartDate,
        'KenyaEMR' as Emr,
        'Kenya HMIS II' as Project,
        CASE hiv.patient_type
