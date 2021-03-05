@@ -1,15 +1,9 @@
 select distinct
                 '' AS SatelliteName, 0 AS FacilityId, d.unique_patient_no as PatientID,
                 d.patient_id as PatientPK,
-                (select name from location
-                 where location_id in (select property_value
-                                       from global_property
-                                       where property='kenyaemr.defaultLocation')) as FacilityName,
-                (select value_reference from location_attribute
-                 where location_id in (select property_value
-                                       from global_property
-                                       where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
-                fup.visit_id as VisitId,
+                (select siteCode from kenyaemr_etl.etl_default_facility_info) as siteCode,
+                (select FacilityName from kenyaemr_etl.etl_default_facility_info) as FacilityName,
+                fup.visit_id as VisitID,
                 case when fup.visit_date < '1990-01-01' then null else CAST(fup.visit_date AS DATE) end  AS VisitDate,
                 'Out Patient' as Service,
                 fup.visit_scheduled as VisitType,
@@ -39,13 +33,13 @@ select distinct
                 fup.pulse_rate as PulseRate,
                 fup.respiratory_rate as RespiratoryRate,
                 fup.oxygen_saturation as OxygenSaturation,
-                fup.muac as Muac,
-                fup.nutritional_status as NutritionalStatus,
-                (case fup.ever_had_menses when 1065 then 'Yes' when 1066 then 'No' when 1175 then 'N/A' end) as EverHadMenses,
+                fup.muac,
+                fup.nutritional_status,
+                (case fup.ever_had_menses when 1065 then "Yes" when 1066 then "No" when 1175 then "N/A" end) as EverHadMenses,
                 null as Breastfeeding,
-                (case menopausal when 113928 then 'Yes' end) as Menopausal,
+                (case menopausal when 113928 then "Yes" end) as Menopausal,
                 (case prophylaxis_given when 105281 then 'Cotrimoxazole' when 74250 then 'Dapsone' when 1107 then 'None'  end) as ProphylaxisUsed,
-                (case fup.ctx_adherence when 159405 then 'Good' when 163794 then 'Fair' when 159407 then 'Bad' else '' end) as CTXAdherence,
+                (case fup.ctx_adherence when 159405 then "Good" when 163794 then "Fair" when 159407 then "Bad" else "" end) as CTXAdherence,
                 de.regimen as CurrentRegimen,
                 fup.reason_not_using_family_planning as NoFPReason,
                 'ART|CTX' as AdherenceCategory,
@@ -53,7 +47,7 @@ select distinct
                   IF(fup.arv_adherence=159405, 'Good', IF(fup.arv_adherence=159406, 'Fair', IF(fup.arv_adherence=159407, 'Poor', ''))), IF(fup.arv_adherence in (159405,159406,159407), '|','') ,
                   IF(fup.ctx_adherence=159405, 'Good', IF(fup.ctx_adherence=159406, 'Fair', IF(fup.ctx_adherence=159407, 'Poor', '')))
                     ) AS Adherence,
-                (case next_appointment_reason when 160523 then 'Follow up' when 1283 then 'Lab tests' when 159382 then 'Counseling' when 160521 then 'Pharmacy Refill' when 5622 then 'Other'  else '' end) as TCAReason,
+                (case next_appointment_reason when 160523 then "Follow up" when 1283 then "Lab tests" when 159382 then "Counseling" when 160521 then "Pharmacy Refill" when 5622 then "Other"  else "" end) as TCAReason,
                 fup.clinical_notes as ClinicalNotes,
                 '' as OI,
                 NULL as OIDate,
@@ -79,7 +73,7 @@ select distinct
                   case fup.screened_for_sti
                     when 1065 then 'Screened for STI'
                     else ''
-                      end )as PwP,
+                      end )as PWP,
                 if(fup.last_menstrual_period is not null, timestampdiff(week,fup.last_menstrual_period,fup.visit_date),'') as GestationAge,
                 case when fup.next_appointment_date < '1990-01-01' then null else CAST(fup.next_appointment_date AS DATE) end  AS NextAppointmentDate,
                 'KenyaEMR' as Emr,
@@ -105,9 +99,9 @@ select distinct
                   WHEN 160579  THEN 'FSW'
                   WHEN 1175 THEN 'N/A'
                   ELSE fup.key_population_type  END as KeyPopulationType,
-                  '' as HCWConcern,
-                fup.date_created as Date_Created,
-                GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified), COALESCE(fup.date_last_modified, d.date_last_modified)) as Date_Last_Modified
+
+                fup.date_created,
+                GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified), COALESCE(fup.date_last_modified, d.date_last_modified)) as date_last_modified
 from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=d.patient_id
        left join concept_name dc on dc.concept_id =  fup.differentiated_care and dc.concept_name_type='FULLY_SPECIFIED'
