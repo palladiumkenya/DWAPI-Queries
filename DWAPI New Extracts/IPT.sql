@@ -1,10 +1,11 @@
-select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,0 AS FacilityId,'KenyaEMR' as Emr,'HMIS' as Project,s.FacilityName as FacilityName,v.visit_date,
+select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,0 AS FacilityId,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,v.visit_date as VisitDate,0  as VisitID,
        case v.on_anti_tb_drugs when 1065 then 'Yes' when 1066 then 'No' end as OnTBDrugs,case v.on_ipt when 1065 then 'Yes' when 1066 then 'No' end as OnIPT, case v.ever_on_ipt when 1065 then 'Yes' when 1066 then 'No' end as EverOnIPT,
        '' as Cough,
        '' as Fever,
        '' as NoticeableWeightLoss,
        '' as NightSweats,
        '' as Lethargy,
+       '' as StartIPT,'' as IndicationForIPT,
        concat_ws('|',case v.spatum_smear_ordered when 1065 then 'Sputum smear' end, case v.chest_xray_ordered when 1065 then 'Chest Xray' end,
                  case v.genexpert_ordered when 1065 then 'GeneXpert' end) as ICFActionTaken,
        concat_ws('|',case v.spatum_smear_result when 703 then 'Positive' when 664 then 'Negative' end, case v.chest_xray_result when 1115 then 'Normal' when 152526 then 'Abnormal' end,
@@ -19,7 +20,7 @@ select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as 
        (case v.tb_status when 1660 then 'No Signs' when 142177 then 'Presumed TB' when 1662 then 'TB Confirmed'
                          when 160737 then 'TB Screening not done' end) as TBScreening,
        '' as IPTClientWorkUp,
-       v.date_created as date_created, v.date_last_modified as date_last_modified
+       v.date_created as Date_Created, v.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_patient_hiv_followup v
        inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
        inner join (select e.patient_id, max(e.visit_date) as latest_enrolment_date from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id)e on v.patient_id = e.patient_id

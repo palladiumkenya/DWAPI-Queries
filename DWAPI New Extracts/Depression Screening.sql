@@ -2,11 +2,11 @@ select v.patient_id as PatientPK,
        s.siteCode as SiteCode,
        de.unique_patient_no as PatientID,
        0 AS FacilityId,
-       'KenyaEMR' as Emr,'HMIS' as Project,s.FacilityName as FacilityName,
+       'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
        v.visit_id as VisitID,v.visit_date as VisitDate,
        '' as PHQ9_1,'' as PHQ9_2,'' as PHQ9_3,'' as PHQ9_4,'' as PHQ9_5,'' as PHQ9_6,'' as PHQ9_7,'' as PHQ9_8,'' as PHQ9_9,'' as DepressionAssesmentScore,
        v.PHQ_9_rating,
-       v.date_created as date_created, v.date_last_modified as date_last_modified
+       v.date_created as Date_Created, v.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_depression_screening v
        inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
        inner join (select e.patient_id, max(e.visit_date) as latest_enrolment_date from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id)e on v.patient_id = e.patient_id

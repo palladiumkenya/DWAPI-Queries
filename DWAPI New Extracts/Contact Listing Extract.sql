@@ -1,7 +1,8 @@
 select v.patient_related_to as PatientPK,
   s.siteCode as SiteCode,
   de.unique_patient_no as PatientID,
-  'KenyaEMR' as Emr,'HMIS' as Project,
+  'KenyaEMR' as Emr,'Kenya HMIS II' as Project,
+  0 AS FacilityId,
   s.FacilityName as FacilityName,
        v.patient_id as PartnerPersonID,timestampdiff(YEAR,date(v.birth_date),current_date()) as ContactAge,v.sex as ContactSex,
        (case v.marital_status when 1057 then 'Single' when 5555 then 'Married Monogamous' when 159715 then 'Married Polygamous'
@@ -10,7 +11,7 @@ select v.patient_related_to as PatientPK,
                                  when 163565 then 'Partner' when 162221 then 'Co-wife' when 157351 then 'Injectable drug user'end) as RelationshipWithPatient,'' as ScreenedForIpv,'' as IpvScreening,
        v.ipv_outcome as IPVScreeningOutcome,v.living_with_patient as CurrentlyLivingWithIndexClient,
        v.baseline_hiv_status as KnowledgeOfHivStatus, v.pns_approach as PnsApproach,
-       v.date_created as date_created, v.date_last_modified as date_last_modified
+       v.date_created as Date_Created, v.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_patient_contact v
        inner join kenyaemr_etl.etl_patient_demographics de on v.patient_related_to = de.patient_id
        inner join (select e.patient_id, max(e.visit_date) as latest_enrolment_date from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id)e on v.patient_related_to = e.patient_id

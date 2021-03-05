@@ -8,7 +8,7 @@ select '' AS SatelliteName, 0 AS FacilityId, d.DOB,
        (select value_reference from location_attribute
         where location_id in (select property_value
                               from global_property
-                              where property='kenyaemr.defaultLocation') and attribute_type_id=1) as siteCode,
+                              where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
        (select name from location
         where location_id in (select property_value
                               from global_property
@@ -59,20 +59,20 @@ select '' AS SatelliteName, 0 AS FacilityId, d.DOB,
        reg.last_regimen_line as LastRegimenLine,
        reg.latest_tca as ExpectedReturn,
        reg.latest_vis_date as LastVisit ,
-       timestampdiff(month,reg.art_start_date, reg.latest_vis_date) as duration,
+       timestampdiff(month,reg.art_start_date, reg.latest_vis_date) as Duration,
        disc.visit_date as ExitDate,
        case
          when disc.discontinuation_reason is not null then dis_rsn.name
          else '' end as ExitReason,
        'KenyaEMR' as Emr,
        'Kenya HMIS II' as Project,
-       CAST(now() as Date) AS DateExtracted,
-       hiv.date_created,
+      --  CAST(now() as Date) AS DateExtracted,
+       hiv.date_created as Date_Created,
        GREATEST(
          COALESCE(hiv.date_last_modified, disc.date_last_modified, reg.date_last_modified),
          COALESCE(disc.date_last_modified, reg.date_last_modified, hiv.date_last_modified),
          COALESCE(reg.date_last_modified, hiv.date_last_modified, disc.date_last_modified)
-           ) as date_last_modified
+           ) as Date_Last_Modified
 from kenyaemr_etl.etl_hiv_enrollment hiv
        join kenyaemr_etl.etl_patient_demographics d on d.patient_id=hiv.patient_id
        left outer join  kenyaemr_etl.etl_patient_program_discontinuation disc on disc.patient_id=hiv.patient_id

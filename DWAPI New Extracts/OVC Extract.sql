@@ -1,9 +1,9 @@
-select v.patient_id as PatientPK,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'HMIS' as Project,s.FacilityName as FacilityName,
-       v.encounter_id as EncounterID,v.visit_date as VisitDate,v.visit_date as OVCEnrolmentDate,coalesce(v.relationship_to_client,r.b_is_to_a) as RelationshipToClient,v.client_enrolled_cpims,
-       de.CPIMS_unique_identifier as CPIMSUniqueIdentifier,v.partner_offering_ovc as PartnerOfferingOVCServices,
+select v.patient_id as PatientPK,0 AS FacilityId,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
+       v.encounter_id as VisitID,v.visit_date as VisitDate,v.visit_date as OVCEnrollmentDate,coalesce(v.relationship_to_client,r.b_is_to_a) as RelationshipToClient,v.client_enrolled_cpims,
+       de.CPIMS_unique_identifier as CPIMSUniqueIdentifier,v.partner_offering_ovc as PartnerOfferingOVCServices,'' as EnrolledinCPIMS,
        concat_ws(',',NULLIF(if(v.ovc_comprehensive_program='Yes','OVC Comprehensive',''),''),
                  NULLIF(if(v.dreams_program='Yes','DREAMS',''),''),
-                 NULLIF(if(v.ovc_preventive_program='Yes','OVC Preventive',''),'')) as ProgramModel,d.attrition_reason as OVCExitReason, d.Outcome_date as ExitDate, v.date_created as date_created, greatest(v.date_last_modified,v.date_last_modified) as date_last_modified
+                 NULLIF(if(v.ovc_preventive_program='Yes','OVC Preventive',''),'')) as ProgramModel,d.attrition_reason as OVCExitReason, d.Outcome_date as ExitDate, v.date_created as Date_Created, greatest(v.date_last_modified,v.date_last_modified) as Date_Last_Modified
 from kenyaemr_etl.etl_ovc_enrolment v
        inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
        left join (SELECT r.person_b,r.person_a,t.a_is_to_b,t.b_is_to_a FROM openmrs.relationship r inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id where r.voided =0)r on v.patient_id = r.person_b
