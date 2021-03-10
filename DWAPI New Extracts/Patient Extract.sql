@@ -1,6 +1,6 @@
 select
        CASE WHEN prg.program='TB' THEN prg.status  ELSE null end  AS StatusAtTBClinic,
-       CASE WHEN prg.program='PMTCT' THEN prg.status  ELSE null end  AS  StatusAtPMTCT,
+       CASE WHEN prg.program='MCH-Mother Services' THEN prg.status  ELSE null end  AS  StatusAtPMTCT,
        CASE WHEN prg.program='HIV' THEN prg.status  ELSE null end  AS   StatusATCCC,
 
        '' AS SatelliteName,
