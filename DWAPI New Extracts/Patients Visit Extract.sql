@@ -12,7 +12,7 @@ select distinct
                 fup.visit_id as VisitId,
                 case when fup.visit_date < '1990-01-01' then null else CAST(fup.visit_date AS DATE) end  AS VisitDate,
                 'Out Patient' as Service,
-                fup.visit_scheduled as VisitType,
+                (case fup.visit_scheduled when 1 then "Scheduled" when 2 then 'Unscheduled' else "" end ) as VisitType,
                 (case fup.person_present when 978 then 'Self' when 161642 then 'Treatment supporter' when 159802 then 'Refill visit documentation' when 5622 then 'Other' end) as VisitBy,
                 case fup.who_stage
                   when 1220 then 'WHO I'
@@ -25,7 +25,7 @@ select distinct
                   when 1207 then 'WHO IV'
                   else ''
                     end as WHOStage,
-                '' as WABStage,
+                null as WABStage,
                 case fup.pregnancy_status
                   when 1065 then 'Yes'
                   when 1066 then 'No'
@@ -40,7 +40,7 @@ select distinct
                 fup.respiratory_rate as RespiratoryRate,
                 fup.oxygen_saturation as OxygenSaturation,
                 fup.muac as Muac,
-                fup.nutritional_status as NutritionalStatus,
+                (case fup.nutritional_status when 1115 then "Normal" when 163302 then "Severe acute malnutrition" when 163303 then "Moderate acute malnutrition" when 114413 then "Overweight/Obese" else "" end) as nutritional_status,
                 (case fup.ever_had_menses when 1065 then 'Yes' when 1066 then 'No' when 1175 then 'N/A' end) as EverHadMenses,
                 null as Breastfeeding,
                 (case menopausal when 113928 then 'Yes' end) as Menopausal,
@@ -65,7 +65,7 @@ select distinct
                     end as FamilyPlanningMethod,
                 concat(
                   case fup.condom_provided
-                    when 1065 then 'Condoms,'
+                    when 1065 then 'Condoms'
                     else ''
                       end,
                   case fup.pwp_disclosure
@@ -98,20 +98,22 @@ select distinct
                   WHEN fup.key_population_type  IS NOT NULL AND fup.key_population_type  !=1175
                           THEN 'Key population'
                   ELSE pt.name  END as PopulationType,
-
                 case fup.key_population_type
                   WHEN 105 THEN 'PWID'
                   WHEN 160578 THEN 'MSM'
                   WHEN 160579  THEN 'FSW'
+                  when 165084 then 'MSW'
+                  when 165085 then  'PWUD'
+                  when 165100 then 'Transgender'
                   WHEN 1175 THEN 'N/A'
-                  ELSE fup.key_population_type  END as KeyPopulationType,
-                  '' as HCWConcern,
+                  ELSE null  END as KeyPopulationType,
+                '' as HCWConcern,
                 fup.date_created as Date_Created,
                 GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified), COALESCE(fup.date_last_modified, d.date_last_modified)) as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=d.patient_id
        left join concept_name dc on dc.concept_id =  fup.differentiated_care and dc.concept_name_type='FULLY_SPECIFIED'
        left join concept_name pt on fup.population_type = pt.concept_id AND pt.concept_name_type='FULLY_SPECIFIED'
-left join (select de.patient_id,mid(max(concat(de.visit_date,de.regimen)),11) as regimen from kenyaemr_etl.etl_drug_event de
-           where de.discontinued is null group by de.patient_id)de on fup.patient_id = de.patient_id
+       left join (select de.patient_id,mid(max(concat(de.visit_date,de.regimen)),11) as regimen from kenyaemr_etl.etl_drug_event de
+                  where de.discontinued is null group by de.patient_id)de on fup.patient_id = de.patient_id
 where d.unique_patient_no is not null and fup.visit_date > '1990-01-01';
