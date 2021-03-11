@@ -47,7 +47,8 @@ select distinct
                 (case prophylaxis_given when 105281 then 'Cotrimoxazole' when 74250 then 'Dapsone' when 1107 then 'None'  end) as ProphylaxisUsed,
                 (case fup.ctx_adherence when 159405 then 'Good' when 163794 then 'Fair' when 159407 then 'Bad' else '' end) as CTXAdherence,
                 de.regimen as CurrentRegimen,
-                fup.reason_not_using_family_planning as NoFPReason,
+                (case fup.reason_not_using_family_planning
+                   when 160572 then "Thinks can't get pregnant" when 160573 then "Not sexually active now" when 5622 then "Other" else "" end) as NoFPReason,
                 'ART|CTX' as AdherenceCategory,
                 concat(
                   IF(fup.arv_adherence=159405, 'Good', IF(fup.arv_adherence=159406, 'Fair', IF(fup.arv_adherence=159407, 'Poor', ''))), IF(fup.arv_adherence in (159405,159406,159407), '|','') ,
