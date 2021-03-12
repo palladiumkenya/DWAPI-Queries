@@ -1,5 +1,5 @@
 select '' AS SatelliteName, 0 AS FacilityId, d.DOB,
-       d.Gender, reg.provider AS Provider,
+       d.Gender, 'Government' AS Provider,
        d.unique_patient_no as PatientID,
        d.patient_id as PatientPK,
        timestampdiff(year,d.DOB, hiv.visit_date) as AgeEnrollment,
