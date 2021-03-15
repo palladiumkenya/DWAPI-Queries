@@ -88,7 +88,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                e.regimen, e.regimen_line, e.alternative_regimen, max(fup.next_appointment_date) as latest_tca,
                                last_art_date,last_regimen,last_regimen_line,
                                if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as  latest_vis_date,
-                               e.date_created,e.date_last_modified,e.provider
+                               e.date_created,e.date_last_modified
                         from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,
                                      max(e.date_started) as last_art_date,
                                      mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,
