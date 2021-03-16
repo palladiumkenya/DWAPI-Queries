@@ -60,11 +60,7 @@ select '' AS SatelliteName, 0 AS FacilityId, d.DOB,
        reg.latest_vis_date as LastVisit ,
        timestampdiff(month,reg.art_start_date, reg.latest_vis_date) as Duration,
        disc.ExitDate as ExitDate,
-       (case disc.ExitReason when 159492 then 'Transfer Out'
-                             when 160034 then 'Died'
-                             when 5240 then 'LTFU'
-                             when 819 then 'Stopped Treatment'
-                             else'' end) as ExitReason,
+       disc.ExitReason as ExitReason,
        'KenyaEMR' as Emr,
        'Kenya HMIS II' as Project,
        hiv.date_created as Date_Created,
