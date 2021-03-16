@@ -117,4 +117,4 @@ from kenyaemr_etl.etl_patient_demographics d
        left join concept_name pt on fup.population_type = pt.concept_id AND pt.concept_name_type='FULLY_SPECIFIED'
        left join (select de.patient_id,mid(max(concat(de.visit_date,de.regimen)),11) as regimen from kenyaemr_etl.etl_drug_event de
                   where de.discontinued is null group by de.patient_id)de on fup.patient_id = de.patient_id
-where d.unique_patient_no is not null and fup.visit_date > '1990-01-01';
+where d.unique_patient_no is not null and fup.visit_date > '1990-01-01' and fup.visit_id is not null;
