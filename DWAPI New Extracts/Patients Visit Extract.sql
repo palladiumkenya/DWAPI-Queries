@@ -58,29 +58,29 @@ select distinct
                 fup.clinical_notes as ClinicalNotes,
                 '' as OI,
                 NULL as OIDate,
-                case fup.family_planning_status
+                case ifnull(fup.family_planning_status,'')
                   when 695 then 'Currently using FP'
                   when 160652 then 'Not using FP'
                   when 1360 then 'Wants FP'
                   else ''
                     end as FamilyPlanningMethod,
-                concat(
-                  case fup.condom_provided
-                    when 1065 then 'Condoms'
-                    else ''
-                      end,
-                  case fup.pwp_disclosure
-                    when 1065 then 'Disclosure|'
-                    else ''
-                      end,
-                  case fup.pwp_partner_tested
-                    when 1065 then 'Partner Testing|'
-                    else ''
-                      end,
-                  case fup.screened_for_sti
-                    when 1065 then 'Screened for STI'
-                    else ''
-                      end )as PwP,
+                concat_ws('|',
+                          nullif(case fup.condom_provided
+                                   when 1065 then 'Condoms'
+                                   else ''
+                                     end,''),
+                          nullif(case fup.pwp_disclosure
+                                   when 1065 then 'Disclosure'
+                                   else ''
+                                     end,''),
+                          nullif(case fup.pwp_partner_tested
+                                   when 1065 then 'Partner Testing'
+                                   else ''
+                                     end,''),
+                          nullif(case fup.screened_for_sti
+                                   when 1065 then 'Screened for STI'
+                                   else ''
+                                     end,''))as PwP,
                 if(fup.last_menstrual_period is not null, timestampdiff(week,fup.last_menstrual_period,fup.visit_date),'') as GestationAge,
                 case when fup.next_appointment_date < '1990-01-01' then null else CAST(fup.next_appointment_date AS DATE) end  AS NextAppointmentDate,
                 'KenyaEMR' as Emr,
