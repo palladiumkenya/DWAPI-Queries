@@ -142,3 +142,10 @@ from openmrs.kenyaemr_hiv_testing_patient_contact c inner join kenyaemr_etl.etl_
          on c.patient_id = t.patient_id where c.relationship_type in(971, 972, 1528, 162221, 163565, 970, 5617)
                                           and t.final_test_result = "Positive" and t.voided=0 and c.voided = 0 and t.test_type = 2 and date(c.date_created)
                                                   between DATE_ADD(DATE_SUB(current_date(),INTERVAL DAYOFMONTH(current_date())-1 DAY),INTERVAL -3 MONTH) and date(last_day(date_sub(current_date(),interval 1 MONTH)));
+
+
+#ETL Refresh
+SELECT script_name as 'INDICATOR_NAME', stop_time as 'INDICATOR_VALUE',DATE_FORMAT(stop_time,'%Y%b%d') as 'INDICATOR_MONTH'
+FROM kenyaemr_etl.etl_script_status s where s.error is null and script_name='scheduled_updates'
+order by INDICATOR_VALUE desc
+limit 1;
