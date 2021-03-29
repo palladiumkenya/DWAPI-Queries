@@ -7,14 +7,8 @@ select
        0 AS FacilityId,d.unique_patient_no as PatientID,
        d.patient_id as PatientPK,
        pkv.PKV as Pkv,
-       (select value_reference from location_attribute
-        where location_id in (select property_value
-                              from global_property
-                              where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
-       (select name from location
-        where location_id in (select property_value
-                              from global_property
-                              where property='kenyaemr.defaultLocation')) as FacilityName,
+       i.siteCode as SiteCode,
+       i.facilityName as FacilityName,
        case d.gender when 'M' then 'Male' when 'F' then 'Female' end  as Gender,
        d.dob as DOB,
        CAST(min(hiv.visit_date) as Date) as RegistrationDate,
@@ -134,6 +128,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
          group by Patient_Id,program
          ) as prg on prg.patient_id = d.patient_id
        left join kenyaemr_etl.etl_contact c on c.client_id = d.patient_id and prg.status='Active' and prg.program='KP'
+join kenyaemr_etl.etl_default_facility_info i
 where unique_patient_no is not null
 group by d.patient_id
 order by d.patient_id;

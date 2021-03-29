@@ -5,14 +5,8 @@ select '' AS SatelliteName, 0 AS FacilityId, d.DOB,
        timestampdiff(year,d.DOB, hiv.visit_date) as AgeEnrollment,
        timestampdiff(year,d.DOB, reg.art_start_date) as AgeARTStart,
        timestampdiff(year,d.DOB, reg.latest_vis_date) as AgeLastVisit,
-       (select value_reference from location_attribute
-        where location_id in (select property_value
-                              from global_property
-                              where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
-       (select name from location
-        where location_id in (select property_value
-                              from global_property
-                              where property='kenyaemr.defaultLocation')) as FacilityName,
+       i.siteCode as SiteCode,
+       i.FacilityName as FacilityName,
        CAST(coalesce(date_first_enrolled_in_care,min(hiv.visit_date)) as Date) as RegistrationDate,
        case  max(hiv.entry_point)
          when 160542 then 'OPD'
@@ -21,7 +15,7 @@ select '' AS SatelliteName, 0 AS FacilityId, d.DOB,
          when 160538 then 'PMTCT'
          when 160541 then 'TB'
          when 160536 then 'IPD - Adult'
-         else cn.name
+         else ""
            end as PatientSource,
        reg.art_start_date as StartARTDate,
        hiv.date_started_art_at_transferring_facility as PreviousARTStartDate,
@@ -104,8 +98,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id
                                left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id
                         group by e.patient_id)reg on reg.patient_id=hiv.patient_id
-       left outer join concept_name cn on cn.concept_id=hiv.entry_point  and cn.concept_name_type='FULLY_SPECIFIED'
-                                            and cn.locale='en'
+       join kenyaemr_etl.etl_default_facility_info i
        left join (select o.person_id,o1.encounter_id, o.obs_id,o.concept_id as obs_group,o1.concept_id as concept_id,o1.value_coded
                   from obs o join obs o1 on o.obs_id = o1.obs_group_id) o1 on o1.encounter_id = hiv.encounter_id
 where d.unique_patient_no is not null
