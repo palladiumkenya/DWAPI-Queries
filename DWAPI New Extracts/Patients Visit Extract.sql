@@ -1,14 +1,8 @@
 select distinct
                 '' AS SatelliteName, 0 AS FacilityId, d.unique_patient_no as PatientID,
                 d.patient_id as PatientPK,
-                (select name from location
-                 where location_id in (select property_value
-                                       from global_property
-                                       where property='kenyaemr.defaultLocation')) as FacilityName,
-                (select value_reference from location_attribute
-                 where location_id in (select property_value
-                                       from global_property
-                                       where property='kenyaemr.defaultLocation') and attribute_type_id=1) as SiteCode,
+                i.facilityName as FacilityName,
+                i.siteCode as SiteCode,
                 fup.visit_id as VisitId,
                 case when fup.visit_date < '1990-01-01' then null else CAST(fup.visit_date AS DATE) end  AS VisitDate,
                 'Out Patient' as Service,
@@ -94,11 +88,9 @@ select distinct
                 CASE fup.stability
                   WHEN 1 THEN 'Stable'
                   WHEN 2 THEN 'Not Stable' END as StabilityAssessment,
-                dc.name as DifferentiatedCare,
-                CASE
-                  WHEN fup.key_population_type  IS NOT NULL AND fup.key_population_type  !=1175
-                          THEN 'Key population'
-                  ELSE pt.name  END as PopulationType,
+                (case fup.differentiated_care when 164942 then "Standard Care" when 164943 then "Fast Track" when 164944 then "Community ART Distribution - HCW Led" when 164945 then "Community ART Distribution - Peer Led"
+                                              when 164946 then "Facility ART Distribution Group" else "" end) as DifferentiatedCare,
+                (case population_type when 164928 then "General Population" when 164929 then "Key Population" else "" end) as PopulationType,
                 case fup.key_population_type
                   WHEN 105 THEN 'PWID'
                   WHEN 160578 THEN 'MSM'
@@ -113,8 +105,7 @@ select distinct
                 GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified), COALESCE(fup.date_last_modified, d.date_last_modified)) as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=d.patient_id
-       left join concept_name dc on dc.concept_id =  fup.differentiated_care and dc.concept_name_type='FULLY_SPECIFIED'
-       left join concept_name pt on fup.population_type = pt.concept_id AND pt.concept_name_type='FULLY_SPECIFIED'
+       join kenyaemr_etl.etl_default_facility_info i
        left join (select de.patient_id,mid(max(concat(de.visit_date,de.regimen)),11) as regimen from kenyaemr_etl.etl_drug_event de
                   where de.discontinued is null group by de.patient_id)de on fup.patient_id = de.patient_id
 where d.unique_patient_no is not null and fup.visit_date > '1990-01-01' and fup.visit_id is not null;
