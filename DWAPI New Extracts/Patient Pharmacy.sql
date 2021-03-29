@@ -42,7 +42,7 @@ from (SELECT * FROM (
                     UNION
                     (SELECT  e.patient_id as patient_id,'' as visit_id,e.visit_date,e.encounter_id,regimen drug,1 as is_arv, 0 as is_ctx, 0 as is_dapsone, regimen_name as drugreg, '' frequency, date_started as DispenseDate,''duration,''PeriodTaken,''ExpectedReturn, 'ARV' AS TreatmentType,e.regimen_line as regimen_line,
                              e.regimen as regimen,'' as ProphylaxisType,
-                             @prev_regimen previousRegimen,coalesce(@s := (if(ifnull(@prev_regimen_line,'')<>regimen_line and discontinued=1,'Switch',NULL)),(if(@prev_regimen<>regimen and discontinued=1,'Change',NULL))) as RegimenChangedSwitched,
+                             @prev_regimen previousRegimen,coalesce(@s := (if(ifnull(@prev_regimen_line,'')<>regimen_line and discontinued=1,'Switch',NULL)),(if(@prev_regimen<>regimen and discontinued=1,'Substitution',NULL))) as RegimenChangedSwitched,
                              (case reason_discontinued when 160559 then 'Risk of pregnancy' when 160561 then 'New drug available'
                                                        when 160567 then 'New diagnosis of Tuberculosis'  when 160569 then 'Virological failure'
                                                        when 159598 then 'Non-compliance with treatment or therapy' when 1754 then 'Drugs out of stock'
