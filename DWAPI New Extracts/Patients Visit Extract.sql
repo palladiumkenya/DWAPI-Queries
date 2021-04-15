@@ -59,6 +59,10 @@ select distinct
                   else ''
                     end as FamilyPlanningMethod,
                 concat_ws('|',
+                          nullif(case fup.substance_abuse_screening
+                                   when 1065 then 'Screened for substance abuse'
+                                   else ''
+                                     end,''),
                           nullif(case fup.condom_provided
                                    when 1065 then 'Condoms'
                                    else ''
