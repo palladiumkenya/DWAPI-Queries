@@ -65,7 +65,7 @@ from kenyaemr_etl.etl_patient_demographics d
                                                                                      when 5240 then 'Lost to Follow up'
                                                                                      else '' end))as status_in_prg
                                     from kenyaemr_etl.etl_patient_program p
-                                           left join etl_patient_program_discontinuation d
+                                           left join kenyaemr_etl.etl_patient_program_discontinuation d
                                              on p.patient_id = d.patient_id and p.date_completed = date(d.visit_date)
                                     where p.program = 'MCH-Mother Services')p
                            on m.patient_id = p.prg_patient and m.visit_date = p.date_enrolled
@@ -83,11 +83,11 @@ from kenyaemr_etl.etl_patient_demographics d
                                                  when 5240 then 'Lost to Follow up'
                                                  else '' end))as status_in_prg
                                     from kenyaemr_etl.etl_patient_program p
-                                           left join etl_patient_program_discontinuation d
+                                           left join kenyaemr_etl.etl_patient_program_discontinuation d
                                              on p.patient_id = d.patient_id and p.date_completed = date(d.visit_date)
                                     where p.program = 'MCH-Child Services')p
                            on c.patient_id = p.prg_patient and c.visit_date = p.date_enrolled
                   group by c.visit_date)c on d.patient_id = c.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 where m.patient_id is not null
-   or c.patient_id is not null order by PatientPK,EnrollmentDateATMNCH;
+   or c.patient_id is not null;
