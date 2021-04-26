@@ -1,7 +1,7 @@
 select a.patient_id as PatientPK,0 AS FacilityId,s.siteCode as SiteCode,de.unique_patient_no as PatientID,'KenyaEMR' as Emr,'Kenya HMIS II' as Project,s.FacilityName as FacilityName,
        a.visit_id as VisitID,a.visit_date as VisitDate,e.OTZEnrollmentDate,e.TransferInStatus, e.ModulesPreviouslyCovered
     ,concat_ws(',',NULLIF(if(a.orientation='Yes','OTZ Orientation',null),''),NULLIF(if(a.participation='Yes','OTZ Participation',''),''),NULLIF(if(a.making_decision_future='Yes','OTZ Making decisions for the future',''),'')
-       ,NULLIF(if(a.transition_to_adult_care='Yes','OTZ Transition to Adult care',''),''),NULLIF(if(a.treatment_literacy='Yes','OTZ Treatment literacy',''),''),NULLIF(if(a.srh='Yes','OTZ SRH',''),''),
+       ,NULLIF(if(a.transition_to_adult_care='Yes','OTZ Transition to Adult care',''),''),NULLIF(if(a.treatment_literacy='Yes','OTZ Treatment literacy',''),''),NULLIF(if(a.srh='Yes','OTZ SRH',''),''),NULLIF(if(a.leadership='Yes','Leadership',''),''),
                NULLIF(if(a.beyond_third_ninety='Yes','OTZ Beyond the 3rd 90',null),'')) as ModulesCompletedToday,a.attended_support_group as SupportGroupInvolvement,
        a.remarks as Remarks,d.attrition_reason as TransitionAttritionReason, d.Outcome_date as OutcomeDate, a.date_created as Date_Created, greatest(NULLIF(a.date_last_modified,'0000-00-00'),NULLIF(a.date_last_modified,'0000-00-00')) as Date_Last_Modified
 from kenyaemr_etl.etl_otz_activity a
