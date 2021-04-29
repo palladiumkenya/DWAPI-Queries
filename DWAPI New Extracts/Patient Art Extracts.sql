@@ -48,7 +48,6 @@ select ''                                                                       
           when 162563 then '3TC/ABC/EFV'
           when 162562 then 'ABC/LPV/R/TDF'
           when 162559 then 'ABC/DDI/LPV/r' END)                                            as PreviousARTRegimen,
-       reg.date_started_art_this_facility                                                  as StartARTAtThisFacility,
        reg.regimen                                                                         as StartRegimen,
        reg.regimen_line                                                                    as StartRegimenLine,
        case
