@@ -28,6 +28,8 @@ from kenyaemr_etl.etl_patient_demographics d
                   group by e.patient_id)e on d.patient_id = e.patient_id
        left join (select de.patient_id,
                          min(de.date_started)                                   as date_started_art,
+                         least(ifnull(mid(min(concat(hiv.visit_date, hiv.date_started_art_at_transferring_facility)), 11),
+                                      reg.date_started + interval rand()*1000 year), reg.date_started)       as test,
                          mid(min(concat(de.date_started, de.regimen_name)), 11) as start_regimen,
                          mid(min(concat(de.date_started, de.regimen_line)), 11) as start_regimen_line,
                          mid(max(concat(de.date_started, de.regimen_name)), 11) as last_regimen,
