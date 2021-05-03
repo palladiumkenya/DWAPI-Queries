@@ -7,7 +7,8 @@ select pkv.pkv                                             as PKV,
        'Kenya HMIS II'                                     as Project,
        i.FacilityName                                      as FacilityName,
        e.date_first_enrolled_in_care                       as RegistrationAtCCC,
-       de.date_started_art                                 as StartARTDate,
+       least(ifnull(mid(min(concat(e.visit_date, e.date_started_art_at_transferring_facility)), 11),
+                    de.date_started_art + interval rand()*1000 year), de.date_started_art)       as StartARTDate,
        de.start_regimen                                    as StartRegimen,
        de.start_regimen_line                               as StartRegimenLine,
        if(p.patient_id is null, 'ACTIVE', p.status_at_ccc) as StatusAtCCC,
@@ -21,15 +22,13 @@ from kenyaemr_etl.etl_patient_demographics d
        left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date
                   from kenyaemr_etl.etl_hei_enrollment c
                   group by c.patient_id)c on d.patient_id = c.patient_id
-       left join (select e.patient_id, least(min(e.visit_date), mid(min(concat(e.visit_date,
+       left join (select e.patient_id,e.visit_date,e.date_started_art_at_transferring_facility, least(min(e.visit_date), mid(min(concat(e.visit_date,
                                                                                coalesce(e.date_first_enrolled_in_care, date('9999-12-31')))),
                                                                     11)) as date_first_enrolled_in_care
                   from kenyaemr_etl.etl_hiv_enrollment e
                   group by e.patient_id)e on d.patient_id = e.patient_id
        left join (select de.patient_id,
                          min(de.date_started)                                   as date_started_art,
-                         least(ifnull(mid(min(concat(hiv.visit_date, hiv.date_started_art_at_transferring_facility)), 11),
-                                      reg.date_started + interval rand()*1000 year), reg.date_started)       as test,
                          mid(min(concat(de.date_started, de.regimen_name)), 11) as start_regimen,
                          mid(min(concat(de.date_started, de.regimen_line)), 11) as start_regimen_line,
                          mid(max(concat(de.date_started, de.regimen_name)), 11) as last_regimen,
