@@ -1,20 +1,21 @@
-select d.patient_id                                                                              as PatientPK,
-       i.siteCode                                                                                as SiteCode,
-       d.openmrs_id                                                                              as PatientMNCHCWC_ID,
-       d.hei_no                                                                                  as PatientHEI_ID,
-       d.unique_patient_no                                                                       as PatientID,
-       'KenyaEMR'                                                                                as Emr,
-       'Kenya HMIS II'                                                                           as Project,
-       i.FacilityName                                                                            as FacilityName,
-       e.date_first_enrolled_in_care                                                             as RegistrationAtCCC,
-       least(de.date_started_art, ifnull(e.date_started_art_trf_facility,
-                                         date(de.date_started_art + interval rand()*1000 year))) as StartARTDate,
-       de.start_regimen                                                                          as StartRegimen,
-       de.start_regimen_line                                                                     as StartRegimenLine,
-       if(p.patient_id is null, 'ACTIVE', p.status_at_ccc)                                       as StatusAtCCC,
-       de.last_art_date                                                                          as LastARTDate,
-       de.last_regimen                                                                           as LastRegimen,
-       de.last_regimen_line                                                                      as LastRegimenLine
+select pkv.pkv                                                          as PKV,
+       d.patient_id                                                     as PatientPK,
+       i.siteCode                                                       as SiteCode,
+       d.openmrs_id                                                     as PatientMNCH_ID,
+       d.hei_no                                                         as PatientHEI_ID,
+       'KenyaEMR'                                                       as Emr,
+       'Kenya HMIS II'                                                  as Project,
+       i.FacilityName                                                   as FacilityName,
+       (case d.Gender when 'F' then 'Female' when 'M' then 'Male' end)  as Gender,
+       d.DOB                                                            as DOB,
+       coalesce(c.first_hei_enrolment_date, m.first_mch_enrolment_date) as FirstEnrollmentAtMNCH,
+       d.occupation                                                     as Occupation,
+       d.marital_status                                                 as MaritalStatus,
+       d.education_level                                                as EducationLevel,
+       a.county                                                         as PatientResidentCounty,
+       a.sub_county                                                     as PatientResidentSubCounty,
+       a.ward                                                           as PatientResidentWard,
+       e.in_school                                                      as Inschool
 from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date
                   from kenyaemr_etl.etl_mch_enrollment m
@@ -22,33 +23,44 @@ from kenyaemr_etl.etl_patient_demographics d
        left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date
                   from kenyaemr_etl.etl_hei_enrollment c
                   group by c.patient_id)c on d.patient_id = c.patient_id
-       left join (select e.patient_id,
-                         coalesce(mid(min(concat(e.visit_date, e.date_first_enrolled_in_care)), 11),
-                                  min(e.visit_date)) as date_first_enrolled_in_care,
-                         mid(min(concat(e.visit_date, e.date_started_art_at_transferring_facility)),
-                             11)                     as date_started_art_trf_facility
-                  from kenyaemr_etl.etl_hiv_enrollment e
-                  group by e.patient_id)e on d.patient_id = e.patient_id
-       left join (select de.patient_id,
-                         min(de.date_started)                                   as date_started_art,
-                         mid(min(concat(de.date_started, de.regimen_name)), 11) as start_regimen,
-                         mid(min(concat(de.date_started, de.regimen_line)), 11) as start_regimen_line,
-                         mid(max(concat(de.date_started, de.regimen_name)), 11) as last_regimen,
-                         max(de.date_started)                                   as last_art_date,
-                         mid(max(concat(de.date_started, de.regimen_line)), 11) as last_regimen_line
-                  from kenyaemr_etl.etl_drug_event de
-                  group by de.patient_id)de on d.patient_id = de.patient_id
-       left join (select p.patient_id,
-                         max(date(p.visit_date))                                                  as latest_disc,
-                         mid(max(concat(date(p.visit_date), (case p.discontinuation_reason
-                                                               when 159492 then 'TransferOut'
-                                                               when 5240 then 'LTFU'
-                                                               when 160034 then 'Dead'
-                                                               when 5622 then 'OTHER' end))), 11) as status_at_ccc
-                  from kenyaemr_etl.etl_patient_program_discontinuation p
-                  group by p.patient_id
-                  having mid(max(concat(date(p.visit_date), p.program_name)), 11) = 'HIV') p
-         on d.patient_id = p.patient_id
+       left join (select a.patient_id, a.county, a.sub_county, a.ward from kenyaemr_etl.etl_person_address a)a
+         on d.patient_id = a.patient_id
+       left join (select * from kenyaemr_etl.etl_hiv_enrollment e)e on d.patient_id = e.patient_id
+       inner join (select x.patient_id as patient_id,
+                          x.sxFirstName,
+                          x.sxLastname,
+                          x.sxMiddleName,
+                          x.dmFirstName,
+                          x.dmLastName,
+                          x.dmMiddleName,
+                          x.Gender,
+                          x.DOB,
+                          CASE
+                            WHEN locate(';', dmLastName) > 0 THEN CONCAT(
+                                                                    CAST(LEFT(Gender, 1) AS CHAR CHARACTER SET utf8),
+                                                                    CAST(sxFirstName AS CHAR CHARACTER SET utf8), CAST(
+                                                                                                                    SUBSTRING(dmLastName, locate(';', dmLastName) + 1, LENGTH(dmLastName))
+                                                                                                                    AS
+                                                                                                                    CHAR CHARACTER SET utf8),
+                                                                    CAST(LTRIM(RTRIM(DATE_FORMAT(DOB, '%Y'))) AS CHAR CHARACTER SET utf8)
+                              )
+                            ELSE CONCAT(
+                                   CAST(LEFT(Gender, 1)AS CHAR CHARACTER SET utf8),
+                                   CAST(sxFirstName AS CHAR CHARACTER SET utf8),
+                                   CAST(dmLastName AS CHAR CHARACTER SET utf8),
+                                   CAST(LTRIM(RTRIM(DATE_FORMAT(DOB, '%Y'))) AS CHAR CHARACTER SET utf8)
+                              )
+                              END      AS PKV
+                   from (SELECT patient_id,
+                                SOUNDEX(UPPER(REPLACE(given_name, '0', 'O')))                           AS sxFirstName,
+                                SOUNDEX(UPPER(REPLACE(family_name, '0', 'O')))                          AS sxLastName,
+                                SOUNDEX(UPPER(REPLACE(middle_name, '0', 'O')))                          AS sxMiddleName,
+                                fn_getPatientNameDoubleMetaphone(UPPER(REPLACE(given_name, '0', 'O')))  AS dmFirstName,
+                                fn_getPatientNameDoubleMetaphone(UPPER(REPLACE(family_name, '0', 'O'))) AS dmLastName,
+                                fn_getPatientNameDoubleMetaphone(UPPER(REPLACE(middle_name, '0', 'O'))) AS dmMiddleName,
+                                Gender,
+                                DOB
+                         FROM kenyaemr_etl.etl_patient_demographics)x)pkv on pkv.patient_id = d.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 where m.patient_id is not null
    or c.patient_id is not null;
