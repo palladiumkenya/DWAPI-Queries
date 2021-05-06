@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kenyaemrCharts-1.1.1.omod" beforeDir="false" afterPath="$PROJECT_DIR$/kenyaemrCharts-1.1.1.omod" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -78,13 +78,13 @@
           <entry key="TX_CURR" value="1" />
           <entry key="TX_CURR_731" value="5" />
           <entry key="TX_PVLS" value="4" />
-          <entry key="sql" value="102" />
+          <entry key="sql" value="103" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Android Room SQL" value="5" />
-          <entry key="SQL" value="98" />
+          <entry key="SQL" value="99" />
           <entry key="Scratch" value="19" />
           <entry key="ThymeleafExpressions" value="2" />
         </counts>
@@ -92,18 +92,18 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="MNCH_ART_Extract" value="98" />
-          <entry key="MNCH_Enrolment" value="34" />
+          <entry key="MNCH_Enrolment" value="36" />
           <entry key="Patient_Extract_MNCH" value="152" />
           <entry key="TX_PVLS" value="39" />
           <entry key="cell" value="25" />
-          <entry key="sql" value="14477" />
+          <entry key="sql" value="15012" />
           <entry key="txt" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="7" />
-          <entry key="SQL" value="2982" />
+          <entry key="SQL" value="3519" />
           <entry key="Scratch" value="11843" />
         </counts>
       </usages-collector>
@@ -111,15 +111,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="11" column="38" selection-start-line="11" selection-start-column="38" selection-end-line="11" selection-end-column="38" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql">
           <provider selected="true" editor-type-id="text-editor">
@@ -141,8 +132,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="67">
-              <caret line="56" column="28" lean-forward="true" selection-start-line="56" selection-start-column="28" selection-end-line="56" selection-end-column="28" />
+            <state relative-caret-position="306">
+              <caret line="18" column="42" selection-start-line="18" selection-start-column="18" selection-end-line="18" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -159,17 +150,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
+            <state relative-caret-position="833">
+              <caret line="49" column="17" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-69">
+              <caret line="28" column="66" selection-start-line="28" selection-start-column="66" selection-end-line="28" selection-end-column="66" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment">
+        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
+            <state relative-caret-position="156">
+              <caret line="11" column="36" lean-forward="true" selection-start-line="11" selection-start-column="36" selection-end-line="11" selection-end-column="36" />
             </state>
           </provider>
         </entry>
@@ -205,7 +205,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>entry_point</find>
       <find>change</find>
       <find>group_c</find>
       <find>pwp</find>
@@ -229,16 +228,18 @@
       <find>from</find>
       <find />
       <find>&quot;</find>
-      <find>dd</find>
-      <find>concat_ws</find>
       <find>m.</find>
       <find>v.</find>
       <find>'1990-01-01'</find>
       <find>ci.</find>
+      <find>a.</find>
+      <find>dd</find>
+      <find>concat_ws</find>
     </findStrings>
     <replaceStrings>
       <replace>e.</replace>
       <replace>a.</replace>
+      <replace>l.</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -289,6 +290,7 @@
         <option value="$PROJECT_DIR$/DWAPI New Extracts/OVC Extract.sql" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql" />
       </list>
     </option>
   </component>
@@ -304,11 +306,11 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-11" />
-    <option name="y" value="-11" />
-    <option name="width" value="1943" />
-    <option name="height" value="1043" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="3192" />
+    <option name="y" value="-8" />
+    <option name="width" value="1296" />
+    <option name="height" value="1416" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -354,7 +356,7 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1620201744995" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1620292161369" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="jdk.selected.JAVA_MODULE" value="1.7" />
@@ -444,18 +446,18 @@
       <workItem from="1617859798057" duration="4811000" />
       <workItem from="1617989448832" duration="11937000" />
       <workItem from="1618464980132" duration="54692000" />
-      <workItem from="1620020537468" duration="37753000" />
+      <workItem from="1620020537468" duration="44955000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="291922000" />
+    <option name="totallyTimeSpent" value="299124000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <frame x="3192" y="-8" width="1296" height="1416" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.21862349" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10517799" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -472,7 +474,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Console" order="7" weight="0.47686833" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.37188613" />
+      <window_info anchor="bottom" id="Terminal" order="9" visible="true" weight="0.08190328" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="11" weight="0.3299532" />
       <window_info anchor="right" id="SciView" />
@@ -770,20 +772,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="9" column="34" selection-start-line="9" selection-start-column="34" selection-end-line="9" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="67">
-          <caret line="56" column="28" lean-forward="true" selection-start-line="56" selection-start-column="28" selection-end-line="56" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/patient_visit.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="102">
@@ -798,10 +786,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="833">
+          <caret line="49" column="17" selection-start-line="49" selection-start-column="17" selection-end-line="49" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="17" column="27" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
+        <state relative-caret-position="-69">
+          <caret line="28" column="66" selection-start-line="28" selection-start-column="66" selection-end-line="28" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="18" column="42" selection-start-line="18" selection-start-column="18" selection-end-line="18" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="11" column="36" lean-forward="true" selection-start-line="11" selection-start-column="36" selection-end-line="11" selection-end-column="36" />
         </state>
       </provider>
     </entry>
