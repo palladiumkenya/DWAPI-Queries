@@ -1,7 +1,7 @@
 select d.patient_id                                                                 as PatientPK,
        i.siteCode                                                                   as SiteCode,
        d.openmrs_id                                                                 as PatientMNCHCWC_ID,
-       d.hei_no                                                                     as PatientHEI_ID,
+    #d.hei_no                                                                     as PatientHEI_ID,
        'KenyaEMR'                                                                   as Emr,
        'Kenya HMIS II'                                                              as Project,
        i.FacilityName                                                               as FacilityName,
@@ -11,6 +11,7 @@ select d.patient_id                                                             
           when 1623 then 'PNC'
           else '' end)                                                              as ServiceType,
        coalesce(c.hei_enrolment_date, m.mch_enrollment_date)                        as EnrollmentDateATMNCH,
+       m.anc_number                                                                 as MNCHNumber,
        m.first_anc_visit                                                            as FirstVisitANC,
        m.parity                                                                     as Parity,
        m.gravida                                                                    as Gravidae,
