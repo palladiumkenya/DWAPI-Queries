@@ -1,33 +1,34 @@
-select d.patient_id                                          as PatientPK,
-       i.siteCode                                            as SiteCode,
-       d.openmrs_id                                          as PatientMNCHCWC_ID,
-       d.hei_no                                              as PatientHEI_ID,
-       'KenyaEMR'                                            as Emr,
-       'Kenya HMIS II'                                       as Project,
-       i.FacilityName                                        as FacilityName,
+select d.patient_id                                                                 as PatientPK,
+       i.siteCode                                                                   as SiteCode,
+       d.openmrs_id                                                                 as PatientMNCHCWC_ID,
+    #d.hei_no                                                                     as PatientHEI_ID,
+       'KenyaEMR'                                                                   as Emr,
+       'Kenya HMIS II'                                                              as Project,
+       i.FacilityName                                                               as FacilityName,
        (case m.service_type
           when 1622 then 'ANC'
           when 164835 then 'Delivery'
           when 1623 then 'PNC'
-          else '' end)                                       as ServiceType,
-       coalesce(c.hei_enrolment_date, m.mch_enrollment_date) as EnrollmentDateATMNCH,
-       m.first_anc_visit                                     as FirstVisitANC,
-       m.parity                                              as Parity,
-       m.gravida                                             as Gravidae,
-       m.lmp                                                 as LMP,
-       m.edd                                                 as EDDFromLMP,
+          else '' end)                                                              as ServiceType,
+       coalesce(c.hei_enrolment_date, m.mch_enrollment_date)                        as EnrollmentDateATMNCH,
+       m.anc_number                                                                 as MNCHNumber,
+       m.first_anc_visit                                                            as FirstVisitANC,
+       m.parity                                                                     as Parity,
+       m.gravida                                                                    as Gravidae,
+       m.lmp                                                                        as LMP,
+       coalesce(m.edd, date_add(date_add(m.lmp, interval 7 day), interval 9 month)) as EDDFromLMP,
        (case m.hiv_status_before_anc
           when 664 then "Negative"
           when 703 then "Positive"
           when 1067 then "Unknown"
-          else "" end)                                       as HIVStatusBeforeANC,
-       m.test_date                                           as HIVTestDate,
+          else "" end)                                                              as HIVStatusBeforeANC,
+       m.test_date                                                                  as HIVTestDate,
        (case m.partner_status
           when 664 then "Negative"
           when 703 then "Positive"
           when 1067 then "Unknown"
-          else "" end)                                       as PartnerHIVStatus,
-       m.partner_test_date                                   as PartnerHIVTestDate,
+          else "" end)                                                              as PartnerHIVStatus,
+       m.partner_test_date                                                          as PartnerHIVTestDate,
        (case m.blood_group
           when 690 then "A POSITIVE"
           when 692 then "A NEGATIVE"
@@ -37,8 +38,8 @@ select d.patient_id                                          as PatientPK,
           when 701 then "O NEGATIVE"
           when 1230 then "AB POSITIVE"
           when 1231 then "AB NEGATIVE"
-          else "" end)                                       as BloodGroup,
-       coalesce(m.status_in_mnch, c.status_in_cwc)           as StatusAtMNCH
+          else "" end)                                                              as BloodGroup,
+       coalesce(m.status_in_mnch, c.status_in_cwc)                                  as StatusAtMNCH
 from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id,
                          m.service_type          as service_type,

@@ -1,20 +1,21 @@
-select pkv.pkv                                             as PKV,
-       d.patient_id                                        as PatientPK,
-       i.siteCode                                          as SiteCode,
-       d.openmrs_id                                        as PatientMNCHCWC_ID,
-       d.hei_no                                            as PatientHEI_ID,
-       'KenyaEMR'                                          as Emr,
-       'Kenya HMIS II'                                     as Project,
-       i.FacilityName                                      as FacilityName,
-       e.date_first_enrolled_in_care                       as RegistrationAtCCC,
+select pkv.pkv                                                                             as PKV,
+       d.patient_id                                                                        as PatientPK,
+       i.siteCode                                                                          as SiteCode,
+       d.openmrs_id                                                                        as PatientMNCHCWC_ID,
+       d.hei_no                                                                            as PatientHEI_ID,
+       d.unique_patient_no                                                                 as PatientID,
+       'KenyaEMR'                                                                          as Emr,
+       'Kenya HMIS II'                                                                     as Project,
+       i.FacilityName                                                                      as FacilityName,
+       e.date_first_enrolled_in_care                                                       as RegistrationAtCCC,
        least(ifnull(mid(min(concat(e.visit_date, e.date_started_art_at_transferring_facility)), 11),
-                    de.date_started_art + interval rand()*1000 year), de.date_started_art)       as StartARTDate,
-       de.start_regimen                                    as StartRegimen,
-       de.start_regimen_line                               as StartRegimenLine,
-       if(p.patient_id is null, 'ACTIVE', p.status_at_ccc) as StatusAtCCC,
-       de.last_art_date                                    as LastARTDate,
-       de.last_regimen                                     as LastRegimen,
-       de.last_regimen_line                                as LastRegimenLine
+                    de.date_started_art + interval rand()*1000 year), de.date_started_art) as StartARTDate,
+       de.start_regimen                                                                    as StartRegimen,
+       de.start_regimen_line                                                               as StartRegimenLine,
+       if(p.patient_id is null, 'ACTIVE', p.status_at_ccc)                                 as StatusAtCCC,
+       de.last_art_date                                                                    as LastARTDate,
+       de.last_regimen                                                                     as LastRegimen,
+       de.last_regimen_line                                                                as LastRegimenLine
 from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date
                   from kenyaemr_etl.etl_mch_enrollment m
@@ -22,9 +23,12 @@ from kenyaemr_etl.etl_patient_demographics d
        left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date
                   from kenyaemr_etl.etl_hei_enrollment c
                   group by c.patient_id)c on d.patient_id = c.patient_id
-       left join (select e.patient_id,e.visit_date,e.date_started_art_at_transferring_facility, least(min(e.visit_date), mid(min(concat(e.visit_date,
-                                                                               coalesce(e.date_first_enrolled_in_care, date('9999-12-31')))),
-                                                                    11)) as date_first_enrolled_in_care
+       left join (select e.patient_id,
+                         e.visit_date,
+                         e.date_started_art_at_transferring_facility,
+                         least(min(e.visit_date), mid(min(concat(e.visit_date,
+                                                                 coalesce(e.date_first_enrolled_in_care, date('9999-12-31')))),
+                                                      11)) as date_first_enrolled_in_care
                   from kenyaemr_etl.etl_hiv_enrollment e
                   group by e.patient_id)e on d.patient_id = e.patient_id
        left join (select de.patient_id,

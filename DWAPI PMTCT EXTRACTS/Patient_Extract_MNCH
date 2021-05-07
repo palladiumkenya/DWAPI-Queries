@@ -15,7 +15,7 @@ select pkv.pkv                                                          as PKV,
        a.county                                                         as PatientResidentCounty,
        a.sub_county                                                     as PatientResidentSubCounty,
        a.ward                                                           as PatientResidentWard,
-       e.in_school                                                      as Inschool
+       (case e.in_school when 1 then 'Yes' when 2 then 'No' end)        as Inschool
 from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date
                   from kenyaemr_etl.etl_mch_enrollment m
