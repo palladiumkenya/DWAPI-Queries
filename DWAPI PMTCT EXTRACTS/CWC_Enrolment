@@ -23,7 +23,7 @@ select d.patient_id              as PatientPK,
        e.mother_ccc_no           as MothersCCCNo,
        e.mother_art_regimen      as MotherARTRegimen,
        e.transfer_in             as TransferIn,
-       e.transfer_in_date        as TransferInDate,
+       e.trf_in_date        as TransferInDate,
        e.nvp_during_bf           as NVP,
        e.breast_feeding          as BreastFeeding,
        e.referred_from           as ReferredFrom
@@ -84,11 +84,11 @@ from kenyaemr_etl.etl_patient_demographics d
                             when 162050 then 'CCC'
                             when 160538 then 'MCH/PMTCT'
                             when 5622 then 'Other' end                                             as referred_from,
-                          md.parent_pid
+                          md.parent_pid as parent_pid
                    from kenyaemr_etl.etl_hei_enrollment e
                           left join (select d.patient_id as parent_pid, d.unique_patient_no as parent_ccc
                                      from kenyaemr_etl.etl_patient_demographics d)md
-                            on e.parent_ccc_number = md.unique_patient_no
+                            on e.parent_ccc_number = md.parent_ccc
                    group by e.patient_id) e on d.patient_id = e.patient_id
        left join (select x.patient_id as patient_id,
                          x.sxFirstName,
