@@ -92,4 +92,5 @@ from kenyaemr_etl.etl_patient_demographics d
                   from kenyaemr_etl.etl_laboratory_extract x
                   where x.lab_test in (1305, 856)
                   group by x.patient_id) baseline on d.patient_id = baseline.patient_id
-       join kenyaemr_etl.etl_default_facility_info i;
+       join kenyaemr_etl.etl_default_facility_info i
+where d.hei_no is not null;
