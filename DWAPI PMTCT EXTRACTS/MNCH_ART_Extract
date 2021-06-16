@@ -22,7 +22,7 @@ from kenyaemr_etl.etl_patient_demographics d
        left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date
                   from kenyaemr_etl.etl_hei_enrollment c
                   group by c.patient_id)c on d.patient_id = c.patient_id
-       left join (select e.patient_id,
+       inner join (select e.patient_id,
                          e.visit_date,
                          e.date_started_art_at_transferring_facility,
                          least(min(e.visit_date), mid(min(concat(e.visit_date,
