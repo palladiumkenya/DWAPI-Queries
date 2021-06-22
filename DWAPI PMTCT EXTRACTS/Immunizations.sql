@@ -1,0 +1,32 @@
+select d.patient_id             as PatientPK,
+       i.siteCode               as SiteCode,
+       'KenyaEMR'               as Emr,
+       'Kenya HMIS II'          as Project,
+       i.FacilityName           as FacilityName,
+       d.openmrs_id             as PatientMNCH_ID,
+       z.BCG                    as BCG,
+       z.OPV_birth              as OPVAtBirth,
+       z.OPV_1                  as OPV1,
+       z.IPV                    AS IPV,
+       z.DPT_Hep_B_Hib_1        as DPTHepBHIB1,
+       z.PCV_10_1               as PCV10,
+       z.ROTA_1                 as ROTA1,
+       z.Measles_rubella_1      as MeaslesEubella1,
+       z.Yellow_fever           as YellowFever,
+       z.Measles_rubella_2      as MeaslesEubella2,
+       z.Measles_6_months       as MeaslesAt6Months,
+       z.ROTA_2                 as ROTA2,
+       ''                       as DateOfNextVisit,
+       ''                       as BCGScarChecked,
+       ''                       as DateChecked,
+       ''                       as DateBCGRepeated,
+       z.VitaminA_6_months      as VitaminAAt6Months,
+       z.VitaminA_1_yr          as VitaminAAt1Year,
+       z.VitaminA_1_and_half_yr as VitaminAAt18Months,
+       z.VitaminA_2_yr          as VitaminAAt2Years,
+       z.VitaminA_2_to_5_yr     as VitaminAAt2To5Years,
+       z.fully_immunized        as FullyImmunizedChild
+from kenyaemr_etl.etl_patient_demographics d
+       inner join kenyaemr_etl.etl_hei_immunization z on d.patient_id = z.patient_id
+       join kenyaemr_etl.etl_default_facility_info i
+group by d.patient_id;
