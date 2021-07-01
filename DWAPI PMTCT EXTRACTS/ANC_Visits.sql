@@ -173,8 +173,14 @@ select d.patient_id                                                             
             or a.urine_bile_pigment_test is not null or a.urine_bile_salt_test is not null or
           a.urine_colour is not null or a.urine_turbidity is not null, 'Yes',
           'No')                                                                                 UrinalysisVariables,
-       a.referred_from                                                                          ReferredFrom,
-       a.referred_to                                                                            ReferredTo,
+       case a.referred_from
+         when 1537 then 'Another Health Facility'
+         when 163488 then 'Community Unit'
+         when 1175 then 'N/A' END                                                               ReferredFrom,
+       case a.referred_to
+         when 1537 then 'Another Health Facility'
+         when 163488 then 'Community Unit'
+         when 1175 then 'N/A' END                                                            as ReferredTo,
        ''                                                                                       ReferralReasons,
        a.next_appointment_date                                                                  NextAppointmentANC,
        a.clinical_notes                                                                         ClinicalNotes,
