@@ -22,7 +22,11 @@ select d.patient_id                                                             
        ''                                                                                UterotonicGiven,
        ''                                                                                VaginalExamination,
        ''                                                                                BloodLoss,
-       l.blood_loss                                                                      BloodLossVisual,
+       case l.blood_loss
+         when 1499 then 'Moderate'
+         when 1498 then 'Mild'
+         when 1107 then 'None'
+         when 1500 then 'Severe' end                                                     BloodLossVisual,
        case l.condition_of_mother
          when 160429 then 'Alive'
          when 134612 then 'Dead' end                                                     ConditonAfterDelivery,
@@ -45,11 +49,11 @@ select d.patient_id                                                             
        case l.baby_condition
          when 151849 then 'Live birth'
          when 159916 then 'Fresh still birth'
-         when 135436 then 'Macerated still birth' end                                 as 'BirthOutcome',
+         when 135436 then 'Macerated still birth' end                                 as BirthOutcome,
        case l.birth_with_deformity
          when 155871 then 'Yes'
          when 1066 then 'No'
-         when 1175 then 'N/A' end                                                     as 'BirthWithDeformity',
+         when 1175 then 'N/A' end                                                     as BirthWithDeformity,
        case l.teo_given
          when 84893 then 'Yes'
          when 1066 then 'No'
@@ -107,4 +111,4 @@ from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_mch_enrollment e on d.patient_id = e.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 where l.visit_id is not null
-group by l.visit_id;
+group by l.visit_id;select * from kenyaemr_etl.etl_hei_immunization;
