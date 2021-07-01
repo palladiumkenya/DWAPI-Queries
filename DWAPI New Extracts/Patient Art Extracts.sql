@@ -24,30 +24,10 @@ select ''                                                                       
        reg.date_started_art_this_facility                                                  as StartARTAtThisFAcility,
        least(ifnull(mid(min(concat(hiv.visit_date, hiv.date_started_art_at_transferring_facility)), 11),
                     reg.date_started + interval rand()*1000 year), reg.date_started)       as StartARTDate,
-       (case (if(o1.obs_group = 1085 and o1.concept_id = 1088, o1.value_coded, null))
-          when 164968 then 'AZT/3TC/DTG'
-          when 164969 then 'TDF/3TC/DTG'
-          when 164970 then 'ABC/3TC/DTG'
-          when 164505 then 'TDF-3TC-EFV'
-          when 792 then 'D4T/3TC/NVP'
-          when 160124 then 'AZT/3TC/EFV'
-          when 160104 then 'D4T/3TC/EFV'
-          when 1652 then '3TC/NVP/AZT'
-          when 161361 then 'EDF/3TC/EFV'
-          when 104565 then 'EFV/FTC/TDF'
-          when 162201 then '3TC/LPV/TDF/r'
-          when 817 then 'ABC/3TC/AZT'
-          when 162199 then 'ABC/NVP/3TC'
-          when 162200 then '3TC/ABC/LPV/r'
-          when 162565 then '3TC/NVP/TDF'
-          when 164511 then '3TC/NVP/AZT'
-          when 162561 then '3TC/AZT/LPV/r'
-          when 162561 then 'AZT-3TC-ATV/r'
-          when 164512 then 'TDF-3TC-ATV/r'
-          when 162560 then '3TC/D4T/LPV/r'
-          when 162563 then '3TC/ABC/EFV'
-          when 162562 then 'ABC/LPV/R/TDF'
-          when 162559 then 'ABC/DDI/LPV/r' END)                                            as PreviousARTRegimen,
+       reg.PreviousARTUse                                                                  as PreviousARTUse,
+       reg.PreviousARTPurpose                                                              as PreviousARTPurpose,
+       reg.PreviousARTRegimen                                                              as PreviousARTRegimen,
+       reg.DateLastUsed                                                                    as DateLastUsed,
        reg.regimen                                                                         as StartRegimen,
        reg.regimen_line                                                                    as StartRegimenLine,
        case
@@ -85,22 +65,26 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                         where d.program_name = 'HIV'
                         group by d.patient_id) disc on disc.patient_id = hiv.patient_id
        left outer join (select e.patient_id,
-                               min(e.date_started)                        as art_start_date,
-                               min(e.date_started)                        as date_started_art_this_facility,
+                               min(e.date_started)                                              as art_start_date,
+                               min(e.date_started)                                              as date_started_art_this_facility,
                                e.date_started,
                                e.gender,
                                e.dob,
-                               d.ExitDate                                 as dis_date,
-                               if(d.ExitDate is not null, 1, 0)           as TOut,
+                               d.ExitDate                                                       as dis_date,
+                               if(d.ExitDate is not null, 1, 0)                                 as TOut,
                                e.regimen,
                                e.regimen_line,
                                e.alternative_regimen,
-                               max(fup.next_appointment_date)             as latest_tca,
+                               max(fup.next_appointment_date)                                   as latest_tca,
                                last_art_date,
                                last_regimen,
                                last_regimen_line,
-                               if(enr.transfer_in_date is not null, 1, 0) as TIn,
-                               max(fup.visit_date)                        as latest_vis_date,
+                               if(enr.transfer_in_date is not null, 1, 0)                       as TIn,
+                               case enr.previous_art_use when 1 then 'Yes' when 0 then 'No' end as PreviousARTUse,
+                               enr.previous_art_purpose                                         as PreviousARTPurpose,
+                               enr.previous_art_regimen                                         as PreviousARTRegimen,
+                               ''                                                               as DateLastUsed,
+                               max(fup.visit_date)                                              as latest_vis_date,
                                e.date_created,
                                e.date_last_modified
                         from (select e.patient_id,
@@ -130,19 +114,131 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                 from kenyaemr_etl.etl_patient_program_discontinuation d
                                                 where d.program_name = 'HIV'
                                                 group by d.patient_id)d on d.patient_id = e.patient_id
-                               left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id = e.patient_id
+                               inner join (select e.patient_id                                           as patient_id,
+                                                  mid(max(concat(e.visit_date, e.transfer_in_date)), 11) as transfer_in_date,
+                                                  case mid(max(concat(e.visit_date, e.arv_status)), 11)
+                                                    when 1 then 'Yes'
+                                                    when 0
+                                                            then 'No' end                                as previous_art_use,
+                                                  concat_ws('|', NULLIF(
+                                                                   case mid(max(concat(pre.visit_date, pre.PMTCT)), 11)
+                                                                     when 1065 then 'PMTCT' end, ''),
+                                                            NULLIF(case mid(max(concat(pre.visit_date, pre.PEP)), 11)
+                                                                     when 1065 then 'PEP' end, ''),
+                                                            NULLIF(case mid(max(concat(pre.visit_date, pre.PrEP)), 11)
+                                                                     when 1065 then 'PrEP' end, ''),
+                                                            NULLIF(case mid(max(concat(pre.visit_date, pre.HAART)), 11)
+                                                                     when 1185 then 'HAART' end, '')
+                                                      )                                                  as previous_art_purpose,
+                                                  concat_ws('|', NULLIF(
+                                                                   case mid(max(concat(pre.visit_date, pre.PMTCT_regimen)), 11)
+                                                                     when 164968 then 'AZT/3TC/DTG'
+                                                                     when 164969 then 'TDF/3TC/DTG'
+                                                                     when 164970 then 'ABC/3TC/DTG'
+                                                                     when 164505 then 'TDF-3TC-EFV'
+                                                                     when 792 then 'D4T/3TC/NVP'
+                                                                     when 160124 then 'AZT/3TC/EFV'
+                                                                     when 160104 then 'D4T/3TC/EFV'
+                                                                     when 1652 then '3TC/NVP/AZT'
+                                                                     when 161361 then 'EDF/3TC/EFV'
+                                                                     when 104565 then 'EFV/FTC/TDF'
+                                                                     when 162201 then '3TC/LPV/TDF/r'
+                                                                     when 817 then 'ABC/3TC/AZT'
+                                                                     when 162199 then 'ABC/NVP/3TC'
+                                                                     when 162200 then '3TC/ABC/LPV/r'
+                                                                     when 162565 then '3TC/NVP/TDF'
+                                                                     when 1652 then '3TC/NVP/AZT'
+                                                                     when 162561 then '3TC/AZT/LPV/r'
+                                                                     when 164511 then 'AZT-3TC-ATV/r'
+                                                                     when 164512 then 'TDF-3TC-ATV/r'
+                                                                     when 162560 then '3TC/D4T/LPV/r'
+                                                                     when 162563 then '3TC/ABC/EFV'
+                                                                     when 162562 then 'ABC/LPV/R/TDF'
+                                                                     when 162559 then 'ABC/DDI/LPV/r' end, ''),
+                                                            NULLIF(
+                                                              case mid(max(concat(pre.visit_date, pre.PEP_regimen)), 11)
+                                                                when 164968 then 'AZT/3TC/DTG'
+                                                                when 164969 then 'TDF/3TC/DTG'
+                                                                when 164970 then 'ABC/3TC/DTG'
+                                                                when 164505 then 'TDF-3TC-EFV'
+                                                                when 792 then 'D4T/3TC/NVP'
+                                                                when 160124 then 'AZT/3TC/EFV'
+                                                                when 160104 then 'D4T/3TC/EFV'
+                                                                when 1652 then '3TC/NVP/AZT'
+                                                                when 161361 then 'EDF/3TC/EFV'
+                                                                when 104565 then 'EFV/FTC/TDF'
+                                                                when 162201 then '3TC/LPV/TDF/r'
+                                                                when 817 then 'ABC/3TC/AZT'
+                                                                when 162199 then 'ABC/NVP/3TC'
+                                                                when 162200 then '3TC/ABC/LPV/r'
+                                                                when 162565 then '3TC/NVP/TDF'
+                                                                when 1652 then '3TC/NVP/AZT'
+                                                                when 162561 then '3TC/AZT/LPV/r'
+                                                                when 164511 then 'AZT-3TC-ATV/r'
+                                                                when 164512 then 'TDF-3TC-ATV/r'
+                                                                when 162560 then '3TC/D4T/LPV/r'
+                                                                when 162563 then '3TC/ABC/EFV'
+                                                                when 162562 then 'ABC/LPV/R/TDF'
+                                                                when 162559 then 'ABC/DDI/LPV/r' end, ''),
+                                                            NULLIF(
+                                                              case mid(max(concat(pre.visit_date, pre.PrEP_regimen)), 11)
+                                                                when 164968 then 'AZT/3TC/DTG'
+                                                                when 164969 then 'TDF/3TC/DTG'
+                                                                when 164970 then 'ABC/3TC/DTG'
+                                                                when 164505 then 'TDF-3TC-EFV'
+                                                                when 792 then 'D4T/3TC/NVP'
+                                                                when 160124 then 'AZT/3TC/EFV'
+                                                                when 160104 then 'D4T/3TC/EFV'
+                                                                when 1652 then '3TC/NVP/AZT'
+                                                                when 161361 then 'EDF/3TC/EFV'
+                                                                when 104565 then 'EFV/FTC/TDF'
+                                                                when 162201 then '3TC/LPV/TDF/r'
+                                                                when 817 then 'ABC/3TC/AZT'
+                                                                when 162199 then 'ABC/NVP/3TC'
+                                                                when 162200 then '3TC/ABC/LPV/r'
+                                                                when 162565 then '3TC/NVP/TDF'
+                                                                when 1652 then '3TC/NVP/AZT'
+                                                                when 162561 then '3TC/AZT/LPV/r'
+                                                                when 164511 then 'AZT-3TC-ATV/r'
+                                                                when 164512 then 'TDF-3TC-ATV/r'
+                                                                when 162560 then '3TC/D4T/LPV/r'
+                                                                when 162563 then '3TC/ABC/EFV'
+                                                                when 162562 then 'ABC/LPV/R/TDF'
+                                                                when 162559 then 'ABC/DDI/LPV/r' end, ''),
+                                                            NULLIF(
+                                                              case mid(max(concat(pre.visit_date, pre.HAART_regimen)), 11)
+                                                                when 164968 then 'AZT/3TC/DTG'
+                                                                when 164969 then 'TDF/3TC/DTG'
+                                                                when 164970 then 'ABC/3TC/DTG'
+                                                                when 164505 then 'TDF-3TC-EFV'
+                                                                when 792 then 'D4T/3TC/NVP'
+                                                                when 160124 then 'AZT/3TC/EFV'
+                                                                when 160104 then 'D4T/3TC/EFV'
+                                                                when 1652 then '3TC/NVP/AZT'
+                                                                when 161361 then 'EDF/3TC/EFV'
+                                                                when 104565 then 'EFV/FTC/TDF'
+                                                                when 162201 then '3TC/LPV/TDF/r'
+                                                                when 817 then 'ABC/3TC/AZT'
+                                                                when 162199 then 'ABC/NVP/3TC'
+                                                                when 162200 then '3TC/ABC/LPV/r'
+                                                                when 162565 then '3TC/NVP/TDF'
+                                                                when 1652 then '3TC/NVP/AZT'
+                                                                when 162561 then '3TC/AZT/LPV/r'
+                                                                when 164511 then 'AZT-3TC-ATV/r'
+                                                                when 164512 then 'TDF-3TC-ATV/r'
+                                                                when 162560 then '3TC/D4T/LPV/r'
+                                                                when 162563 then '3TC/ABC/EFV'
+                                                                when 162562 then 'ABC/LPV/R/TDF'
+                                                                when 162559 then 'ABC/DDI/LPV/r' end, '')
+                                                      )                                                  as previous_art_regimen
+                                           from kenyaemr_etl.etl_hiv_enrollment e
+                                                  left join kenyaemr_etl.etl_pre_hiv_enrollment_art pre
+                                                    on e.visit_id = pre.visit_id and e.patient_id = pre.patient_id
+                                           group by e.patient_id) enr on enr.patient_id = e.patient_id
                                left outer join kenyaemr_etl.etl_patient_hiv_followup fup
                                  on fup.patient_id = e.patient_id
                         group by e.patient_id)reg on reg.patient_id = hiv.patient_id
        join kenyaemr_etl.etl_default_facility_info i
-       left join (select o.person_id,
-                         o1.encounter_id,
-                         o.obs_id,
-                         o.concept_id  as obs_group,
-                         o1.concept_id as concept_id,
-                         o1.value_coded
-                  from obs o
-                         join obs o1 on o.obs_id = o1.obs_group_id) o1 on o1.encounter_id = hiv.encounter_id
 where d.unique_patient_no is not null
 group by d.patient_id
 having min(hiv.visit_date) is not null
