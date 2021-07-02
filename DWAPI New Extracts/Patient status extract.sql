@@ -14,10 +14,10 @@ select ''                                                                       
                                      when 5240 then 'LTFU'
                                      when 819 then 'Stopped Treatment'
                                      else '' end), '')), 20)                       as ExitReason,
-       if(e.latest_enrolment_date > greatest(coalesce(max(disc.effective_discontinuation_date), '0000-00-00'),
-                                             coalesce(max(disc.visit_date), '0000-00-00')), e.latest_enrolment_date,
+       if(e.latest_enrolment_date > greatest(coalesce(max(date(disc.effective_discontinuation_date)), '0000-00-00'),
+                                             coalesce(max(date(disc.visit_date)), '0000-00-00')), e.latest_enrolment_date,
           null)                                                                    as ReEnrollmentDate,
-       (case mid(max(concat(disc.visit_date, disc.death_reason)), 11)
+       (case mid(max(concat(date(disc.visit_date), disc.death_reason)), 11)
           when 163324 then 'HIV disease resulting in TB'
           when 116030 then 'HIV disease resulting in cancer'
           when 160159 then 'HIV disease resulting in other infectious and parasitic diseases'
@@ -27,7 +27,7 @@ select ''                                                                       
           when 123812 then 'Non-natural causes'
           when 42917 then 'Unknown cause'
           else '' end)                                                             as ReasonForDeath,
-       (case mid(max(concat(disc.visit_date, disc.specific_death_cause)), 11)
+       (case mid(max(concat(date(disc.visit_date), disc.specific_death_cause)), 11)
           when 156673 then 'HIV disease resulting in mycobacterial infection'
           when 155010 then 'HIV disease resulting in Kaposis sarcoma'
           when 156667 then 'HIV disease resulting in Burkitts lymphoma'
@@ -73,3 +73,6 @@ where d.unique_patient_no is not null
   and disc.program_name = 'HIV'
 group by PatientID
 order by disc.visit_date ASC;
+
+select d.visit_date,d.death_reason,d.specific_death_cause from kenyaemr_etl.etl_patient_program_discontinuation d
+where d.patient_id in (846,867);
