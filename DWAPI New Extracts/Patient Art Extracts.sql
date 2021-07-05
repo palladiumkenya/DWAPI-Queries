@@ -124,7 +124,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                                    case mid(max(concat(pre.visit_date, pre.PMTCT)), 11)
                                                                      when 1065 then 'PMTCT' end, ''),
                                                             NULLIF(case mid(max(concat(pre.visit_date, pre.PEP)), 11)
-                                                                     when 1065 then 'PEP' end, ''),
+                                                                     when 1 then 'PEP' end, ''),
                                                             NULLIF(case mid(max(concat(pre.visit_date, pre.PrEP)), 11)
                                                                      when 1065 then 'PrEP' end, ''),
                                                             NULLIF(case mid(max(concat(pre.visit_date, pre.HAART)), 11)
@@ -139,7 +139,6 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                                      when 792 then 'D4T/3TC/NVP'
                                                                      when 160124 then 'AZT/3TC/EFV'
                                                                      when 160104 then 'D4T/3TC/EFV'
-                                                                     when 1652 then '3TC/NVP/AZT'
                                                                      when 161361 then 'EDF/3TC/EFV'
                                                                      when 104565 then 'EFV/FTC/TDF'
                                                                      when 162201 then '3TC/LPV/TDF/r'
@@ -172,7 +171,6 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                                 when 162199 then 'ABC/NVP/3TC'
                                                                 when 162200 then '3TC/ABC/LPV/r'
                                                                 when 162565 then '3TC/NVP/TDF'
-                                                                when 1652 then '3TC/NVP/AZT'
                                                                 when 162561 then '3TC/AZT/LPV/r'
                                                                 when 164511 then 'AZT-3TC-ATV/r'
                                                                 when 164512 then 'TDF-3TC-ATV/r'
@@ -189,7 +187,6 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                                 when 792 then 'D4T/3TC/NVP'
                                                                 when 160124 then 'AZT/3TC/EFV'
                                                                 when 160104 then 'D4T/3TC/EFV'
-                                                                when 1652 then '3TC/NVP/AZT'
                                                                 when 161361 then 'EDF/3TC/EFV'
                                                                 when 104565 then 'EFV/FTC/TDF'
                                                                 when 162201 then '3TC/LPV/TDF/r'
@@ -214,7 +211,6 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                                 when 792 then 'D4T/3TC/NVP'
                                                                 when 160124 then 'AZT/3TC/EFV'
                                                                 when 160104 then 'D4T/3TC/EFV'
-                                                                when 1652 then '3TC/NVP/AZT'
                                                                 when 161361 then 'EDF/3TC/EFV'
                                                                 when 104565 then 'EFV/FTC/TDF'
                                                                 when 162201 then '3TC/LPV/TDF/r'
