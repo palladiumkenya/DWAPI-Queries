@@ -195,7 +195,7 @@ select distinct ''                                                              
                                      end, ''))as                                          PwP,
                 if(fup.last_menstrual_period is not null,
                    timestampdiff(week, fup.last_menstrual_period, fup.visit_date), '') as GestationAge,
-                casech
+                case
                   when fup.next_appointment_date < '1990-01-01' then null
                   else CAST(fup.next_appointment_date AS DATE) end                     AS NextAppointmentDate,
                 'KenyaEMR'                                                             as Emr,
