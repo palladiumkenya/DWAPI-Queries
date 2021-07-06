@@ -14,29 +14,34 @@ select d.patient_id                                                             
        if(p.patient_id is null, 'ACTIVE', p.status_at_ccc)                                 as StatusAtCCC,
        de.last_art_date                                                                    as LastARTDate,
        de.last_regimen                                                                     as LastRegimen,
-       de.last_regimen_line                                                                as LastRegimenLine
+       de.last_regimen_line                                                                as LastRegimenLine,
+       de.Date_Created                                                                     as Date_Created,
+       de.Date_Last_Modified                                                               as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
-       left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date
+       left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date, m.date_last_modified
                   from kenyaemr_etl.etl_mch_enrollment m
                   group by m.patient_id)m on d.patient_id = m.patient_id
-       left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date
+       left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date, c.date_last_modified
                   from kenyaemr_etl.etl_hei_enrollment c
                   group by c.patient_id)c on d.patient_id = c.patient_id
        inner join (select e.patient_id,
-                         e.visit_date,
-                         e.date_started_art_at_transferring_facility,
-                         least(min(e.visit_date), mid(min(concat(e.visit_date,
-                                                                 coalesce(e.date_first_enrolled_in_care, date('9999-12-31')))),
-                                                      11)) as date_first_enrolled_in_care
-                  from kenyaemr_etl.etl_hiv_enrollment e
-                  group by e.patient_id)e on d.patient_id = e.patient_id
+                          e.visit_date,
+                          e.date_started_art_at_transferring_facility,
+                          least(min(e.visit_date), mid(min(concat(e.visit_date,
+                                                                  coalesce(e.date_first_enrolled_in_care, date('9999-12-31')))),
+                                                       11)) as date_first_enrolled_in_care,
+                          e.date_last_modified
+                   from kenyaemr_etl.etl_hiv_enrollment e
+                   group by e.patient_id)e on d.patient_id = e.patient_id
        left join (select de.patient_id,
                          min(de.date_started)                                   as date_started_art,
                          mid(min(concat(de.date_started, de.regimen_name)), 11) as start_regimen,
                          mid(min(concat(de.date_started, de.regimen_line)), 11) as start_regimen_line,
                          mid(max(concat(de.date_started, de.regimen_name)), 11) as last_regimen,
                          max(de.date_started)                                   as last_art_date,
-                         mid(max(concat(de.date_started, de.regimen_line)), 11) as last_regimen_line
+                         mid(max(concat(de.date_started, de.regimen_line)), 11) as last_regimen_line,
+                         de.date_created                                        as Date_Created,
+                         de.date_last_modified                                  as Date_Last_Modified
                   from kenyaemr_etl.etl_drug_event de
                   group by de.patient_id)de on d.patient_id = de.patient_id
        left join (select p.patient_id,
@@ -45,7 +50,8 @@ from kenyaemr_etl.etl_patient_demographics d
                                                                when 159492 then 'TransferOut'
                                                                when 5240 then 'LTFU'
                                                                when 160034 then 'Dead'
-                                                               when 5622 then 'OTHER' end))), 11) as status_at_ccc
+                                                               when 5622 then 'OTHER' end))), 11) as status_at_ccc,
+                         date_last_modified
                   from kenyaemr_etl.etl_patient_program_discontinuation p
                   group by p.patient_id
                   having mid(max(concat(date(p.visit_date), p.program_name)), 11) = 'HIV') p

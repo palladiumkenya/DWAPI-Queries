@@ -1,7 +1,6 @@
 select d.patient_id                                                                 as PatientPK,
        i.siteCode                                                                   as SiteCode,
        d.openmrs_id                                                                 as PatientMNCHCWC_ID,
-    #d.hei_no                                                                     as PatientHEI_ID,
        'KenyaEMR'                                                                   as Emr,
        'Kenya HMIS II'                                                              as Project,
        i.FacilityName                                                               as FacilityName,
@@ -39,7 +38,9 @@ select d.patient_id                                                             
           when 1230 then "AB POSITIVE"
           when 1231 then "AB NEGATIVE"
           else "" end)                                                              as BloodGroup,
-       coalesce(m.status_in_mnch, c.status_in_cwc)                                  as StatusAtMNCH
+       coalesce(m.status_in_mnch, c.status_in_cwc)                                  as StatusAtMNCH,
+       m.date_created                                                               as Date_Created,
+       m.date_last_modified                                                         as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id,
                          m.service_type          as service_type,
@@ -55,7 +56,9 @@ from kenyaemr_etl.etl_patient_demographics d
                          m.partner_hiv_status    as partner_status,
                          m.partner_hiv_test_date as partner_test_date,
                          m.blood_group           as blood_group,
-                         p.status_in_prg         as status_in_mnch
+                         p.status_in_prg         as status_in_mnch,
+                         m.date_created          as date_created,
+                         m.date_last_modified    as date_last_modified
                   from kenyaemr_etl.etl_mch_enrollment m
                          left join (select p.patient_id                                           as prg_patient,
                                            p.date_enrolled                                        as date_enrolled,

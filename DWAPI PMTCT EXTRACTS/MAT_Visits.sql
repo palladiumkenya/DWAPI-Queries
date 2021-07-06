@@ -7,7 +7,7 @@ select d.patient_id                                                             
        l.visit_id                                                                        VisitId,
        l.visit_date                                                                      VisitDate,
        l.admission_number                                                                AdmissionNumber,
-       ''                                                                                ANCVisits,
+       v.anc_visits                                                                      ANCVisits,
        l.date_of_delivery                                                                DateOfDelivery,
        l.duration_of_labor                                                               DurationOfLabor,
        l.duration_of_pregnancy                                                           GestationAtBirth,
@@ -45,7 +45,7 @@ select d.patient_id                                                             
           when 159915 then 3 end)                                                        NoBabiesDelivered,
        ''                                                                             as BabyBirthNumber,
        l.baby_sex                                                                     as SexBaby,
-       l.birth_weight                                                                 as BirthWeight,
+       round(l.birth_weight, 2)                                                       as BirthWeight,
        case l.baby_condition
          when 151849 then 'Live birth'
          when 159916 then 'Fresh still birth'
@@ -107,8 +107,11 @@ select d.patient_id                                                             
                          c.date_last_modified))                                       as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_mchs_delivery l on d.patient_id = l.patient_id
-       join kenyaemr_etl.etl_mchs_discharge c on d.patient_id = c.patient_id
+       left join kenyaemr_etl.etl_mchs_discharge c on d.patient_id = c.patient_id
        join kenyaemr_etl.etl_mch_enrollment e on d.patient_id = e.patient_id
+       left join (select v.patient_id, mid(max(concat(v.visit_date, v.anc_visit_number)), 11) as anc_visits
+                  from kenyaemr_etl.etl_mch_antenatal_visit v
+                  group by v.patient_id)v on d.patient_id = v.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 where l.visit_id is not null
-group by l.visit_id;select * from kenyaemr_etl.etl_hei_immunization;
+group by l.visit_id;

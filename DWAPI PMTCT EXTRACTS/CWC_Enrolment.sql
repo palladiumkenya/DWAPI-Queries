@@ -11,8 +11,8 @@ select d.patient_id              as PatientPK,
        'Kenya HMIS II'           as Project,
        e.visit_id                as VisitID,
        e.gestation_at_birth      as GestationAtBirth,
-       e.birth_weight            as Birth_Weight,
-       e.birth_length            as BirthLength,
+       round(e.birth_weight, 2)  as Birth_Weight,
+       round(e.birth_length, 2)  as BirthLength,
        e.birth_order             as BirthOrder,
        e.birth_type              as BirthType,
        e.place_of_delivery       as PlaceOfdelivery,
@@ -23,7 +23,7 @@ select d.patient_id              as PatientPK,
        e.mother_ccc_no           as MothersCCCNo,
        e.mother_art_regimen      as MotherARTRegimen,
        e.transfer_in             as TransferIn,
-       e.trf_in_date        as TransferInDate,
+       e.trf_in_date             as TransferInDate,
        e.nvp_during_bf           as NVP,
        e.breast_feeding          as BreastFeeding,
        e.referred_from           as ReferredFrom
@@ -71,7 +71,27 @@ from kenyaemr_etl.etl_patient_demographics d
                                     then 'History/signs of child abuse/neglect' end                as reason_for_special_care,
                           case e.mother_alive when 1 then 'Yes' when 0 then 'No' else '' end       as is_mother_alive,
                           e.parent_ccc_number                                                      as mother_ccc_no,
-                          e.mother_drug_regimen                                                    as mother_art_regimen,
+                          case e.mother_drug_regimen
+                            when 792 then "D4T/3TC/NVP"
+                            when 160124 then "AZT/3TC/EFV"
+                            when 160104 then "D4T/3TC/EFV"
+                            when 1652 then "3TC/NVP/AZT"
+                            when 161361 then "EDF/3TC/EFV"
+                            when 104565 then "EFV/FTC/TDF"
+                            when 162201 then "3TC/LPV/TDF/r"
+                            when 817 then "ABC/3TC/AZT"
+                            when 162199 then "ABC/NVP/3TC"
+                            when 162200 then "3TC/ABC/LPV/r"
+                            when 162565 then "3TC/NVP/TDF"
+                            when 1652 then "3TC/NVP/AZT"
+                            when 162561 then "3TC/AZT/LPV/r"
+                            when 164511 then "AZT-3TC-ATV/r"
+                            when 164512 then "TDF-3TC-ATV/r"
+                            when 162560 then "3TC/D4T/LPV/r"
+                            when 162563 then "3TC/ABC/EFV"
+                            when 162562 then "ABC/LPV/R/TDF"
+                            when 162559
+                                    then "ABC/DDI/LPV/r" end                                       as mother_art_regimen,
                           case e.transfer_in when 1065 then 'Yes' when 1066 then 'No' end          as transfer_in,
                           e.transfer_in_date                                                       as trf_in_date,
                           e.facility_transferred_from                                              as facility_trf_from,
@@ -84,7 +104,9 @@ from kenyaemr_etl.etl_patient_demographics d
                             when 162050 then 'CCC'
                             when 160538 then 'MCH/PMTCT'
                             when 5622 then 'Other' end                                             as referred_from,
-                          md.parent_pid as parent_pid
+                          md.parent_pid                                                            as parent_pid,
+                          e.date_created as Date_Created,
+                          e.date_last_modified as Date_Last_Modified
                    from kenyaemr_etl.etl_hei_enrollment e
                           left join (select d.patient_id as parent_pid, d.unique_patient_no as parent_ccc
                                      from kenyaemr_etl.etl_patient_demographics d)md

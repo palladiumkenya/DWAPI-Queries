@@ -15,12 +15,15 @@ select pkv.pkv                                                          as PKV,
        a.county                                                         as PatientResidentCounty,
        a.sub_county                                                     as PatientResidentSubCounty,
        a.ward                                                           as PatientResidentWard,
-       (case e.in_school when 1 then 'Yes' when 2 then 'No' end)        as Inschool
+       (case e.in_school when 1 then 'Yes' when 2 then 'No' end)        as Inschool,
+       d.date_created as Date_Created,
+       d.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date
                   from kenyaemr_etl.etl_mch_enrollment m
                   group by m.patient_id)m on d.patient_id = m.patient_id
-       left join (select c.patient_id, min(c.visit_date) as first_hei_enrolment_date
+       left join (select c.patient_id,
+                         min(c.visit_date)                                              as first_hei_enrolment_date
                   from kenyaemr_etl.etl_hei_enrollment c
                   group by c.patient_id)c on d.patient_id = c.patient_id
        left join (select a.patient_id, a.county, a.sub_county, a.ward from kenyaemr_etl.etl_person_address a)a

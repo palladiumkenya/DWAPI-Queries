@@ -19,7 +19,9 @@ select d.patient_id                 as PatientPK,
        ab.final_antibody_result     as FinalAntibody,
        m.exit_date                  as HEIExitDate,
        m.hiv_status                 as HEIHIVStatus,
-       m.exit_reason                as HEIExitCriteria
+       m.exit_reason                as HEIExitCriteria,
+       m.Date_Created               as Date_Created,
+       m.Date_Last_Modified         as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        inner join (select m.patient_id,
                           m.hiv_status_at_exit as                            hiv_status,
@@ -29,7 +31,9 @@ from kenyaemr_etl.etl_patient_demographics d
                             when 5240 then 'Lost'
                             when 160432 then 'Dead'
                             when 159492 then 'Transfer Out'
-                            when 138571 then 'Confirmed HIV Positive' end as exit_reason
+                            when 138571 then 'Confirmed HIV Positive' end as exit_reason,
+                          m.date_created as                                  Date_Created,
+                          m.date_last_modified as                            Date_Last_Modified
                    from kenyaemr_etl.etl_hei_enrollment m)m on d.patient_id = m.patient_id
        left join (select t.patient_id,
                          case t.test_result when 664 then 'Negative' when 703 then 'Positive' end as 1st_DNA_PCR_result,
