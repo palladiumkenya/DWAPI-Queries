@@ -25,7 +25,9 @@ select d.patient_id             as PatientPK,
        z.VitaminA_1_and_half_yr as VitaminAAt18Months,
        z.VitaminA_2_yr          as VitaminAAt2Years,
        z.VitaminA_2_to_5_yr     as VitaminAAt2To5Years,
-       z.fully_immunized        as FullyImmunizedChild
+       z.fully_immunized        as FullyImmunizedChild,
+       z.date_created           as Date_Created,
+       z.date_last_modified     as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        inner join kenyaemr_etl.etl_hei_immunization z on d.patient_id = z.patient_id
        join kenyaemr_etl.etl_default_facility_info i

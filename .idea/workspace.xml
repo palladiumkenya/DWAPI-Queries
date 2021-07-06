@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="" />
+    <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +39,11 @@
       </path>
     </expand>
     <select />
+  </component>
+  <component name="ExecutionTargetDialog">
+    <checked>
+      <node key="840c7380-087e-4516-9842-d0c737c7d1fd" />
+    </checked>
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="-1507269994">
@@ -65,13 +83,13 @@
           <entry key="TX_CURR" value="1" />
           <entry key="TX_CURR_731" value="5" />
           <entry key="TX_PVLS" value="4" />
-          <entry key="sql" value="124" />
+          <entry key="sql" value="133" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Android Room SQL" value="5" />
-          <entry key="SQL" value="125" />
+          <entry key="SQL" value="134" />
           <entry key="Scratch" value="21" />
           <entry key="ThymeleafExpressions" value="2" />
         </counts>
@@ -87,14 +105,14 @@
           <entry key="Patient_Lab" value="591" />
           <entry key="TX_PVLS" value="39" />
           <entry key="cell" value="72" />
-          <entry key="sql" value="26334" />
+          <entry key="sql" value="27433" />
           <entry key="txt" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="7" />
-          <entry key="SQL" value="20790" />
+          <entry key="SQL" value="21889" />
           <entry key="Scratch" value="12573" />
         </counts>
       </usages-collector>
@@ -105,17 +123,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1700">
-              <caret line="100" column="31" selection-start-line="100" selection-start-column="31" selection-end-line="100" selection-end-column="31" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2686">
-              <caret line="158" column="48" selection-start-line="158" selection-start-column="48" selection-end-line="158" selection-end-column="48" />
+            <state relative-caret-position="417">
+              <caret line="149" column="52" selection-end-line="151" />
             </state>
           </provider>
         </entry>
@@ -123,8 +132,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="901">
-              <caret line="53" column="76" selection-start-line="53" selection-start-column="76" selection-end-line="53" selection-end-column="76" />
+            <state relative-caret-position="162">
+              <caret line="27" column="87" lean-forward="true" selection-start-line="27" selection-start-column="87" selection-end-line="27" selection-end-column="87" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Drug and Alcohol Screening Extract.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="17" column="51" selection-start-line="17" selection-start-column="51" selection-end-line="17" selection-end-column="51" />
             </state>
           </provider>
         </entry>
@@ -132,8 +150,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="44" lean-forward="true" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
+            <state relative-caret-position="326">
+              <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -141,17 +159,44 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1921">
-              <caret line="113" column="68" selection-start-line="113" selection-start-column="20" selection-end-line="113" selection-end-column="68" />
+            <state relative-caret-position="264">
+              <caret line="106" column="107" lean-forward="true" selection-start-line="104" selection-start-column="7" selection-end-line="106" selection-end-column="107" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patients Visit Extract.sql">
+        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="73">
-              <caret line="242" column="37" lean-forward="true" selection-start-line="242" selection-start-column="37" selection-end-line="242" selection-end-column="37" />
+            <state relative-caret-position="264">
+              <caret line="50" column="84" lean-forward="true" selection-end-line="61" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="42" column="105" selection-end-line="96" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="10" column="49" lean-forward="true" selection-end-line="33" selection-end-column="53" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="25" column="28" lean-forward="true" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -159,35 +204,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="215">
-              <caret line="18" column="51" selection-start-line="18" selection-start-column="51" selection-end-line="18" selection-end-column="51" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/IPT.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1802">
-              <caret line="106" column="24" selection-start-line="106" selection-start-column="24" selection-end-line="106" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient status extract.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="796">
-              <caret line="73" column="18" selection-start-line="73" selection-start-column="18" selection-end-line="73" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-341">
-              <caret line="148" column="78" selection-start-line="148" selection-start-column="74" selection-end-line="148" selection-end-column="78" />
+            <state relative-caret-position="281">
+              <caret line="23" column="51" lean-forward="true" selection-end-line="33" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -196,14 +214,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>c.patient_id</find>
-      <find>dna_pcr_result</find>
-      <find>md.un</find>
-      <find>md</find>
-      <find>856</find>
-      <find>service</find>
-      <find>concat_ws(ifnull</find>
-      <find>concat_ws</find>
       <find>a.</find>
       <find>mode_of_delivery</find>
       <find>place_of_delivery</find>
@@ -226,6 +236,14 @@
       <find>when fup.next_appointment_date</find>
       <find>fup.nex</find>
       <find>3TC/NVP/AZT</find>
+      <find>1652</find>
+      <find>birth_we</find>
+      <find>MotherARTRegimen</find>
+      <find>mother_art_regimen</find>
+      <find>ancvisits</find>
+      <find>bp</find>
+      <find>AZT/3TC/EFV</find>
+      <find>fp</find>
     </findStrings>
     <replaceStrings>
       <replace>e.</replace>
@@ -241,11 +259,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/DWAPI New Extracts/Enhanced Adherence Extract.sql" />
-        <option value="$PROJECT_DIR$/DWAP Current Extracts/art_patients.sql" />
-        <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_labs.sql" />
-        <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_pharmacy.sql" />
-        <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_status.sql" />
         <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_visit.sql" />
         <option value="$PROJECT_DIR$/DWAP Current Extracts/all_ct_patients.sql" />
         <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_adverse_events.sql" />
@@ -283,15 +296,20 @@
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/PNC_Visits.sql" />
         <option value="$PROJECT_DIR$/DWAPI New Extracts/OTZ Extract.sql" />
-        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql" />
-        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql" />
         <option value="$PROJECT_DIR$/DWAPI New Extracts/IPT.sql" />
+        <option value="$PROJECT_DIR$/DWAPI New Extracts/Patient status extract.sql" />
+        <option value="$PROJECT_DIR$/DWAPI New Extracts/Patients Visit Extract.sql" />
+        <option value="$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql" />
-        <option value="$PROJECT_DIR$/DWAPI New Extracts/Patient status extract.sql" />
-        <option value="$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql" />
-        <option value="$PROJECT_DIR$/DWAPI New Extracts/Patients Visit Extract.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql" />
+        <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql" />
       </list>
     </option>
   </component>
@@ -308,9 +326,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
-    <option name="width" value="981" />
-    <option name="height" value="1032" />
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
+    <option name="width" value="1296" />
+    <option name="height" value="1416" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -346,24 +365,24 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1625490036950" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1625563645912" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
-    <property name="database.console.LAST_STATE" value="false" />
+    <property name="database.console.LAST_STATE" value="true" />
     <property name="jdk.selected.JAVA_MODULE" value="1.7" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../openmrs-module-kenyaemrorderentry" />
     <property name="nodejs_interpreter_path" value="node" />
     <property name="settings.editor.selected.configurable" value="database.main" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI Metrics" />
-      <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI New Extracts" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI PMTCT EXTRACTS" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI New Extracts" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI Metrics" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI Metrics" />
+      <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI New Extracts" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -445,17 +464,50 @@
       <workItem from="1623306802317" duration="15449000" />
       <workItem from="1623390560272" duration="107365000" />
       <workItem from="1624705049047" duration="48596000" />
-      <workItem from="1625201685638" duration="14587000" />
+      <workItem from="1625201685638" duration="26276000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="505905000" />
+    <option name="totallyTimeSpent" value="517594000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <frame x="1912" y="-8" width="2576" height="1416" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14817813" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0727345" />
+      <window_info id="Structure" order="1" weight="0.24939272" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3299532" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info active="true" anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" visible="true" weight="0.5296412" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3291815" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.43369734" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50121456" side_tool="true" weight="0.3024911" />
+      <window_info anchor="bottom" id="Database Changes" order="11" weight="0.3291815" />
+      <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Capture Analysis" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="5" />
+      <window_info anchor="right" id="Database" order="6" weight="0.021860095" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Maven Projects" order="8" weight="0.3298887" />
+      <window_info anchor="right" id="SciView" order="9" />
+    </layout>
+    <layout-to-restore>
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.0727345" />
       <window_info id="Structure" order="1" weight="0.24939272" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -469,9 +521,9 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" weight="0.40925267" />
+      <window_info active="true" anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" visible="true" weight="0.16692668" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3291815" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.5391459" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.43369734" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50121456" side_tool="true" weight="0.3024911" />
       <window_info anchor="bottom" id="Database Changes" order="11" weight="0.3291815" />
       <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
@@ -481,40 +533,10 @@
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.04453441" />
+      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.021860095" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" id="Maven Projects" order="8" weight="0.3298887" />
       <window_info anchor="right" id="SciView" order="9" />
-    </layout>
-    <layout-to-restore>
-      <window_info content_ui="combo" id="Project" order="0" weight="0.085020244" />
-      <window_info id="Structure" order="1" weight="0.25" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info active="true" anchor="bottom" id="Database Console" order="7" visible="true" weight="0.1797153" />
-      <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.2153025" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Database Changes" order="11" weight="0.3299532" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.04534413" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" id="Maven Projects" order="8" weight="0.3298887" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -524,13 +546,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/840c7380-087e-4516-9842-d0c737c7d1fd/console_1.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="92" selection-end-line="31" selection-end-column="94" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/patient_pharmacy.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -606,13 +621,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="15" column="51" selection-start-line="15" selection-start-column="51" selection-end-line="15" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Drug and Alcohol Screening Extract.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="51" selection-start-line="17" selection-start-column="51" selection-end-line="17" selection-end-column="51" />
         </state>
       </provider>
     </entry>
@@ -708,31 +716,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="44" selection-start-line="9" selection-start-column="44" selection-end-line="9" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/840c7380-087e-4516-9842-d0c737c7d1fd/console_8.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="53" lean-forward="true" selection-start-column="53" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="34" selection-end-line="93" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="55" column="22" selection-start-line="55" selection-start-column="22" selection-end-line="55" selection-end-column="22" />
         </state>
       </provider>
     </entry>
@@ -757,13 +744,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="39" selection-start-line="22" selection-start-column="39" selection-end-line="22" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/OTZ Extract.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -785,45 +765,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1700">
-          <caret line="100" column="31" selection-start-line="100" selection-start-column="31" selection-end-line="100" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2686">
-          <caret line="158" column="48" selection-start-line="158" selection-start-column="48" selection-end-line="158" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="901">
-          <caret line="53" column="76" selection-start-line="53" selection-start-column="76" selection-end-line="53" selection-end-column="76" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1921">
-          <caret line="113" column="68" selection-start-line="113" selection-start-column="20" selection-end-line="113" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/IPT.sql">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1802">
           <caret line="106" column="24" selection-start-line="106" selection-start-column="24" selection-end-line="106" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="215">
-          <caret line="18" column="51" selection-start-line="18" selection-start-column="51" selection-end-line="18" selection-end-column="51" />
         </state>
       </provider>
     </entry>
@@ -834,24 +779,101 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql">
+    <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/art_patients.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="44" lean-forward="true" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
+        <state relative-caret-position="51">
+          <caret line="3" column="32" lean-forward="true" selection-start-line="3" selection-start-column="32" selection-end-line="3" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patients Visit Extract.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="73">
+        <state relative-caret-position="882">
           <caret line="242" column="37" lean-forward="true" selection-start-line="242" selection-start-column="37" selection-end-line="242" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-341">
-          <caret line="148" column="78" selection-start-line="148" selection-start-column="74" selection-end-line="148" selection-end-column="78" />
+        <state relative-caret-position="-1387">
+          <caret line="125" column="42" lean-forward="true" selection-start-line="125" selection-start-column="42" selection-end-line="125" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/ANC_Visits.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="449">
+          <caret line="189" column="114" selection-start-line="189" selection-start-column="96" selection-end-line="189" selection-end-column="114" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Drug and Alcohol Screening Extract.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="51" selection-start-line="17" selection-start-column="51" selection-end-line="17" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="149" column="52" selection-end-line="151" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="326">
+          <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/HEI.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="27" column="87" lean-forward="true" selection-start-line="27" selection-start-column="87" selection-end-line="27" selection-end-column="87" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="281">
+          <caret line="23" column="51" lean-forward="true" selection-end-line="33" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MAT_Visits.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="106" column="107" lean-forward="true" selection-start-line="104" selection-start-column="7" selection-end-line="106" selection-end-column="107" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="50" column="84" lean-forward="true" selection-end-line="61" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="42" column="105" selection-end-line="96" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="10" column="49" lean-forward="true" selection-end-line="33" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="25" column="28" lean-forward="true" selection-start-line="25" selection-start-column="28" selection-end-line="25" selection-end-column="28" />
         </state>
       </provider>
     </entry>

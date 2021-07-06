@@ -1,17 +1,19 @@
-select d.patient_id    as PatientPK,
-       i.siteCode      as SiteCode,
-       d.openmrs_id    as PatientMNCH_ID,
-       ''              as FacilityID,
-       'KenyaEMR'      as Emr,
-       'Kenya HMIS II' as Project,
-       i.FacilityName  as FacilityName,
-       ''              as SatelliteName,
-       l.visit_id      as VisitID,
-       l.sample_date   as OrderedByDate,
-       l.results_date  as ReportedByDate,
-       l.lab_test      as TestName,
-       l.test_result   as TestResult,
-       l.order_reason  as LabReason
+select d.patient_id         as PatientPK,
+       i.siteCode           as SiteCode,
+       d.openmrs_id         as PatientMNCH_ID,
+       ''                   as FacilityID,
+       'KenyaEMR'           as Emr,
+       'Kenya HMIS II'      as Project,
+       i.FacilityName       as FacilityName,
+       ''                   as SatelliteName,
+       l.visit_id           as VisitID,
+       l.sample_date        as OrderedByDate,
+       l.results_date       as ReportedByDate,
+       l.lab_test           as TestName,
+       l.test_result        as TestResult,
+       l.order_reason       as LabReason,
+       l.date_created       as Date_Created,
+       l.date_last_modified as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
        inner join (select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e)e on d.patient_id = e.patient_id
        inner join (select m.patient_id from kenyaemr_etl.etl_mch_enrollment m)m on d.patient_id = m.patient_id
@@ -62,6 +64,8 @@ from kenyaemr_etl.etl_patient_demographics d
                                                                when 1301 then 'DETECTED'
                                                                when 1302 then 'LDL'
                                                                when 1304 then 'POOR SAMPLE QUALITY' end),
-                                         l.test_result))))) as test_result
+                                         l.test_result))))) as test_result,
+                          l.date_created,
+                          l.date_last_modified
                    from kenyaemr_etl.etl_laboratory_extract l)l on d.patient_id = l.patient_id
        join kenyaemr_etl.etl_default_facility_info i;
