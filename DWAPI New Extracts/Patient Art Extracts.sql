@@ -183,7 +183,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                                                 when 164968 then 'AZT/3TC/DTG'
                                                                 when 164969 then 'TDF/3TC/DTG'
                                                                 when 164970 then 'ABC/3TC/DTG'
-                                                                --when 164505 then 'TDF-3TC-EFV'
+                                                                when 164505 then 'TDF-3TC-EFV'
                                                                 when 792 then 'D4T/3TC/NVP'
                                                                 when 160124 then 'AZT/3TC/EFV'
                                                                 when 160104 then 'D4T/3TC/EFV'
