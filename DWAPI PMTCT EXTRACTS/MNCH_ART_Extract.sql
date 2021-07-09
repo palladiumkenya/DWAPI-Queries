@@ -12,7 +12,7 @@ select d.patient_id                                                             
        de.start_regimen                                                                    as StartRegimen,
        de.start_regimen_line                                                               as StartRegimenLine,
        if(p.patient_id is null, 'ACTIVE', p.status_at_ccc)                                 as StatusAtCCC,
-       de.last_art_date                                                                    as LastARTDate,
+       de.last_art_date                                                                    as DateStartedCurrentRegimen,
        de.last_regimen                                                                     as LastRegimen,
        de.last_regimen_line                                                                as LastRegimenLine,
        de.Date_Created                                                                     as Date_Created,
