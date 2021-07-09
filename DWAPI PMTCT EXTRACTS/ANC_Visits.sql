@@ -9,9 +9,9 @@ select d.patient_id                                                             
        e.anc_number                                                                             ANCClinicNumber,
        a.anc_visit_number                                                                       ANCVisitNo,
        a.maturity                                                                               GestationWeeks,
-       round(a.height,2)                                                                                 Height,
-       round(a.weight,2)                                                                                 Weight,
-       round(a.temperature,1)                                                                           Temp,
+       round(a.height, 2)                                                                       Height,
+       round(a.weight, 2)                                                                       Weight,
+       round(a.temperature, 1)                                                                  Temp,
        a.pulse_rate                                                                             PulseRate,
        a.respiratory_rate                                                                       RespiratoryRate,
        a.oxygen_saturation                                                                      OxygenSaturation,
@@ -50,7 +50,7 @@ select d.patient_id                                                             
          when 1207
                  then 4 end                                                                     WHOStaging,
        case a.vl_sample_taken when 856 then 'Yes' when 1066 then 'No' end                       VLSampleTaken,
-       ''                                                                                       VLDate,
+       if(a.vl_sample_taken = 856, a.visit_date, '')                                            VLDate,
        coalesce(a.viral_load, a.ldl)                                                            VLResult,
        case a.syphilis_treated_status
          when 1065 then 'Yes'
@@ -90,7 +90,7 @@ select d.patient_id                                                             
                                                                            when 1107 then 'No'
                                                                            else 'N/A' end,
           'NA')                                                                                 MotherProphylaxisGiven,
-       a.date_given_haart                                                                       MotherGivenHAART,
+       a.date_given_haart                                                                       DateMotherStartedHAART,
        case a.baby_azt_dispensed
          when 160123 then 'Yes'
          when 1066 then 'No'
