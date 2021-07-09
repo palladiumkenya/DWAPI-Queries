@@ -148,4 +148,3 @@ from kenyaemr_etl.etl_patient_demographics d
                                DOB
                         FROM kenyaemr_etl.etl_patient_demographics)x)pkv on pkv.patient_id = e.parent_pid
        join kenyaemr_etl.etl_default_facility_info i;
-

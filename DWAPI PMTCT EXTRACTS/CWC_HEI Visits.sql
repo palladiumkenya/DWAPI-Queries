@@ -38,9 +38,9 @@ from kenyaemr_etl.etl_patient_demographics d
        inner join (select v.patient_id,
                           v.visit_date,
                           v.visit_id,
-                          v.height,
-                          v.weight,
-                          t.temperature,
+                          round(v.height, 2),
+                          round(v.weight, 2),
+                          round(t.temperature, 1),
                           t.pulse_rate,
                           t.respiratory_rate,
                           t.oxygen_saturation,
@@ -103,6 +103,6 @@ from kenyaemr_etl.etl_patient_demographics d
                           v.date_created                                                        as Date_Created,
                           v.date_last_modified                                                  as Date_Last_Modified
                    from kenyaemr_etl.etl_hei_follow_up_visit v
-                          left join kenyaemr_etl.etl_patient_triage t on v.visit_id = t.visit_id)v
-         on d.patient_id = v.patient_id
+                          left join kenyaemr_etl.etl_patient_triage t
+                            on v.visit_id = t.visit_id and v.patient_id = t.patient_id)v on d.patient_id = v.patient_id
        join kenyaemr_etl.etl_default_facility_info i;

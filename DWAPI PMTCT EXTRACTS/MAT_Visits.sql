@@ -98,8 +98,14 @@ select d.patient_id                                                             
          when 664 then 'HIV Negative'
          when 1067 then 'Unknown' end                                                 as PartnerHIVStatusMAT,
        concat_ws('|', nullif(case l.counseling_on_infant_feeding when 1065 then 'Infant feeding' end, ''), ''),
-       c.referred_from                                                                as ReferredFrom,
-       c.referred_to                                                                  as ReferredTo,
+       case
+         when 1537 then 'Another Health Facility'
+         when 163488 then 'Community Unit'
+         when 1175 then 'N/A' END                                                     as ReferredFrom,
+       case c.referred_to
+         when 1537 then 'Another Health Facility'
+         when 163488 then 'Community Unit'
+         when 1175 then 'N/A' END                                                     as ReferredTo,
        l.clinical_notes                                                               as ClinicalNotes,
        l.date_created                                                                    Date_Created,
        GREATEST(COALESCE(l.date_last_modified, e.date_last_modified, c.date_last_modified),

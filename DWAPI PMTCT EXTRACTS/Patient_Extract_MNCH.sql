@@ -1,31 +1,30 @@
-select pkv.pkv                                                          as PKV,
-       d.patient_id                                                     as PatientPK,
-       i.siteCode                                                       as SiteCode,
-       d.openmrs_id                                                     as PatientMNCH_ID,
-       d.hei_no                                                         as PatientHEI_ID,
-       'KenyaEMR'                                                       as Emr,
-       'Kenya HMIS II'                                                  as Project,
-       i.FacilityName                                                   as FacilityName,
-       (case d.Gender when 'F' then 'Female' when 'M' then 'Male' end)  as Gender,
-       d.DOB                                                            as DOB,
-       coalesce(c.first_hei_enrolment_date, m.first_mch_enrolment_date) as FirstEnrollmentAtMNCH,
-       d.occupation                                                     as Occupation,
-       d.marital_status                                                 as MaritalStatus,
-       d.education_level                                                as EducationLevel,
-       a.county                                                         as PatientResidentCounty,
-       a.sub_county                                                     as PatientResidentSubCounty,
-       a.ward                                                           as PatientResidentWard,
-       (case e.in_school when 1 then 'Yes' when 2 then 'No' end)        as Inschool,
-       d.date_created as Date_Created,
-       d.date_last_modified as Date_Last_Modified
+select pkv.pkv                                                         as PKV,
+       d.patient_id                                                    as PatientPK,
+       i.siteCode                                                      as SiteCode,
+       d.openmrs_id                                                    as PatientMNCH_ID,
+       d.hei_no                                                        as PatientHEI_ID,
+       'KenyaEMR'                                                      as Emr,
+       'Kenya HMIS II'                                                 as Project,
+       i.FacilityName                                                  as FacilityName,
+       (case d.Gender when 'F' then 'Female' when 'M' then 'Male' end) as Gender,
+       d.DOB                                                           as DOB,
+       coalesce(c.hei_enrolment_date, m.mch_enrolment_date)            as VisitDate,
+       coalesce(c.hei_encounter_id, m.mch_encounter_id)                as EncounterId,
+       d.occupation                                                    as Occupation,
+       d.marital_status                                                as MaritalStatus,
+       d.education_level                                               as EducationLevel,
+       a.county                                                        as PatientResidentCounty,
+       a.sub_county                                                    as PatientResidentSubCounty,
+       a.ward                                                          as PatientResidentWard,
+       (case e.in_school when 1 then 'Yes' when 2 then 'No' end)       as Inschool,
+       d.date_created                                                  as Date_Created,
+       d.date_last_modified                                            as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
-       left join (select m.patient_id, min(m.visit_date) as first_mch_enrolment_date
-                  from kenyaemr_etl.etl_mch_enrollment m
-                  group by m.patient_id)m on d.patient_id = m.patient_id
-       left join (select c.patient_id,
-                         min(c.visit_date)                                              as first_hei_enrolment_date
-                  from kenyaemr_etl.etl_hei_enrollment c
-                  group by c.patient_id)c on d.patient_id = c.patient_id
+       left join (select m.patient_id, m.visit_date as mch_enrolment_date, m.encounter_id as mch_encounter_id
+                  from kenyaemr_etl.etl_mch_enrollment m)m on d.patient_id = m.patient_id
+       left join (select c.patient_id, c.visit_date as hei_enrolment_date, c.encounter_id as hei_encounter_id
+
+                  from kenyaemr_etl.etl_hei_enrollment c)c on d.patient_id = c.patient_id
        left join (select a.patient_id, a.county, a.sub_county, a.ward from kenyaemr_etl.etl_person_address a)a
          on d.patient_id = a.patient_id
        left join (select * from kenyaemr_etl.etl_hiv_enrollment e)e on d.patient_id = e.patient_id
