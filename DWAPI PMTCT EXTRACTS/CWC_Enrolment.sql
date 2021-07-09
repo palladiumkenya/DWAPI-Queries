@@ -24,6 +24,7 @@ select d.patient_id              as PatientPK,
        e.mother_art_regimen      as MotherARTRegimen,
        e.transfer_in             as TransferIn,
        e.trf_in_date             as TransferInDate,
+       e.facility_trf_from       as TransferredFromFacility,
        e.nvp_during_bf           as NVP,
        e.breast_feeding          as BreastFeeding,
        e.referred_from           as ReferredFrom
@@ -105,8 +106,8 @@ from kenyaemr_etl.etl_patient_demographics d
                             when 160538 then 'MCH/PMTCT'
                             when 5622 then 'Other' end                                             as referred_from,
                           md.parent_pid                                                            as parent_pid,
-                          e.date_created as Date_Created,
-                          e.date_last_modified as Date_Last_Modified
+                          e.date_created                                                           as Date_Created,
+                          e.date_last_modified                                                     as Date_Last_Modified
                    from kenyaemr_etl.etl_hei_enrollment e
                           left join (select d.patient_id as parent_pid, d.unique_patient_no as parent_ccc
                                      from kenyaemr_etl.etl_patient_demographics d)md
