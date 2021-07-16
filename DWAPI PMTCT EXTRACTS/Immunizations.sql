@@ -7,13 +7,19 @@ select d.patient_id             as PatientPK,
        z.BCG                    as BCG,
        z.OPV_birth              as OPVAtBirth,
        z.OPV_1                  as OPV1,
+       z.OPV_2                  as OPV2,
+       z.OPV_3                  as OPV3,
        z.IPV                    AS IPV,
        z.DPT_Hep_B_Hib_1        as DPTHepBHIB1,
-       z.PCV_10_1               as PCV10,
+       Z.DPT_Hep_B_Hib_2        AS DPTHepBHIB2,
+       Z.DPT_Hep_B_Hib_3        as DPTHepBHIB3,
+       z.PCV_10_1               as PCV101,
+       z.PCV_10_2               as PCV102,
+       z.PCV_10_3               as PCV103,
        z.ROTA_1                 as ROTA1,
-       z.Measles_rubella_1      as MeaslesEubella1,
+       z.Measles_rubella_1      as MeaslesRubella1,
        z.Yellow_fever           as YellowFever,
-       z.Measles_rubella_2      as MeaslesEubella2,
+       z.Measles_rubella_2      as MeaslesRubella2,
        z.Measles_6_months       as MeaslesAt6Months,
        z.ROTA_2                 as ROTA2,
        ''                       as DateOfNextVisit,
@@ -29,6 +35,6 @@ select d.patient_id             as PatientPK,
        z.date_created           as Date_Created,
        z.date_last_modified     as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
-       inner join kenyaemr_etl.etl_hei_immunization z on d.patient_id = z.patient_id
-       join kenyaemr_etl.etl_default_facility_info i
+            inner join kenyaemr_etl.etl_hei_immunization z on d.patient_id = z.patient_id
+            join kenyaemr_etl.etl_default_facility_info i
 group by d.patient_id;
