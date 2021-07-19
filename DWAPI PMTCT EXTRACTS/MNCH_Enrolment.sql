@@ -73,7 +73,7 @@ from kenyaemr_etl.etl_patient_demographics d
                                              on p.patient_id = d.patient_id and p.date_completed = date(d.visit_date)
                                     where p.program = 'MCH-Mother Services')p
                            on m.patient_id = p.prg_patient and m.visit_date = p.date_enrolled
-                  group by m.visit_date)m on d.patient_id = m.patient_id
+                  group by m.patient_id,m.visit_date)m on d.patient_id = m.patient_id
        left join (select c.patient_id, c.visit_date as hei_enrolment_date, p.status_in_prg as status_in_cwc
                   from kenyaemr_etl.etl_hei_enrollment c
                          left join (select p.patient_id       as prg_patient,
@@ -91,7 +91,7 @@ from kenyaemr_etl.etl_patient_demographics d
                                              on p.patient_id = d.patient_id and p.date_completed = date(d.visit_date)
                                     where p.program = 'MCH-Child Services')p
                            on c.patient_id = p.prg_patient and c.visit_date = p.date_enrolled
-                  group by c.visit_date)c on d.patient_id = c.patient_id
+                  group by c.patient_id,c.visit_date)c on d.patient_id = c.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 where m.patient_id is not null
    or c.patient_id is not null;
