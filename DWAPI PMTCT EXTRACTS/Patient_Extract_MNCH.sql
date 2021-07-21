@@ -23,11 +23,11 @@ from kenyaemr_etl.etl_patient_demographics d
        left join (select m.patient_id, m.visit_date as mch_enrolment_date, m.encounter_id as mch_encounter_id
                   from kenyaemr_etl.etl_mch_enrollment m)m on d.patient_id = m.patient_id
        left join (select c.patient_id, c.visit_date as hei_enrolment_date, c.encounter_id as hei_encounter_id
-
                   from kenyaemr_etl.etl_hei_enrollment c)c on d.patient_id = c.patient_id
        left join (select a.patient_id, a.county, a.sub_county, a.ward from kenyaemr_etl.etl_person_address a)a
          on d.patient_id = a.patient_id
-       left join (select * from kenyaemr_etl.etl_hiv_enrollment e)e on d.patient_id = e.patient_id
+       left join (select e.patient_id as patient_id, e.in_school as in_school from kenyaemr_etl.etl_hiv_enrollment e)e
+         on d.patient_id = e.patient_id
        inner join (select x.patient_id as patient_id,
                           x.sxFirstName,
                           x.sxLastname,
@@ -65,4 +65,5 @@ from kenyaemr_etl.etl_patient_demographics d
                          FROM kenyaemr_etl.etl_patient_demographics)x)pkv on pkv.patient_id = d.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 where m.patient_id is not null
-   or c.patient_id is not null;
+   or c.patient_id is not null
+group by EncounterId;
