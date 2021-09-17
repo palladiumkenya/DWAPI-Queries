@@ -54,11 +54,11 @@ select d.openmrs_id                                                             
           when 703 then 'Yes'
           when 664 then 'No'
           when 1067 then 'Unknown' end)                                           as COVID19TestResult,
-       a.date_tested_positive_before_first_visit                                  as COVID19TestDate,
-       (case a.symptomatic_before_first_visit
+       a.date_tested_positive                                                     as COVID19TestDate,
+       (case a.symptomatic
           when 1068 then 'Yes'
           when 165912 then 'No' END)                                              as PatientStatus,
-       (case a.admitted_before_first_visit
+       (case a.hospital_admimission
           when 1065 then 'Yes'
           when 1066 then 'No' end)                                                as AdmissionStatus,
        a.admission_unit                                                           as AdmissionUnit,
@@ -81,7 +81,7 @@ from kenyaemr_etl.etl_patient_demographics d
                            when 5240 then 'Still in care at CCC'
                            when 164435 then 'Lost to follow up'
                            when 142917 then 'Stopped treatment'
-                           /*when then 'COVID19 PositiveResult'*/ end as tracing_outcome,
+                             /*when then 'COVID19 PositiveResult'*/ end as tracing_outcome,
                          case t.cause_of_death
                            when 162574 then 'Death related to HIV infection'
                            when '116030' then 'Cancer'
@@ -89,7 +89,7 @@ from kenyaemr_etl.etl_patient_demographics d
                            when 151522 then 'Other infectious and parasitic diseases'
                            when 133481 then 'Natural cause'
                            when 1603 then 'Unnatural Cause'
-                           when 5622 then 'Uknown Cause' end      as cause_of_death
+                           when 5622 then 'Uknown Cause' end            as cause_of_death
                   from kenyaemr_etl.etl_ccc_defaulter_tracing t)t on a.patient_id = t.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 group by a.visit_id;
