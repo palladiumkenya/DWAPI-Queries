@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="" />
+    <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Covid-19/Covid-19.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Covid-19/Covid-19.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kenyaemrCharts-1.2.1.omod" beforeDir="false" afterPath="$PROJECT_DIR$/kenyaemrCharts-1.2.1.omod" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,12 +131,12 @@
     <session id="203576568">
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="sql" value="944" />
+          <entry key="sql" value="1009" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="SQL" value="944" />
+          <entry key="SQL" value="1009" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.lifecycle.project">
@@ -179,8 +183,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Covid-19/Covid-19.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="72" column="97" lean-forward="true" selection-start-line="72" selection-start-column="97" selection-end-line="72" selection-end-column="97" />
+            <state relative-caret-position="1139">
+              <caret line="67" column="113" lean-forward="true" selection-end-line="79" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -393,7 +397,7 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1631857854273" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1631865314376" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="jdk.selected.JAVA_MODULE" value="1.7" />
@@ -499,17 +503,17 @@
       <workItem from="1625727845244" duration="17699000" />
       <workItem from="1626928308100" duration="1301000" />
       <workItem from="1627539452857" duration="1223000" />
-      <workItem from="1631829760851" duration="6561000" />
+      <workItem from="1631829760851" duration="10485000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="554724000" />
+    <option name="totallyTimeSpent" value="558648000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20522387" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.07942431" />
       <window_info id="Structure" order="1" weight="0.24939272" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -523,9 +527,9 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" weight="0.35683298" />
+      <window_info anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" weight="0.32104123" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3291815" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.27006507" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.19631237" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50121456" side_tool="true" weight="0.3024911" />
       <window_info anchor="bottom" id="Database Changes" order="11" weight="0.3291815" />
       <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
@@ -535,7 +539,7 @@
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.053304903" />
+      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.13859275" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" id="Maven Projects" order="8" weight="0.3298887" />
       <window_info anchor="right" id="SciView" order="9" />
@@ -906,8 +910,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Covid-19/Covid-19.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="72" column="97" lean-forward="true" selection-start-line="72" selection-start-column="97" selection-end-line="72" selection-end-column="97" />
+        <state relative-caret-position="1139">
+          <caret line="67" column="113" lean-forward="true" selection-end-line="79" selection-end-column="20" />
         </state>
       </provider>
     </entry>
