@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/DWAPI New Extracts/Defaulter Tracing.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Covid-19/Covid-19.sql" beforeDir="false" afterPath="$PROJECT_DIR$/Covid-19/Covid-19.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kenyaemrCharts-1.2.1.omod" beforeDir="false" afterPath="$PROJECT_DIR$/kenyaemrCharts-1.2.1.omod" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -131,12 +131,12 @@
     <session id="203576568">
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="sql" value="1009" />
+          <entry key="sql" value="1650" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="SQL" value="1009" />
+          <entry key="SQL" value="1650" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.lifecycle.project">
@@ -150,12 +150,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="sql" value="3" />
+          <entry key="sql" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="SQL" value="3" />
+          <entry key="SQL" value="4" />
         </counts>
       </usages-collector>
     </session>
@@ -183,17 +183,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Covid-19/Covid-19.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1139">
-              <caret line="67" column="113" lean-forward="true" selection-end-line="79" selection-end-column="20" />
+            <state relative-caret-position="234">
+              <caret line="65" column="25" lean-forward="true" selection-start-line="65" selection-start-column="25" selection-end-line="65" selection-end-column="25" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Immunizations.sql">
+        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Defaulter Tracing.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="48" selection-start-line="4" selection-start-column="48" selection-end-line="4" selection-end-column="48" />
+            <state relative-caret-position="510">
+              <caret line="30" column="68" lean-forward="true" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
             </state>
           </provider>
         </entry>
@@ -256,8 +256,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>ancvisits</find>
-      <find>bp</find>
       <find>AZT/3TC/EFV</find>
       <find>fp</find>
       <find>date_la</find>
@@ -284,14 +282,17 @@
       <find>date_completed</find>
       <find>dna_pcr</find>
       <find>ante</find>
-      <find>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</find>
       <find>covid19</find>
+      <find>a.</find>
+      <find>&quot;</find>
+      <find>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</find>
     </findStrings>
     <replaceStrings>
       <replace>e.</replace>
       <replace>a.</replace>
       <replace>l.</replace>
       <replace>p.</replace>
+      <replace>f.</replace>
       <replace>'</replace>
     </replaceStrings>
   </component>
@@ -301,7 +302,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_adverse_events.sql" />
         <option value="$PROJECT_DIR$/DWAP Current Extracts/patient_baselines.sql" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/840c7380-087e-4516-9842-d0c737c7d1fd/console_1.sql" />
         <option value="$PROJECT_DIR$/DWAPI New Extracts/Adverse Events.sql" />
@@ -352,6 +352,7 @@
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/Patient_Extract_MNCH.sql" />
         <option value="$PROJECT_DIR$/DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql" />
         <option value="$PROJECT_DIR$/Covid-19/Covid-19.sql" />
+        <option value="$PROJECT_DIR$/DWAPI New Extracts/Defaulter Tracing.sql" />
       </list>
     </option>
   </component>
@@ -385,6 +386,16 @@
               <item name="DWAPI-Queries" type="b2602c69:ProjectViewProjectNode" />
               <item name="DWAPI-Queries" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="DWAPI-Queries" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DWAPI-Queries" type="462c0819:PsiDirectoryNode" />
+              <item name="Covid-19" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="DWAPI-Queries" type="b2602c69:ProjectViewProjectNode" />
+              <item name="DWAPI-Queries" type="462c0819:PsiDirectoryNode" />
+              <item name="DWAPI New Extracts" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -397,7 +408,7 @@
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1631865314376" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1631870696014" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="jdk.selected.JAVA_MODULE" value="1.7" />
@@ -412,11 +423,11 @@
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI New Extracts" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\openmrs_2.4\DWAPI-Queries\DWAPI New Extracts" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\openmrs_2.4\DWAPI-Queries" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\openmrs_2.4\DWAPI-Queries\Covid-19" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries" />
       <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI PMTCT EXTRACTS" />
-      <recent name="C:\Users\Steve\IdeaProjects\OpenMRS_Project\Kenya_EMRGreencard\DWAPI-Queries\DWAPI New Extracts" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -503,17 +514,17 @@
       <workItem from="1625727845244" duration="17699000" />
       <workItem from="1626928308100" duration="1301000" />
       <workItem from="1627539452857" duration="1223000" />
-      <workItem from="1631829760851" duration="10485000" />
+      <workItem from="1631829760851" duration="15296000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="558648000" />
+    <option name="totallyTimeSpent" value="563459000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="952" y="-8" width="976" height="1056" extended-state="0" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.07942431" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.08733624" />
       <window_info id="Structure" order="1" weight="0.24939272" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -527,9 +538,9 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" weight="0.32104123" />
+      <window_info anchor="bottom" id="Database Console" order="7" sideWeight="0.49878544" weight="0.2646421" />
       <window_info anchor="bottom" id="Version Control" order="8" weight="0.3291815" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.19631237" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.32321042" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50121456" side_tool="true" weight="0.3024911" />
       <window_info anchor="bottom" id="Database Changes" order="11" weight="0.3291815" />
       <window_info anchor="bottom" id="Docker" order="12" show_stripe_button="false" />
@@ -539,7 +550,7 @@
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
       <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.13859275" />
+      <window_info anchor="right" id="Database" order="6" visible="true" weight="0.2838428" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" id="Maven Projects" order="8" weight="0.3298887" />
       <window_info anchor="right" id="SciView" order="9" />
@@ -584,7 +595,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/DWAPI Metrics/TX_CURR_731" />
     <entry file="file://$PROJECT_DIR$/DWAPI Metrics/TX_CURR">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="510">
@@ -908,10 +918,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Defaulter Tracing.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="30" column="68" lean-forward="true" selection-start-line="30" selection-start-column="68" selection-end-line="30" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Covid-19/Covid-19.sql">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1139">
-          <caret line="67" column="113" lean-forward="true" selection-end-line="79" selection-end-column="20" />
+        <state relative-caret-position="234">
+          <caret line="65" column="25" lean-forward="true" selection-start-line="65" selection-start-column="25" selection-end-line="65" selection-end-column="25" />
         </state>
       </provider>
     </entry>
