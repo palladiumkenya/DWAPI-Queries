@@ -19,5 +19,8 @@
   "homepage": "https://github.com/chesterosoronyas/DWAPI-Queries#readme",
   "devDependencies": {
     "cypress": "^8.7.0"
+  },
+  "dependencies": {
+    "mysql": "github:mysqljs/mysql"
   }
 }

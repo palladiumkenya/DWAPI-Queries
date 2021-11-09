@@ -1,1 +1,10 @@
-{}
+{
+    "database":{
+        "database":"mysql",
+        "host":"localhost",
+        "user":"root",
+        "password":"test123",
+        "port":"3306",
+        "connectTimeout":67000
+    }
+}

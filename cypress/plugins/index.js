@@ -16,7 +16,33 @@
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
+
+const mysql = require("mysql");
+const config = require("../../cypress.json");
+function queryDatabase(query) {
+  const connection = mysql.createConnection(config.database);
+  connection.connect();
+
+  return new Promise((resolve, reject) => {
+    connection.query(query, (error, results) => {
+      if (error) {
+        return reject(error);
+      }
+
+      connection.end();
+
+      return resolve(results);
+    });
+  });
+}
+
 module.exports = (on, config) => {
+  on("task", {
+    queryDatabase: (query) => {
+      return queryDatabase(query);
+    },
+  });
+
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-}
+};
