@@ -18,9 +18,23 @@ jobs:
       matrix:
         node-version: [12.x, 14.x, 16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    services:
+      mysql:
+        image: mysql:5.7
+        container_name: mysql
+        env:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: openmrs
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_PASSWORD: test123
+        ports:
+          - "3306:3306"
 
     steps:
     - uses: actions/checkout@v2
+    - name: load database
+      run: mysql -Tv -h mysql -P  3306 --protocol=tcp  -u root -p test123 < ./openmrs.sql
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
