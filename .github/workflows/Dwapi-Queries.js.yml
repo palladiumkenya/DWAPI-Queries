@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: load database
-      run: mysql -Tv -h mysql -P  3306 --protocol=tcp  -u root -p test123 < ./openmrs.sql
+      run: mysql -uroot -h127.0.0.1 -ptest123 < ./openmrs.sql
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
