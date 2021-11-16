@@ -58,7 +58,7 @@ select d.openmrs_id                                                             
        (case a.symptomatic
           when 1068 then 'Yes'
           when 165912 then 'No' END)                                              as PatientStatus,
-       (case a.hospital_admimission
+       (case a.hospital_admission
           when 1065 then 'Yes'
           when 1066 then 'No' end)                                                as AdmissionStatus,
        a.admission_unit                                                           as AdmissionUnit,
