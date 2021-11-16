@@ -21,7 +21,6 @@ jobs:
     services:
       mysql:
         image: mysql:5.7
-        container_name: mysql
         env:
           MYSQL_HOST: 127.0.0.1
           MYSQL_DB: openmrs
