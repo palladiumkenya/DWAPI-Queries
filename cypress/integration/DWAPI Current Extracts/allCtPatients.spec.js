@@ -3,7 +3,8 @@ describe("Connect and validate ALL Care Treatment Patient extracts", () => {
   it("Check if the all_ct_patients.sql will run without any error", () => {
     cy.readFile("./DWAPI Current Extracts/all_ct_patients.sql").then(
       (querystring) => {
-        return cy.task("queryDatabase", querystring).then((results) => {
+        return cy.task("queryDatabase", querystring).then((results, err) => {
+         
           res = results;
 
           cy.log(results);
@@ -14,6 +15,7 @@ describe("Connect and validate ALL Care Treatment Patient extracts", () => {
 
   it("Asserts the columns", () => {
     expect(res).to.be.an("array");
+    console.log(res);
     if (res.length > 0 && res != undefined) {
       expect(res[0]).to.have.property("ContactRelation");
       expect(res[0]).to.have.property("StatusAtTBClinic");
