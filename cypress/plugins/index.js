@@ -24,7 +24,7 @@ function queryDatabase(query) {
   connection.connect();
 
   return new Promise((resolve, reject) => {
-    connection.query(query, (error, results) => {
+    connection.query(query, (error, results, fields) => {
       if (error) {
         return reject(error);
       }

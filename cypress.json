@@ -1,6 +1,6 @@
 {
     "database":{
-        "database":"mysql",
+        "database":"openmrs",
         "host":"localhost",
         "user":"root",
         "password":"test123",
