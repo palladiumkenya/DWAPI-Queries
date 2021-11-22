@@ -1,5 +1,9 @@
-name: sqlcheck workflow2
-on: pull_request
+name: sqlcheck workflow
+on:
+ push:
+    branches: [ master ]
+ pull_request:
+    branches: [ master ]
 
 jobs:
   sqlcheck:
