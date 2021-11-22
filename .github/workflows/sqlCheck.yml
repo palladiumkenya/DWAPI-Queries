@@ -22,12 +22,7 @@ jobs:
           sql
           sqlx
           schema
-        directories: |
-          DWAPI Current Extracts
-          DWAPI Metrics
-          DWAPI New Extracts
-          DWAPI PMTCT EXTRACTS
-          HTS Extracts
+        
     - name: Get output
       run: echo "Issues found in previous step"
       if: steps.sqlcheck.outputs.issue-found
