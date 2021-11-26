@@ -5,6 +5,7 @@
         "user":"root",
         "password":"test123",
         "port":"3306",
-        "connectTimeout":67000
+        "connectTimeout":67000,
+        "multipleStatements": true
     }
 }
