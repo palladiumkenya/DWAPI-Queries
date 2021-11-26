@@ -14,7 +14,7 @@ describe("Connect and validate Drug and Alcohol Screening  extracts", () => {
 
   it("Asserts the columns", () => {
     expect(res).to.be.an("array");
-    console.log(res);
+
     if (res.length > 0 && res != undefined) {
       expect(res[0]).to.have.property("PatientPK");
       expect(res[0]).to.have.property("PatientID");
