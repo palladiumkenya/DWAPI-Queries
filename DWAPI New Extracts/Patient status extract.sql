@@ -74,7 +74,8 @@ where d.unique_patient_no is not null
 group by PatientID
 order by disc.visit_date ASC;
 
-select d.visit_date,d.death_reason,d.specific_death_cause from kenyaemr_etl.etl_patient_program_discontinuation d
+
+select d.visit_date,d.death_reason,d.specific_death_cause from kenyaemr_etl.etl_patient_program_discontinuation  d
 where d.patient_id in (846,867);
 
 select * from kenyaemr_etl.etl_pre_hiv_enrollment_art p where

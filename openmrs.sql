@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.19, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.25, for Linux (x86_64)
 --
 -- Host: localhost    Database: openmrs
 -- ------------------------------------------------------
--- Server version	5.6.47-log
+-- Server version	5.6.16-1~exp1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -24,107 +24,6 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/ `openmrs` /*!40100 DEFAULT CHARACTER SE
 USE `openmrs`;
 
 --
--- Table structure for table `active_list`
---
-
-DROP TABLE IF EXISTS `active_list`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `active_list` (
-  `active_list_id` int(11) NOT NULL AUTO_INCREMENT,
-  `active_list_type_id` int(11) NOT NULL,
-  `person_id` int(11) NOT NULL,
-  `concept_id` int(11) NOT NULL,
-  `start_obs_id` int(11) DEFAULT NULL,
-  `stop_obs_id` int(11) DEFAULT NULL,
-  `start_date` datetime NOT NULL,
-  `end_date` datetime DEFAULT NULL,
-  `comments` varchar(255) DEFAULT NULL,
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `voided` tinyint(1) NOT NULL DEFAULT '0',
-  `voided_by` int(11) DEFAULT NULL,
-  `date_voided` datetime DEFAULT NULL,
-  `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`active_list_id`),
-  KEY `user_who_voided_active_list` (`voided_by`),
-  KEY `user_who_created_active_list` (`creator`),
-  KEY `active_list_type_of_active_list` (`active_list_type_id`),
-  KEY `person_of_active_list` (`person_id`),
-  KEY `concept_active_list` (`concept_id`),
-  KEY `start_obs_active_list` (`start_obs_id`),
-  KEY `stop_obs_active_list` (`stop_obs_id`),
-  CONSTRAINT `active_list_type_of_active_list` FOREIGN KEY (`active_list_type_id`) REFERENCES `active_list_type` (`active_list_type_id`),
-  CONSTRAINT `concept_active_list` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `person_of_active_list` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`),
-  CONSTRAINT `start_obs_active_list` FOREIGN KEY (`start_obs_id`) REFERENCES `obs` (`obs_id`),
-  CONSTRAINT `stop_obs_active_list` FOREIGN KEY (`stop_obs_id`) REFERENCES `obs` (`obs_id`),
-  CONSTRAINT `user_who_created_active_list` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `user_who_voided_active_list` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `active_list_allergy`
---
-
-DROP TABLE IF EXISTS `active_list_allergy`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `active_list_allergy` (
-  `active_list_id` int(11) NOT NULL AUTO_INCREMENT,
-  `allergy_type` varchar(50) DEFAULT NULL,
-  `reaction_concept_id` int(11) DEFAULT NULL,
-  `severity` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`active_list_id`),
-  KEY `reaction_allergy` (`reaction_concept_id`),
-  CONSTRAINT `reaction_allergy` FOREIGN KEY (`reaction_concept_id`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `active_list_problem`
---
-
-DROP TABLE IF EXISTS `active_list_problem`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `active_list_problem` (
-  `active_list_id` int(11) NOT NULL AUTO_INCREMENT,
-  `status` varchar(50) DEFAULT NULL,
-  `sort_weight` double DEFAULT NULL,
-  PRIMARY KEY (`active_list_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `active_list_type`
---
-
-DROP TABLE IF EXISTS `active_list_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `active_list_type` (
-  `active_list_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`active_list_type_id`),
-  KEY `user_who_retired_active_list_type` (`retired_by`),
-  KEY `user_who_created_active_list_type` (`creator`),
-  CONSTRAINT `user_who_created_active_list_type` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `user_who_retired_active_list_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `allergy`
 --
 
@@ -137,7 +36,7 @@ CREATE TABLE `allergy` (
   `severity_concept_id` int(11) DEFAULT NULL,
   `coded_allergen` int(11) NOT NULL,
   `non_coded_allergen` varchar(255) DEFAULT NULL,
-  `allergen_type` varchar(50) NOT NULL,
+  `allergen_type` varchar(50) DEFAULT NULL,
   `comments` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -162,7 +61,7 @@ CREATE TABLE `allergy` (
   CONSTRAINT `allergy_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `allergy_severity_concept_id_fk` FOREIGN KEY (`severity_concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `allergy_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,155 +83,6 @@ CREATE TABLE `allergy_reaction` (
   KEY `allergy_reaction_reaction_concept_id_fk` (`reaction_concept_id`),
   CONSTRAINT `allergy_reaction_allergy_id_fk` FOREIGN KEY (`allergy_id`) REFERENCES `allergy` (`allergy_id`),
   CONSTRAINT `allergy_reaction_reaction_concept_id_fk` FOREIGN KEY (`reaction_concept_id`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `amrsreports_facility`
---
-
-DROP TABLE IF EXISTS `amrsreports_facility`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amrsreports_facility` (
-  `facility_id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(10) DEFAULT NULL,
-  `name` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(4) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`facility_id`),
-  KEY `amrsreports_facility_creator` (`creator`),
-  KEY `amrsreports_facility_changed_by` (`changed_by`),
-  KEY `amrsreports_facility_retired_by` (`retired_by`),
-  CONSTRAINT `amrsreports_facility_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `amrsreports_facility_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `amrsreports_facility_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `amrsreports_facility_location`
---
-
-DROP TABLE IF EXISTS `amrsreports_facility_location`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amrsreports_facility_location` (
-  `facility_id` int(11) NOT NULL,
-  `location_id` int(11) NOT NULL,
-  KEY `amrsreports_facility_location_facility` (`facility_id`),
-  KEY `amrsreports_facility_location_location` (`location_id`),
-  CONSTRAINT `amrsreports_facility_location_facility` FOREIGN KEY (`facility_id`) REFERENCES `amrsreports_facility` (`facility_id`),
-  CONSTRAINT `amrsreports_facility_location_location` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `amrsreports_hiv_care_enrollment`
---
-
-DROP TABLE IF EXISTS `amrsreports_hiv_care_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amrsreports_hiv_care_enrollment` (
-  `enrollment_id` int(11) NOT NULL AUTO_INCREMENT,
-  `patient_id` int(11) DEFAULT NULL,
-  `enrollment_date` datetime DEFAULT NULL,
-  `enrollment_location_id` int(11) DEFAULT NULL,
-  `enrollment_age` double DEFAULT NULL,
-  `enrollment_reason` varchar(50) DEFAULT NULL,
-  `first_hiv_encounter_id` int(11) DEFAULT NULL,
-  `first_hiv_encounter_date` datetime DEFAULT NULL,
-  `first_hiv_encounter_location_id` int(11) DEFAULT NULL,
-  `first_hiv_encounter_age` double DEFAULT NULL,
-  `last_hiv_encounter_date` datetime DEFAULT NULL,
-  `last_hiv_encounter_location_id` int(11) DEFAULT NULL,
-  `first_positive_obs_location_id` int(11) DEFAULT NULL,
-  `first_positive_obs_date` datetime DEFAULT NULL,
-  `last_positive_obs_date` datetime DEFAULT NULL,
-  `last_negative_obs_date` datetime DEFAULT NULL,
-  `last_who_stage` varchar(50) DEFAULT NULL,
-  `last_who_stage_date` datetime DEFAULT NULL,
-  `first_arv_date` datetime DEFAULT NULL,
-  `first_arv_location_id` int(11) DEFAULT NULL,
-  `last_discontinue_date` datetime DEFAULT NULL,
-  `last_discontinue_reason` varchar(255) DEFAULT NULL,
-  `transferred_in_date` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`enrollment_id`),
-  KEY `uuid` (`uuid`),
-  KEY `enrollment_date` (`enrollment_date`),
-  KEY `enrollment_reason` (`enrollment_reason`),
-  KEY `amrsreports_hiv_care_enrollment_enrollment_location_ref` (`enrollment_location_id`),
-  KEY `amrsreports_hiv_care_enrollment_first_hiv_encounter_location_ref` (`first_hiv_encounter_location_id`),
-  KEY `amrsreports_hiv_care_enrollment_first_positive_obs_location_ref` (`first_positive_obs_location_id`),
-  KEY `amrsreports_hiv_care_enrollment_first_arv_location_ref` (`first_arv_location_id`),
-  KEY `amrsreports_hiv_care_enrollment_last_hiv_encounter_location_ref` (`last_hiv_encounter_location_id`),
-  KEY `amrsreports_hiv_care_enrollment_first_hiv_encounter_ref` (`first_hiv_encounter_id`),
-  KEY `amrsreports_hiv_care_enrollment_patient_ref` (`patient_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_enrollment_location_ref` FOREIGN KEY (`enrollment_location_id`) REFERENCES `location` (`location_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_first_arv_location_ref` FOREIGN KEY (`first_arv_location_id`) REFERENCES `location` (`location_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_first_hiv_encounter_location_ref` FOREIGN KEY (`first_hiv_encounter_location_id`) REFERENCES `location` (`location_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_first_hiv_encounter_ref` FOREIGN KEY (`first_hiv_encounter_id`) REFERENCES `encounter` (`encounter_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_first_positive_obs_location_ref` FOREIGN KEY (`first_positive_obs_location_id`) REFERENCES `location` (`location_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_last_hiv_encounter_location_ref` FOREIGN KEY (`last_hiv_encounter_location_id`) REFERENCES `location` (`location_id`),
-  CONSTRAINT `amrsreports_hiv_care_enrollment_patient_ref` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `amrsreports_queued_report`
---
-
-DROP TABLE IF EXISTS `amrsreports_queued_report`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amrsreports_queued_report` (
-  `queued_report_id` int(11) NOT NULL AUTO_INCREMENT,
-  `report_name` varchar(50) NOT NULL,
-  `facility_id` int(11) NOT NULL,
-  `date_scheduled` datetime NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `uuid` char(38) NOT NULL,
-  `csv_file_location` varchar(512) DEFAULT NULL,
-  `xls_file_location` varchar(512) DEFAULT NULL,
-  `repeat_interval` int(11) DEFAULT NULL,
-  `reporting_end_date` date DEFAULT NULL,
-  `report_specific_params` varchar(100) DEFAULT NULL,
-  `evaluation_date` date DEFAULT NULL,
-  PRIMARY KEY (`queued_report_id`),
-  KEY `status` (`status`),
-  KEY `date_scheduled` (`date_scheduled`),
-  KEY `amrsreports_queued_report_facility` (`facility_id`),
-  CONSTRAINT `amrsreports_queued_report_facility` FOREIGN KEY (`facility_id`) REFERENCES `amrsreports_facility` (`facility_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `amrsreports_user_facility`
---
-
-DROP TABLE IF EXISTS `amrsreports_user_facility`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `amrsreports_user_facility` (
-  `user_facility_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`user_facility_id`),
-  KEY `amrsreports_user_facility_user` (`user_id`),
-  KEY `amrsreports_user_facility_facility` (`facility_id`),
-  CONSTRAINT `amrsreports_user_facility_facility` FOREIGN KEY (`facility_id`) REFERENCES `amrsreports_facility` (`facility_id`),
-  CONSTRAINT `amrsreports_user_facility_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -345,9 +95,9 @@ DROP TABLE IF EXISTS `appframework_component_state`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `appframework_component_state` (
   `component_state_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `component_id` varchar(255) NOT NULL,
-  `component_type` varchar(50) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `component_id` varchar(255) DEFAULT NULL,
+  `component_type` varchar(50) DEFAULT NULL,
   `enabled` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`component_state_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -361,10 +111,10 @@ DROP TABLE IF EXISTS `appframework_user_app`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `appframework_user_app` (
-  `app_id` varchar(50) NOT NULL,
-  `json` mediumtext NOT NULL,
+  `app_id` varchar(50) NOT NULL DEFAULT '',
+  `json` mediumtext,
   PRIMARY KEY (`app_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -380,9 +130,9 @@ CREATE TABLE `appointmentscheduling_appointment` (
   `visit_id` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `appointment_type_id` int(11) NOT NULL,
-  `status` varchar(255) NOT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `reason` varchar(1024) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -408,7 +158,7 @@ CREATE TABLE `appointmentscheduling_appointment` (
   CONSTRAINT `appointment_time_slot_id` FOREIGN KEY (`time_slot_id`) REFERENCES `appointmentscheduling_time_slot` (`time_slot_id`),
   CONSTRAINT `appointment_visit_id` FOREIGN KEY (`visit_id`) REFERENCES `visit` (`visit_id`),
   CONSTRAINT `appointment_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,7 +174,7 @@ CREATE TABLE `appointmentscheduling_appointment_block` (
   `provider_id` int(11) DEFAULT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -445,7 +195,7 @@ CREATE TABLE `appointmentscheduling_appointment_block` (
   CONSTRAINT `appointment_block_location_id` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`),
   CONSTRAINT `appointment_block_provider_id` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`provider_id`),
   CONSTRAINT `appointment_block_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -459,7 +209,7 @@ CREATE TABLE `appointmentscheduling_appointment_request` (
   `appointment_request_id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_id` int(11) NOT NULL,
   `appointment_type_id` int(11) NOT NULL,
-  `status` varchar(255) NOT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `provider_id` int(11) DEFAULT NULL,
   `requested_by` int(11) DEFAULT NULL,
   `requested_on` datetime NOT NULL,
@@ -468,7 +218,7 @@ CREATE TABLE `appointmentscheduling_appointment_request` (
   `max_time_frame_value` int(11) DEFAULT NULL,
   `max_time_frame_units` varchar(255) DEFAULT NULL,
   `notes` varchar(1024) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -493,7 +243,7 @@ CREATE TABLE `appointmentscheduling_appointment_request` (
   CONSTRAINT `appointment_request_provider_id` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`provider_id`),
   CONSTRAINT `appointment_request_requested_by` FOREIGN KEY (`requested_by`) REFERENCES `provider` (`provider_id`),
   CONSTRAINT `appointment_request_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -506,13 +256,13 @@ DROP TABLE IF EXISTS `appointmentscheduling_appointment_status_history`;
 CREATE TABLE `appointmentscheduling_appointment_status_history` (
   `appointment_status_history_id` int(11) NOT NULL AUTO_INCREMENT,
   `appointment_id` int(11) NOT NULL,
-  `status` varchar(255) NOT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime DEFAULT NULL,
   PRIMARY KEY (`appointment_status_history_id`),
   KEY `appointment_status_history_appointment` (`appointment_id`),
   CONSTRAINT `appointment_status_history_appointment` FOREIGN KEY (`appointment_id`) REFERENCES `appointmentscheduling_appointment` (`appointment_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -524,10 +274,10 @@ DROP TABLE IF EXISTS `appointmentscheduling_appointment_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `appointmentscheduling_appointment_type` (
   `appointment_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `duration` int(11) NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -548,7 +298,7 @@ CREATE TABLE `appointmentscheduling_appointment_type` (
   CONSTRAINT `appointment_type_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `appointment_type_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `appointment_type_visit_type_id` FOREIGN KEY (`visit_type_id`) REFERENCES `visit_type` (`visit_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -565,7 +315,7 @@ CREATE TABLE `appointmentscheduling_block_type_map` (
   KEY `appointment_block_type_map_appointment_block_id` (`appointment_block_id`),
   CONSTRAINT `appointment_block_type_map_appointment_block_id` FOREIGN KEY (`appointment_block_id`) REFERENCES `appointmentscheduling_appointment_block` (`appointment_block_id`),
   CONSTRAINT `appointment_block_type_map_appointment_type_id` FOREIGN KEY (`appointment_type_id`) REFERENCES `appointmentscheduling_appointment_type` (`appointment_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -583,7 +333,7 @@ CREATE TABLE `appointmentscheduling_provider_schedule` (
   `end_date` datetime DEFAULT NULL,
   `start_time` time NOT NULL,
   `end_time` time NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -604,7 +354,7 @@ CREATE TABLE `appointmentscheduling_provider_schedule` (
   CONSTRAINT `provider_schedule_location_id` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`),
   CONSTRAINT `provider_schedule_provider_id` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`provider_id`),
   CONSTRAINT `provider_schedule_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -636,7 +386,7 @@ CREATE TABLE `appointmentscheduling_time_slot` (
   `appointment_block_id` int(11) NOT NULL,
   `start_date` datetime NOT NULL,
   `end_date` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -651,11 +401,11 @@ CREATE TABLE `appointmentscheduling_time_slot` (
   KEY `appointment_slot__changed_by` (`changed_by`),
   KEY `appointment_slot_voided_by` (`voided_by`),
   KEY `appointment_slot_appointment_block_id` (`appointment_block_id`),
-  CONSTRAINT `appointment_slot__changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `appointment_slot_appointment_block_id` FOREIGN KEY (`appointment_block_id`) REFERENCES `appointmentscheduling_appointment_block` (`appointment_block_id`),
   CONSTRAINT `appointment_slot_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `appointment_slot_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  CONSTRAINT `appointment_slot_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `appointment_slot__changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -667,11 +417,11 @@ DROP TABLE IF EXISTS `calculation_registration`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `calculation_registration` (
   `calculation_registration_id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) NOT NULL,
-  `provider_class_name` varchar(512) NOT NULL,
-  `calculation_name` varchar(512) NOT NULL,
+  `token` varchar(255) DEFAULT NULL,
+  `provider_class_name` varchar(512) DEFAULT NULL,
+  `calculation_name` varchar(512) DEFAULT NULL,
   `configuration` text,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`calculation_registration_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `token` (`token`)
@@ -687,9 +437,9 @@ DROP TABLE IF EXISTS `care_setting`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `care_setting` (
   `care_setting_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `care_setting_type` varchar(50) NOT NULL,
+  `care_setting_type` varchar(50) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `retired` tinyint(1) NOT NULL DEFAULT '0',
@@ -698,17 +448,17 @@ CREATE TABLE `care_setting` (
   `retire_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`care_setting_id`),
-  UNIQUE KEY `name` (`name`),
   UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `name` (`name`),
   KEY `care_setting_creator` (`creator`),
   KEY `care_setting_retired_by` (`retired_by`),
   KEY `care_setting_changed_by` (`changed_by`),
   CONSTRAINT `care_setting_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `care_setting_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `care_setting_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -720,8 +470,8 @@ DROP TABLE IF EXISTS `clob_datatype_storage`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `clob_datatype_storage` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `value` longtext NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `value` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `clob_datatype_storage_uuid_index` (`uuid`)
@@ -737,7 +487,7 @@ DROP TABLE IF EXISTS `cohort`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cohort` (
   `cohort_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -747,7 +497,7 @@ CREATE TABLE `cohort` (
   `void_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`cohort_id`),
   UNIQUE KEY `cohort_uuid_index` (`uuid`),
   KEY `user_who_changed_cohort` (`changed_by`),
@@ -778,7 +528,7 @@ CREATE TABLE `cohort_member` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`cohort_member_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `member_patient` (`patient_id`),
@@ -787,18 +537,6 @@ CREATE TABLE `cohort_member` (
   CONSTRAINT `cohort_member_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `member_patient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `parent_cohort` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `commons_ints`
---
-
-DROP TABLE IF EXISTS `commons_ints`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `commons_ints` (
-  `i` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -826,7 +564,7 @@ CREATE TABLE `concept` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_id`),
   UNIQUE KEY `concept_uuid_index` (`uuid`),
   KEY `concept_classes` (`class_id`),
@@ -841,7 +579,7 @@ CREATE TABLE `concept` (
   CONSTRAINT `concept_datatypes` FOREIGN KEY (`datatype_id`) REFERENCES `concept_datatype` (`concept_datatype_id`),
   CONSTRAINT `user_who_changed_concept` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_concept` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=165380 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -858,7 +596,7 @@ CREATE TABLE `concept_answer` (
   `answer_drug` int(11) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `sort_weight` double DEFAULT NULL,
   PRIMARY KEY (`concept_answer_id`),
   UNIQUE KEY `concept_answer_uuid_index` (`uuid`),
@@ -867,10 +605,10 @@ CREATE TABLE `concept_answer` (
   KEY `answers_for_concept` (`concept_id`),
   KEY `answer_answer_drug_fk` (`answer_drug`),
   CONSTRAINT `answer` FOREIGN KEY (`answer_concept`) REFERENCES `concept` (`concept_id`),
+  CONSTRAINT `answers_for_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `answer_answer_drug_fk` FOREIGN KEY (`answer_drug`) REFERENCES `drug` (`drug_id`),
-  CONSTRAINT `answer_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `answers_for_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `answer_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7142 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -884,8 +622,8 @@ CREATE TABLE `concept_attribute` (
   `concept_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `concept_id` int(11) NOT NULL,
   `attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `value_reference` text,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -906,7 +644,7 @@ CREATE TABLE `concept_attribute` (
   CONSTRAINT `concept_attribute_concept_fk` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `concept_attribute_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `concept_attribute_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -918,7 +656,7 @@ DROP TABLE IF EXISTS `concept_attribute_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_attribute_type` (
   `concept_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
@@ -934,7 +672,7 @@ CREATE TABLE `concept_attribute_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_attribute_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `concept_attribute_type_creator_fk` (`creator`),
@@ -943,7 +681,7 @@ CREATE TABLE `concept_attribute_type` (
   CONSTRAINT `concept_attribute_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `concept_attribute_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `concept_attribute_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -955,7 +693,7 @@ DROP TABLE IF EXISTS `concept_class`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_class` (
   `concept_class_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -963,7 +701,7 @@ CREATE TABLE `concept_class` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`concept_class_id`),
@@ -976,7 +714,7 @@ CREATE TABLE `concept_class` (
   CONSTRAINT `concept_class_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `concept_class_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_concept_class` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1003,7 +741,7 @@ DROP TABLE IF EXISTS `concept_datatype`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_datatype` (
   `concept_datatype_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
   `hl7_abbreviation` varchar(3) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
@@ -1012,7 +750,7 @@ CREATE TABLE `concept_datatype` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_datatype_id`),
   UNIQUE KEY `concept_datatype_uuid_index` (`uuid`),
   KEY `concept_datatype_creator` (`creator`),
@@ -1021,7 +759,7 @@ CREATE TABLE `concept_datatype` (
   KEY `concept_datatype_name_index` (`name`),
   CONSTRAINT `concept_datatype_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_concept_datatype` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1034,13 +772,13 @@ DROP TABLE IF EXISTS `concept_description`;
 CREATE TABLE `concept_description` (
   `concept_description_id` int(11) NOT NULL AUTO_INCREMENT,
   `concept_id` int(11) NOT NULL DEFAULT '0',
-  `description` text NOT NULL,
-  `locale` varchar(50) NOT NULL DEFAULT '',
+  `description` text,
+  `locale` varchar(50) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_description_id`),
   UNIQUE KEY `concept_description_uuid_index` (`uuid`),
   KEY `concept_being_described` (`concept_id`),
@@ -1049,7 +787,7 @@ CREATE TABLE `concept_description` (
   CONSTRAINT `description_for_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `user_who_changed_description` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_created_description` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18581 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1061,8 +799,8 @@ DROP TABLE IF EXISTS `concept_map_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_map_type` (
   `concept_map_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -1071,8 +809,8 @@ CREATE TABLE `concept_map_type` (
   `retired` tinyint(1) NOT NULL DEFAULT '0',
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_bin NOT NULL,
+  `retire_reason` varchar(255) DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_map_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `name` (`name`),
@@ -1082,7 +820,7 @@ CREATE TABLE `concept_map_type` (
   CONSTRAINT `mapped_user_changed_concept_map_type` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `mapped_user_creator_concept_map_type` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `mapped_user_retired_concept_map_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1094,8 +832,8 @@ DROP TABLE IF EXISTS `concept_name`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_name` (
   `concept_id` int(11) DEFAULT NULL,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `locale` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
+  `locale` varchar(50) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `concept_name_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1103,7 +841,7 @@ CREATE TABLE `concept_name` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `concept_name_type` varchar(50) DEFAULT NULL,
   `locale_preferred` tinyint(1) DEFAULT '0',
   `date_changed` datetime DEFAULT NULL,
@@ -1121,7 +859,7 @@ CREATE TABLE `concept_name` (
   CONSTRAINT `name_for_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `user_who_created_name` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_voided_this_name` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=141929 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1133,7 +871,7 @@ DROP TABLE IF EXISTS `concept_name_tag`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_name_tag` (
   `concept_name_tag_id` int(11) NOT NULL AUTO_INCREMENT,
-  `tag` varchar(50) NOT NULL,
+  `tag` varchar(50) DEFAULT NULL,
   `description` text,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1141,14 +879,14 @@ CREATE TABLE `concept_name_tag` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`concept_name_tag_id`),
   UNIQUE KEY `concept_name_tag_id` (`concept_name_tag_id`),
   UNIQUE KEY `concept_name_tag_id_2` (`concept_name_tag_id`),
-  UNIQUE KEY `concept_name_tag_unique_tags` (`tag`),
   UNIQUE KEY `concept_name_tag_uuid_index` (`uuid`),
+  UNIQUE KEY `concept_name_tag_unique_tags` (`tag`),
   KEY `user_who_created_name_tag` (`creator`),
   KEY `user_who_voided_name_tag` (`voided_by`),
   KEY `concept_name_tag_changed_by` (`changed_by`),
@@ -1207,18 +945,18 @@ CREATE TABLE `concept_proposal` (
   `concept_proposal_id` int(11) NOT NULL AUTO_INCREMENT,
   `concept_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) DEFAULT NULL,
-  `original_text` varchar(255) NOT NULL DEFAULT '',
+  `original_text` varchar(255) DEFAULT NULL,
   `final_text` varchar(255) DEFAULT NULL,
   `obs_id` int(11) DEFAULT NULL,
   `obs_concept_id` int(11) DEFAULT NULL,
-  `state` varchar(32) NOT NULL DEFAULT 'UNMAPPED',
+  `state` varchar(32) DEFAULT NULL,
   `comments` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0002-11-30 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `locale` varchar(50) NOT NULL DEFAULT '',
-  `uuid` char(38) NOT NULL,
+  `locale` varchar(50) DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_proposal_id`),
   UNIQUE KEY `concept_proposal_uuid_index` (`uuid`),
   KEY `user_who_changed_proposal` (`changed_by`),
@@ -1265,7 +1003,7 @@ CREATE TABLE `concept_reference_map` (
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `concept_id` int(11) NOT NULL DEFAULT '0',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `concept_reference_term_id` int(11) NOT NULL,
   `concept_map_type_id` int(11) NOT NULL DEFAULT '1',
   `changed_by` int(11) DEFAULT NULL,
@@ -1278,12 +1016,12 @@ CREATE TABLE `concept_reference_map` (
   KEY `mapped_concept_map_type` (`concept_map_type_id`),
   KEY `mapped_user_changed_ref_term` (`changed_by`),
   KEY `mapped_concept_reference_term` (`concept_reference_term_id`),
-  CONSTRAINT `map_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `map_for_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `mapped_concept_map_type` FOREIGN KEY (`concept_map_type_id`) REFERENCES `concept_map_type` (`concept_map_type_id`),
   CONSTRAINT `mapped_concept_reference_term` FOREIGN KEY (`concept_reference_term_id`) REFERENCES `concept_reference_term` (`concept_reference_term_id`),
-  CONSTRAINT `mapped_user_changed_ref_term` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `mapped_user_changed_ref_term` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `map_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `map_for_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=282934 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1295,8 +1033,8 @@ DROP TABLE IF EXISTS `concept_reference_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_reference_source` (
   `concept_source_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
+  `name` varchar(50) DEFAULT NULL,
+  `description` text,
   `hl7_code` varchar(50) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1304,7 +1042,7 @@ CREATE TABLE `concept_reference_source` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `unique_id` varchar(250) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -1320,7 +1058,7 @@ CREATE TABLE `concept_reference_source` (
   CONSTRAINT `concept_reference_source_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `concept_source_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_concept_source` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1333,10 +1071,10 @@ DROP TABLE IF EXISTS `concept_reference_term`;
 CREATE TABLE `concept_reference_term` (
   `concept_reference_term_id` int(11) NOT NULL AUTO_INCREMENT,
   `concept_source_id` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `code` varchar(255) COLLATE utf8_bin NOT NULL,
-  `version` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `version` varchar(255) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_changed` datetime DEFAULT NULL,
@@ -1344,8 +1082,8 @@ CREATE TABLE `concept_reference_term` (
   `retired` tinyint(1) NOT NULL DEFAULT '0',
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_bin NOT NULL,
+  `retire_reason` varchar(255) DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_reference_term_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `mapped_user_creator` (`creator`),
@@ -1357,7 +1095,7 @@ CREATE TABLE `concept_reference_term` (
   CONSTRAINT `mapped_user_changed` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `mapped_user_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `mapped_user_retired` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=282933 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1376,7 +1114,7 @@ CREATE TABLE `concept_reference_term_map` (
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_bin NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_reference_term_map_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `mapped_term_a` (`term_a_id`),
@@ -1389,7 +1127,7 @@ CREATE TABLE `concept_reference_term_map` (
   CONSTRAINT `mapped_term_b` FOREIGN KEY (`term_b_id`) REFERENCES `concept_reference_term` (`concept_reference_term_id`),
   CONSTRAINT `mapped_user_changed_ref_term_map` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `mapped_user_creator_ref_term_map` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1406,7 +1144,7 @@ CREATE TABLE `concept_set` (
   `sort_weight` double DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_set_id`),
   UNIQUE KEY `concept_set_uuid_index` (`uuid`),
   KEY `has_a` (`concept_set`),
@@ -1415,23 +1153,7 @@ CREATE TABLE `concept_set` (
   CONSTRAINT `has_a` FOREIGN KEY (`concept_set`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `is_a` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `user_who_created` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `concept_set_derived`
---
-
-DROP TABLE IF EXISTS `concept_set_derived`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `concept_set_derived` (
-  `concept_id` int(11) NOT NULL DEFAULT '0',
-  `concept_set` int(11) NOT NULL DEFAULT '0',
-  `sort_weight` double DEFAULT NULL,
-  `uuid` char(38) DEFAULT NULL,
-  PRIMARY KEY (`concept_id`,`concept_set`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2440 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1446,7 +1168,7 @@ CREATE TABLE `concept_state_conversion` (
   `concept_id` int(11) DEFAULT '0',
   `program_workflow_id` int(11) DEFAULT '0',
   `program_workflow_state_id` int(11) DEFAULT '0',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_state_conversion_id`),
   UNIQUE KEY `concept_state_conversion_uuid_index` (`uuid`),
   UNIQUE KEY `unique_workflow_concept_in_conversion` (`program_workflow_id`,`concept_id`),
@@ -1468,37 +1190,13 @@ DROP TABLE IF EXISTS `concept_stop_word`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `concept_stop_word` (
   `concept_stop_word_id` int(11) NOT NULL AUTO_INCREMENT,
-  `word` varchar(50) COLLATE utf8_bin NOT NULL,
-  `locale` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_bin NOT NULL,
+  `word` varchar(50) DEFAULT NULL,
+  `locale` varchar(50) DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`concept_stop_word_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `Unique_StopWord_Key` (`word`,`locale`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `concept_word`
---
-
-DROP TABLE IF EXISTS `concept_word`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `concept_word` (
-  `concept_word_id` int(11) NOT NULL AUTO_INCREMENT,
-  `concept_id` int(11) NOT NULL DEFAULT '0',
-  `word` varchar(50) NOT NULL DEFAULT '',
-  `locale` varchar(20) NOT NULL DEFAULT '',
-  `concept_name_id` int(11) NOT NULL,
-  `weight` double DEFAULT '1',
-  PRIMARY KEY (`concept_word_id`,`word`,`locale`),
-  KEY `word_in_concept_name` (`word`),
-  KEY `concept_word_concept_idx` (`concept_id`),
-  KEY `word_for_name` (`concept_name_id`),
-  KEY `concept_word_weight_index` (`weight`),
-  CONSTRAINT `word_for` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `word_for_name` FOREIGN KEY (`concept_name_id`) REFERENCES `concept_name` (`concept_name_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1515,7 +1213,7 @@ CREATE TABLE `conditions` (
   `condition_coded` int(11) DEFAULT NULL,
   `condition_non_coded` varchar(255) DEFAULT NULL,
   `condition_coded_name` int(11) DEFAULT NULL,
-  `clinical_status` varchar(50) NOT NULL,
+  `clinical_status` varchar(50) DEFAULT NULL,
   `verification_status` varchar(50) DEFAULT NULL,
   `onset_date` datetime DEFAULT NULL,
   `date_created` datetime NOT NULL,
@@ -1541,113 +1239,14 @@ CREATE TABLE `conditions` (
   KEY `condition_voided_by_fk` (`voided_by`),
   KEY `condition_patient_fk` (`patient_id`),
   KEY `conditions_encounter_id_fk` (`encounter_id`),
+  CONSTRAINT `conditions_encounter_id_fk` FOREIGN KEY (`encounter_id`) REFERENCES `encounter` (`encounter_id`),
   CONSTRAINT `condition_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `condition_condition_coded_fk` FOREIGN KEY (`condition_coded`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `condition_condition_coded_name_fk` FOREIGN KEY (`condition_coded_name`) REFERENCES `concept_name` (`concept_name_id`),
   CONSTRAINT `condition_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `condition_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `condition_previous_version_fk` FOREIGN KEY (`previous_version`) REFERENCES `conditions` (`condition_id`),
-  CONSTRAINT `condition_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `conditions_encounter_id_fk` FOREIGN KEY (`encounter_id`) REFERENCES `encounter` (`encounter_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `dhisconnector_report_to_dataset`
---
-
-DROP TABLE IF EXISTS `dhisconnector_report_to_dataset`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `dhisconnector_report_to_dataset` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `last_run` datetime DEFAULT NULL,
-  `mapping` text NOT NULL,
-  `org_unit_uid` text NOT NULL,
-  `location` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `dhisconnector_report_to_dataset_location_fk` (`location`),
-  CONSTRAINT `dhisconnector_report_to_dataset_location_fk` FOREIGN KEY (`location`) REFERENCES `location` (`location_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `dhisreport_dataelement`
---
-
-DROP TABLE IF EXISTS `dhisreport_dataelement`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `dhisreport_dataelement` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `de_name` varchar(255) NOT NULL,
-  `uid` varchar(255) NOT NULL,
-  `code` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`),
-  UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `dhisreport_datavalue_template`
---
-
-DROP TABLE IF EXISTS `dhisreport_datavalue_template`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `dhisreport_datavalue_template` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `report_definition_id` int(11) NOT NULL,
-  `dataelement_id` int(11) NOT NULL,
-  `disaggregation_id` int(11) NOT NULL,
-  `query` text,
-  PRIMARY KEY (`id`),
-  KEY `fk_dataelement_datavaluetemplate` (`dataelement_id`),
-  KEY `fk_disaggregation_datavaluetemplate` (`disaggregation_id`),
-  KEY `fk_report_definition_datavaluetemplate` (`report_definition_id`),
-  CONSTRAINT `fk_dataelement_datavaluetemplate` FOREIGN KEY (`dataelement_id`) REFERENCES `dhisreport_dataelement` (`id`),
-  CONSTRAINT `fk_disaggregation_datavaluetemplate` FOREIGN KEY (`disaggregation_id`) REFERENCES `dhisreport_disaggregation` (`id`),
-  CONSTRAINT `fk_report_definition_datavaluetemplate` FOREIGN KEY (`report_definition_id`) REFERENCES `dhisreport_report_definition` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `dhisreport_disaggregation`
---
-
-DROP TABLE IF EXISTS `dhisreport_disaggregation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `dhisreport_disaggregation` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `disagg_name` varchar(255) NOT NULL,
-  `uid` varchar(255) NOT NULL,
-  `code` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `code` (`code`),
-  UNIQUE KEY `uid` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `dhisreport_report_definition`
---
-
-DROP TABLE IF EXISTS `dhisreport_report_definition`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `dhisreport_report_definition` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `report_name` varchar(255) NOT NULL,
-  `uid` varchar(255) NOT NULL,
-  `code` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`),
-  UNIQUE KEY `code` (`code`)
+  CONSTRAINT `condition_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1675,7 +1274,7 @@ CREATE TABLE `drug` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `strength` varchar(255) DEFAULT NULL,
   `dose_limit_units` int(11) DEFAULT NULL,
   PRIMARY KEY (`drug_id`),
@@ -1694,7 +1293,7 @@ CREATE TABLE `drug` (
   CONSTRAINT `drug_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `primary_drug_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `route_concept` FOREIGN KEY (`route`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2226 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1707,7 +1306,7 @@ DROP TABLE IF EXISTS `drug_ingredient`;
 CREATE TABLE `drug_ingredient` (
   `drug_id` int(11) NOT NULL,
   `ingredient_id` int(11) NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `strength` double DEFAULT NULL,
   `units` int(11) DEFAULT NULL,
   PRIMARY KEY (`drug_id`,`ingredient_id`),
@@ -1717,7 +1316,7 @@ CREATE TABLE `drug_ingredient` (
   CONSTRAINT `drug_ingredient_drug_id_fk` FOREIGN KEY (`drug_id`) REFERENCES `drug` (`drug_id`),
   CONSTRAINT `drug_ingredient_ingredient_id_fk` FOREIGN KEY (`ingredient_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `drug_ingredient_units_fk` FOREIGN KEY (`units`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1783,7 +1382,7 @@ CREATE TABLE `drug_reference_map` (
   `retire_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`drug_reference_map_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `drug_for_drug_reference_map` (`drug_id`),
@@ -1798,189 +1397,6 @@ CREATE TABLE `drug_reference_map` (
   CONSTRAINT `drug_reference_map_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_changed_drug_reference_map` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_drug_reference_map` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_drugevent`
---
-
-DROP TABLE IF EXISTS `drughistory_drugevent`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_drugevent` (
-  `drugevent_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `person_id` int(11) DEFAULT NULL,
-  `concept_id` int(11) DEFAULT NULL,
-  `concept_reason_id` int(11) DEFAULT NULL,
-  `encounter_id` int(11) DEFAULT NULL,
-  `date_occurred` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `drug_event_type` char(32) DEFAULT NULL,
-  PRIMARY KEY (`drugevent_id`),
-  KEY `drughistory_drugevent_person_ref` (`person_id`),
-  KEY `drughistory_drugevent_concept_ref` (`concept_id`),
-  KEY `drughistory_drugevent_reason_ref` (`concept_reason_id`),
-  KEY `drughistory_drugevent_encounter_ref` (`encounter_id`),
-  CONSTRAINT `drughistory_drugevent_concept_ref` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_drugevent_encounter_ref` FOREIGN KEY (`encounter_id`) REFERENCES `encounter` (`encounter_id`),
-  CONSTRAINT `drughistory_drugevent_person_ref` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`),
-  CONSTRAINT `drughistory_drugevent_reason_ref` FOREIGN KEY (`concept_reason_id`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_drugeventtrigger`
---
-
-DROP TABLE IF EXISTS `drughistory_drugeventtrigger`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_drugeventtrigger` (
-  `drugeventtrigger_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `event_concept_id` int(11) DEFAULT NULL,
-  `event_reason_concept_id` int(11) DEFAULT NULL,
-  `created_by` int(11) DEFAULT NULL,
-  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `retired_reason` varchar(500) DEFAULT NULL,
-  `drug_event_type` char(32) DEFAULT NULL,
-  PRIMARY KEY (`drugeventtrigger_id`),
-  KEY `drughistory_drugevent_created_by_ref` (`created_by`),
-  KEY `drughistory_drugevent_changed_by_ref` (`changed_by`),
-  KEY `drughistory_drugevent_retired_by_ref` (`retired_by`),
-  KEY `drughistory_drugevent_event_ref` (`event_concept_id`),
-  KEY `drughistory_drugevent_event_reason_ref` (`event_reason_concept_id`),
-  CONSTRAINT `drughistory_drugevent_changed_by_ref` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `drughistory_drugevent_created_by_ref` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `drughistory_drugevent_event_reason_ref` FOREIGN KEY (`event_reason_concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_drugevent_event_ref` FOREIGN KEY (`event_concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_drugevent_retired_by_ref` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_drugeventtrigger_answer`
---
-
-DROP TABLE IF EXISTS `drughistory_drugeventtrigger_answer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_drugeventtrigger_answer` (
-  `drugeventtrigger_id` int(11) NOT NULL,
-  `concept_id` int(11) NOT NULL,
-  KEY `drughistory_drugeventtrigger_answer_concept` (`concept_id`),
-  KEY `drughistory_drugeventtrigger_answer_trigger` (`drugeventtrigger_id`),
-  CONSTRAINT `drughistory_drugeventtrigger_answer_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_drugeventtrigger_answer_trigger` FOREIGN KEY (`drugeventtrigger_id`) REFERENCES `drughistory_drugeventtrigger` (`drugeventtrigger_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_drugeventtrigger_question`
---
-
-DROP TABLE IF EXISTS `drughistory_drugeventtrigger_question`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_drugeventtrigger_question` (
-  `drugeventtrigger_id` int(11) NOT NULL,
-  `concept_id` int(11) NOT NULL,
-  KEY `drughistory_drugeventtrigger_question_concept` (`concept_id`),
-  KEY `drughistory_drugeventtrigger_question_trigger` (`drugeventtrigger_id`),
-  CONSTRAINT `drughistory_drugeventtrigger_question_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_drugeventtrigger_question_trigger` FOREIGN KEY (`drugeventtrigger_id`) REFERENCES `drughistory_drugeventtrigger` (`drugeventtrigger_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_drugsnapshot`
---
-
-DROP TABLE IF EXISTS `drughistory_drugsnapshot`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_drugsnapshot` (
-  `drugsnapshot_id` int(11) NOT NULL AUTO_INCREMENT,
-  `person_id` int(11) DEFAULT NULL,
-  `date_taken` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
-  `encounter_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`drugsnapshot_id`),
-  KEY `drughistory_drugsnapshot_person` (`person_id`),
-  KEY `drughistory_drugsnapshot_encounter_ref` (`encounter_id`),
-  CONSTRAINT `drughistory_drugsnapshot_encounter_ref` FOREIGN KEY (`encounter_id`) REFERENCES `encounter` (`encounter_id`),
-  CONSTRAINT `drughistory_drugsnapshot_person` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_drugsnapshot_concept`
---
-
-DROP TABLE IF EXISTS `drughistory_drugsnapshot_concept`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_drugsnapshot_concept` (
-  `drugsnapshot_id` int(11) NOT NULL,
-  `concept_id` int(11) NOT NULL,
-  KEY `drughistory_drugsnapshot_concept_concept` (`concept_id`),
-  KEY `drughistory_drugsnapshot_concept_snapshot` (`drugsnapshot_id`),
-  CONSTRAINT `drughistory_drugsnapshot_concept_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_drugsnapshot_concept_snapshot` FOREIGN KEY (`drugsnapshot_id`) REFERENCES `drughistory_drugsnapshot` (`drugsnapshot_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_regimen`
---
-
-DROP TABLE IF EXISTS `drughistory_regimen`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_regimen` (
-  `regimen_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `line` varchar(50) NOT NULL,
-  `age` varchar(50) NOT NULL,
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(4) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`regimen_id`),
-  KEY `drughistory_regimen_creator` (`creator`),
-  KEY `drughistory_regimen_changed_by` (`changed_by`),
-  KEY `drughistory_regimen_retired_by` (`retired_by`),
-  CONSTRAINT `drughistory_regimen_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `drughistory_regimen_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `drughistory_regimen_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `drughistory_regimen_drug`
---
-
-DROP TABLE IF EXISTS `drughistory_regimen_drug`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `drughistory_regimen_drug` (
-  `regimen_id` int(11) NOT NULL,
-  `concept_id` int(11) NOT NULL,
-  KEY `drughistory_regimen_drug_concept` (`concept_id`),
-  KEY `drughistory_regimen_drug_regimen` (`regimen_id`),
-  CONSTRAINT `drughistory_regimen_drug_concept` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `drughistory_regimen_drug_regimen` FOREIGN KEY (`regimen_id`) REFERENCES `drughistory_regimen` (`regimen_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2007,7 +1423,7 @@ CREATE TABLE `encounter` (
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `encounter_uuid_index` (`uuid`),
   KEY `encounter_datetime_idx` (`encounter_datetime`),
@@ -2019,7 +1435,6 @@ CREATE TABLE `encounter` (
   KEY `user_who_voided_encounter` (`voided_by`),
   KEY `encounter_changed_by` (`changed_by`),
   KEY `encounter_visit_id_fk` (`visit_id`),
-  KEY `encounter_type` (`encounter_type`,`encounter_datetime`,`patient_id`),
   CONSTRAINT `encounter_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `encounter_form` FOREIGN KEY (`form_id`) REFERENCES `form` (`form_id`),
   CONSTRAINT `encounter_ibfk_1` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
@@ -2028,7 +1443,7 @@ CREATE TABLE `encounter` (
   CONSTRAINT `encounter_type_id` FOREIGN KEY (`encounter_type`) REFERENCES `encounter_type` (`encounter_type_id`),
   CONSTRAINT `encounter_visit_id_fk` FOREIGN KEY (`visit_id`) REFERENCES `visit` (`visit_id`),
   CONSTRAINT `user_who_voided_encounter` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12478 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2046,9 +1461,9 @@ CREATE TABLE `encounter_diagnosis` (
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `condition_id` int(11) DEFAULT NULL,
-  `certainty` varchar(255) NOT NULL,
+  `certainty` varchar(255) DEFAULT NULL,
   `rank` int(11) NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -2076,7 +1491,7 @@ CREATE TABLE `encounter_diagnosis` (
   CONSTRAINT `encounter_diagnosis_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `encounter_diagnosis_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `encounter_diagnosis_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2099,7 +1514,7 @@ CREATE TABLE `encounter_provider` (
   `date_voided` datetime DEFAULT NULL,
   `voided_by` int(11) DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`encounter_provider_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `encounter_id_fk` (`encounter_id`),
@@ -2114,7 +1529,7 @@ CREATE TABLE `encounter_provider` (
   CONSTRAINT `encounter_provider_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `encounter_role_id_fk` FOREIGN KEY (`encounter_role_id`) REFERENCES `encounter_role` (`encounter_role_id`),
   CONSTRAINT `provider_id_fk` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`provider_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11531 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2126,7 +1541,7 @@ DROP TABLE IF EXISTS `encounter_role`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `encounter_role` (
   `encounter_role_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -2136,7 +1551,7 @@ CREATE TABLE `encounter_role` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`encounter_role_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `encounter_role_unique_name` (`name`),
@@ -2146,7 +1561,7 @@ CREATE TABLE `encounter_role` (
   CONSTRAINT `encounter_role_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `encounter_role_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `encounter_role_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2158,7 +1573,7 @@ DROP TABLE IF EXISTS `encounter_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `encounter_type` (
   `encounter_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(50) DEFAULT NULL,
   `description` text,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
@@ -2166,14 +1581,14 @@ CREATE TABLE `encounter_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `view_privilege` varchar(255) DEFAULT NULL,
   `edit_privilege` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   PRIMARY KEY (`encounter_type_id`),
-  UNIQUE KEY `encounter_type_unique_name` (`name`),
   UNIQUE KEY `encounter_type_uuid_index` (`uuid`),
+  UNIQUE KEY `encounter_type_unique_name` (`name`),
   KEY `encounter_type_retired_status` (`retired`),
   KEY `user_who_created_type` (`creator`),
   KEY `user_who_retired_encounter_type` (`retired_by`),
@@ -2185,7 +1600,7 @@ CREATE TABLE `encounter_type` (
   CONSTRAINT `privilege_which_can_view_encounter_type` FOREIGN KEY (`view_privilege`) REFERENCES `privilege` (`privilege`),
   CONSTRAINT `user_who_created_type` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_encounter_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2208,7 +1623,7 @@ CREATE TABLE `expanded_cohort_definition` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `enable_member_addition` tinyint(4) NOT NULL DEFAULT '0',
   `enable_member_removal` tinyint(4) NOT NULL DEFAULT '0',
   `enable_filter_by_provider` tinyint(4) NOT NULL DEFAULT '0',
@@ -2216,7 +1631,7 @@ CREATE TABLE `expanded_cohort_definition` (
   `filter_query` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2233,7 +1648,7 @@ CREATE TABLE `expanded_cohort_update_history` (
   `date_updated` datetime NOT NULL,
   `members_removed` longtext,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2245,7 +1660,7 @@ DROP TABLE IF EXISTS `field`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `field` (
   `field_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
   `description` text,
   `field_type` int(11) DEFAULT NULL,
   `concept_id` int(11) DEFAULT NULL,
@@ -2261,7 +1676,7 @@ CREATE TABLE `field` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`field_id`),
   UNIQUE KEY `field_uuid_index` (`uuid`),
   KEY `field_retired_status` (`retired`),
@@ -2290,7 +1705,7 @@ CREATE TABLE `field_answer` (
   `answer_id` int(11) NOT NULL DEFAULT '0',
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`field_id`,`answer_id`),
   UNIQUE KEY `field_answer_uuid_index` (`uuid`),
   KEY `field_answer_concept` (`answer_id`),
@@ -2315,12 +1730,12 @@ CREATE TABLE `field_type` (
   `is_set` tinyint(1) NOT NULL DEFAULT '0',
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`field_type_id`),
   UNIQUE KEY `field_type_uuid_index` (`uuid`),
   KEY `user_who_created_field_type` (`creator`),
   CONSTRAINT `user_who_created_field_type` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2332,8 +1747,8 @@ DROP TABLE IF EXISTS `form`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `form` (
   `form_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `version` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
+  `version` varchar(50) DEFAULT NULL,
   `build` int(11) DEFAULT NULL,
   `published` tinyint(1) NOT NULL DEFAULT '0',
   `xslt` text,
@@ -2348,7 +1763,7 @@ CREATE TABLE `form` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retired_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`form_id`),
   UNIQUE KEY `form_uuid_index` (`uuid`),
   KEY `form_published_index` (`published`),
@@ -2362,7 +1777,7 @@ CREATE TABLE `form` (
   CONSTRAINT `user_who_created_form` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_last_changed_form` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_form` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2388,7 +1803,7 @@ CREATE TABLE `form_field` (
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
   `sort_weight` double DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`form_field_id`),
   UNIQUE KEY `form_field_uuid_index` (`uuid`),
   KEY `user_who_last_changed_form_field` (`changed_by`),
@@ -2414,13 +1829,13 @@ DROP TABLE IF EXISTS `form_resource`;
 CREATE TABLE `form_resource` (
   `form_resource_id` int(11) NOT NULL AUTO_INCREMENT,
   `form_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `value_reference` text NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `value_reference` text,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
   `preferred_handler` varchar(255) DEFAULT NULL,
   `handler_config` text,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`form_resource_id`),
@@ -2429,7 +1844,7 @@ CREATE TABLE `form_resource` (
   KEY `form_resource_changed_by` (`changed_by`),
   CONSTRAINT `form_resource_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `form_resource_form_fk` FOREIGN KEY (`form_id`) REFERENCES `form` (`form_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2443,7 +1858,7 @@ CREATE TABLE `global_property` (
   `property` varchar(255) NOT NULL DEFAULT '',
   `property_value` text,
   `description` text,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
   `preferred_handler` varchar(255) DEFAULT NULL,
@@ -2467,8 +1882,8 @@ DROP TABLE IF EXISTS `groovy_scripts`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `groovy_scripts` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `script` mediumtext NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `script` mediumtext,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
@@ -2492,10 +1907,10 @@ CREATE TABLE `hl7_in_archive` (
   `hl7_in_archive_id` int(11) NOT NULL AUTO_INCREMENT,
   `hl7_source` int(11) NOT NULL DEFAULT '0',
   `hl7_source_key` varchar(255) DEFAULT NULL,
-  `hl7_data` text NOT NULL,
+  `hl7_data` text,
   `date_created` datetime NOT NULL,
   `message_state` int(11) DEFAULT '2',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`hl7_in_archive_id`),
   UNIQUE KEY `hl7_in_archive_uuid_index` (`uuid`),
   KEY `hl7_in_archive_message_state_idx` (`message_state`)
@@ -2513,11 +1928,11 @@ CREATE TABLE `hl7_in_error` (
   `hl7_in_error_id` int(11) NOT NULL AUTO_INCREMENT,
   `hl7_source` int(11) NOT NULL DEFAULT '0',
   `hl7_source_key` text,
-  `hl7_data` text NOT NULL,
-  `error` varchar(255) NOT NULL DEFAULT '',
+  `hl7_data` text,
+  `error` varchar(255) DEFAULT NULL,
   `error_details` mediumtext,
   `date_created` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`hl7_in_error_id`),
   UNIQUE KEY `hl7_in_error_uuid_index` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -2534,12 +1949,12 @@ CREATE TABLE `hl7_in_queue` (
   `hl7_in_queue_id` int(11) NOT NULL AUTO_INCREMENT,
   `hl7_source` int(11) NOT NULL DEFAULT '0',
   `hl7_source_key` text,
-  `hl7_data` text NOT NULL,
+  `hl7_data` text,
   `message_state` int(11) NOT NULL DEFAULT '0',
   `date_processed` datetime DEFAULT NULL,
   `error_msg` text,
   `date_created` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`hl7_in_queue_id`),
   UNIQUE KEY `hl7_in_queue_uuid_index` (`uuid`),
   KEY `hl7_source_with_queue` (`hl7_source`),
@@ -2556,16 +1971,16 @@ DROP TABLE IF EXISTS `hl7_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hl7_source` (
   `hl7_source_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
   `description` text,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`hl7_source_id`),
   UNIQUE KEY `hl7_source_uuid_index` (`uuid`),
   KEY `user_who_created_hl7_source` (`creator`),
   CONSTRAINT `user_who_created_hl7_source` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2622,13 +2037,13 @@ CREATE TABLE `htmlformentry_html_form` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `form_id` int(11) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `xml_data` mediumtext NOT NULL,
+  `xml_data` mediumtext,
   `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL DEFAULT '0002-11-30 00:00:00',
+  `date_created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
@@ -2660,7 +2075,7 @@ CREATE TABLE `idgen_auto_generation_option` (
   `manual_entry_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `automatic_generation_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `location` int(11) DEFAULT NULL,
-  `uuid` char(36) NOT NULL,
+  `uuid` char(36) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idgen_auto_generation_option_uuid_index` (`uuid`),
   KEY `source for idgen_auto_generation_option` (`source`),
@@ -2669,7 +2084,7 @@ CREATE TABLE `idgen_auto_generation_option` (
   CONSTRAINT `identifier_type for idgen_auto_generation_option` FOREIGN KEY (`identifier_type`) REFERENCES `patient_identifier_type` (`patient_identifier_type_id`),
   CONSTRAINT `location_for_auto_generation_option` FOREIGN KEY (`location`) REFERENCES `location` (`location_id`),
   CONSTRAINT `source for idgen_auto_generation_option` FOREIGN KEY (`source`) REFERENCES `idgen_identifier_source` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2702,8 +2117,8 @@ DROP TABLE IF EXISTS `idgen_identifier_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `idgen_identifier_source` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
   `identifier_type` int(11) NOT NULL DEFAULT '0',
   `creator` int(11) NOT NULL DEFAULT '0',
@@ -2724,7 +2139,7 @@ CREATE TABLE `idgen_identifier_source` (
   CONSTRAINT `creator for idgen_identifier_source` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `identifier_type for idgen_identifier_source` FOREIGN KEY (`identifier_type`) REFERENCES `patient_identifier_type` (`patient_identifier_type_id`),
   CONSTRAINT `retired_by for idgen_identifier_source` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2737,7 +2152,7 @@ DROP TABLE IF EXISTS `idgen_log_entry`;
 CREATE TABLE `idgen_log_entry` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `source` int(11) NOT NULL,
-  `identifier` varchar(50) NOT NULL,
+  `identifier` varchar(50) DEFAULT NULL,
   `date_generated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `generated_by` int(11) NOT NULL,
   `comment` varchar(255) DEFAULT NULL,
@@ -2747,7 +2162,7 @@ CREATE TABLE `idgen_log_entry` (
   KEY `generated_by for idgen_log` (`generated_by`),
   CONSTRAINT `generated_by for idgen_log` FOREIGN KEY (`generated_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `source for idgen_log` FOREIGN KEY (`source`) REFERENCES `idgen_identifier_source` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=490 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2759,9 +2174,9 @@ DROP TABLE IF EXISTS `idgen_pooled_identifier`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `idgen_pooled_identifier` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `pool_id` int(11) NOT NULL,
-  `identifier` varchar(50) NOT NULL,
+  `identifier` varchar(50) DEFAULT NULL,
   `date_used` datetime DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2779,7 +2194,7 @@ DROP TABLE IF EXISTS `idgen_remote_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `idgen_remote_source` (
   `id` int(11) NOT NULL,
-  `url` varchar(255) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `user` varchar(50) DEFAULT NULL,
   `password` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -2797,7 +2212,7 @@ DROP TABLE IF EXISTS `idgen_reserved_identifier`;
 CREATE TABLE `idgen_reserved_identifier` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `source` int(11) NOT NULL,
-  `identifier` varchar(50) NOT NULL,
+  `identifier` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id for idgen_reserved_identifier` (`id`),
   KEY `source for idgen_reserved_identifier` (`source`),
@@ -2815,8 +2230,8 @@ DROP TABLE IF EXISTS `idgen_seq_id_gen`;
 CREATE TABLE `idgen_seq_id_gen` (
   `id` int(11) NOT NULL,
   `next_sequence_value` int(11) NOT NULL DEFAULT '-1',
-  `base_character_set` varchar(255) NOT NULL,
-  `first_identifier_base` varchar(50) NOT NULL,
+  `base_character_set` varchar(255) DEFAULT NULL,
+  `first_identifier_base` varchar(50) DEFAULT NULL,
   `prefix` varchar(100) DEFAULT NULL,
   `suffix` varchar(20) DEFAULT NULL,
   `min_length` int(11) DEFAULT NULL,
@@ -2835,17 +2250,17 @@ DROP TABLE IF EXISTS `il_message`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `il_message` (
   `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` mediumtext,
+  `message` text,
   `creator` int(11) DEFAULT NULL,
   `message_type` int(11) DEFAULT NULL,
   `hl7_type` varchar(20) DEFAULT NULL,
   `retired` int(11) DEFAULT NULL,
-  `status` varchar(100) DEFAULT 'Success',
+  `status` varchar(100) DEFAULT NULL,
   `source` varchar(50) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
   `uuid` varchar(38) DEFAULT NULL,
   PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3001 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2857,28 +2272,6 @@ DROP TABLE IF EXISTS `il_message_archive`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `il_message_archive` (
   `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` text COLLATE utf8_unicode_ci,
-  `creator` int(11) DEFAULT NULL,
-  `message_type` int(11) DEFAULT NULL,
-  `hl7_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `retired` int(11) DEFAULT NULL,
-  `status` varchar(100) COLLATE utf8_unicode_ci DEFAULT 'Success',
-  `source` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date_created` datetime DEFAULT NULL,
-  `uuid` varchar(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `il_message_backup`
---
-
-DROP TABLE IF EXISTS `il_message_backup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `il_message_backup` (
-  `message_id` int(11) DEFAULT NULL,
   `message` text,
   `creator` int(11) DEFAULT NULL,
   `message_type` int(11) DEFAULT NULL,
@@ -2887,8 +2280,9 @@ CREATE TABLE `il_message_backup` (
   `status` varchar(100) DEFAULT NULL,
   `source` varchar(50) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
-  `uuid` varchar(38) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `uuid` varchar(38) DEFAULT NULL,
+  PRIMARY KEY (`message_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2900,17 +2294,17 @@ DROP TABLE IF EXISTS `il_message_error_queue`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `il_message_error_queue` (
   `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` text COLLATE utf8_unicode_ci,
+  `message` text,
   `creator` int(11) DEFAULT NULL,
   `message_type` int(11) DEFAULT NULL,
-  `hl7_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hl7_type` varchar(20) DEFAULT NULL,
   `retired` int(11) DEFAULT NULL,
-  `source` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `source` varchar(50) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
-  `uuid` varchar(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` varchar(38) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2923,665 +2317,16 @@ DROP TABLE IF EXISTS `il_registration`;
 CREATE TABLE `il_registration` (
   `message_id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_id` int(11) DEFAULT NULL,
-  `message` text COLLATE utf8_unicode_ci,
+  `message` text,
   `creator` int(11) DEFAULT NULL,
   `message_type` int(11) DEFAULT NULL,
-  `hl7_type` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hl7_type` varchar(20) DEFAULT NULL,
   `retired` int(11) DEFAULT NULL,
-  `status` varchar(100) COLLATE utf8_unicode_ci DEFAULT 'Success',
-  `source` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `status` varchar(100) DEFAULT NULL,
+  `source` varchar(50) DEFAULT NULL,
   `date_created` datetime DEFAULT NULL,
-  `uuid` varchar(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` varchar(38) DEFAULT NULL,
   PRIMARY KEY (`message_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_department`
---
-
-DROP TABLE IF EXISTS `inv_department`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_department` (
-  `department_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`department_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_department_creator_fk` (`creator`),
-  KEY `inv_department_changed_by_fk` (`changed_by`),
-  KEY `inv_department_retired_by_fk` (`retired_by`),
-  CONSTRAINT `inv_department_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_department_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_department_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_institution`
---
-
-DROP TABLE IF EXISTS `inv_institution`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_institution` (
-  `institution_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`institution_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_institution_creator_fk` (`creator`),
-  KEY `inv_institution_changed_by_fk` (`changed_by`),
-  KEY `inv_institution_retired_by_fk` (`retired_by`),
-  CONSTRAINT `inv_institution_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_institution_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_institution_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item`
---
-
-DROP TABLE IF EXISTS `inv_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `department_id` int(11) NOT NULL,
-  `default_price_id` int(11) DEFAULT NULL,
-  `has_expiration` tinyint(1) NOT NULL DEFAULT '0',
-  `concept_id` int(11) DEFAULT NULL,
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `has_physical_inventory` tinyint(1) DEFAULT '1',
-  `default_expiration_period` int(11) DEFAULT NULL,
-  `concept_accepted` tinyint(1) DEFAULT '0',
-  `minimum_quantity` int(11) DEFAULT NULL,
-  `buying_price` decimal(10,2) DEFAULT NULL,
-  PRIMARY KEY (`item_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_item_name_idx` (`name`,`retired`),
-  KEY `inv_item_department_name_idx` (`department_id`,`name`,`retired`),
-  KEY `inv_item_category_name_idx` (`name`,`retired`),
-  KEY `inv_item_creator_fk` (`creator`),
-  KEY `inv_item_changed_by_fk` (`changed_by`),
-  KEY `inv_item_retired_by_fk` (`retired_by`),
-  KEY `inv_item_concept_id_fk` (`concept_id`),
-  CONSTRAINT `inv_item_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_concept_id_fk` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
-  CONSTRAINT `inv_item_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_department_fk` FOREIGN KEY (`department_id`) REFERENCES `inv_department` (`department_id`),
-  CONSTRAINT `inv_item_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item_attribute`
---
-
-DROP TABLE IF EXISTS `inv_item_attribute`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item_attribute` (
-  `item_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) NOT NULL,
-  `item_attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`item_attribute_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_item_attribute_item_id_fk` (`item_id`),
-  KEY `inv_item_attribute_inv_item_attribute_type_id_fk` (`item_attribute_type_id`),
-  CONSTRAINT `inv_item_attribute_inv_item_attribute_type_id_fk` FOREIGN KEY (`item_attribute_type_id`) REFERENCES `inv_item_attribute_type` (`item_attribute_type_id`),
-  CONSTRAINT `inv_item_attribute_item_id_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item_attribute_type`
---
-
-DROP TABLE IF EXISTS `inv_item_attribute_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item_attribute_type` (
-  `item_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` varchar(1024) DEFAULT NULL,
-  `attribute_order` varchar(255) DEFAULT NULL,
-  `foreignKey` int(11) DEFAULT NULL,
-  `format` varchar(255) DEFAULT NULL,
-  `reg_exp` varchar(255) DEFAULT NULL,
-  `required` tinyint(1) DEFAULT '0',
-  `creator` int(11) NOT NULL,
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`item_attribute_type_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_item_attribute_type_creator_fk` (`creator`),
-  KEY `inv_item_attribute_type_changed_by_fk` (`changed_by`),
-  KEY `cinv_item_attribute_type_retired_by_fk` (`retired_by`),
-  CONSTRAINT `cinv_item_attribute_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_attribute_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_attribute_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item_code`
---
-
-DROP TABLE IF EXISTS `inv_item_code`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item_code` (
-  `item_code_id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) NOT NULL,
-  `code` varchar(255) NOT NULL,
-  `name` varchar(255) DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`item_code_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_item_code_item_id_fk` (`item_id`),
-  KEY `inv_item_code_creator_fk` (`creator`),
-  KEY `inv_item_code_changed_by_fk` (`changed_by`),
-  KEY `inv_item_code_retired_by_fk` (`retired_by`),
-  CONSTRAINT `inv_item_code_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_code_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_code_item_id_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `inv_item_code_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item_price`
---
-
-DROP TABLE IF EXISTS `inv_item_price`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item_price` (
-  `item_price_id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `name` varchar(255) DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`item_price_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_item_price_item_id_fk` (`item_id`),
-  KEY `inv_item_price_creator_fk` (`creator`),
-  KEY `inv_item_price_changed_by_fk` (`changed_by`),
-  KEY `inv_item_price_retired_by_fk` (`retired_by`),
-  CONSTRAINT `inv_item_price_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_price_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_item_price_item_id_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `inv_item_price_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item_stock`
---
-
-DROP TABLE IF EXISTS `inv_item_stock`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item_stock` (
-  `item_stock_id` int(11) NOT NULL AUTO_INCREMENT,
-  `stockroom_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`item_stock_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  UNIQUE KEY `inv_item_stock_item_stockroom_idx` (`stockroom_id`,`item_id`),
-  KEY `inv_item_stock_item_fk` (`item_id`),
-  CONSTRAINT `inv_item_stock_detail_stockroom_fk` FOREIGN KEY (`stockroom_id`) REFERENCES `inv_stockroom` (`stockroom_id`),
-  CONSTRAINT `inv_item_stock_item_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`),
-  CONSTRAINT `inv_item_stock_stockroom_fk` FOREIGN KEY (`stockroom_id`) REFERENCES `inv_stockroom` (`stockroom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_item_stock_detail`
---
-
-DROP TABLE IF EXISTS `inv_item_stock_detail`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_item_stock_detail` (
-  `item_stock_detail_id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_stock_id` int(11) DEFAULT NULL,
-  `stockroom_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `expiration` date DEFAULT NULL,
-  `batch_operation_id` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `calculated_expiration` tinyint(1) DEFAULT '1',
-  `calculated_batch` tinyint(1) DEFAULT '1',
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`item_stock_detail_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_item_stock_detail_item_stockroom_idx` (`stockroom_id`,`item_id`),
-  KEY `inv_item_stock_detail_item_fk` (`item_id`),
-  KEY `inv_item_stock_detail_batch_fk` (`batch_operation_id`),
-  KEY `inv_item_stock_detail_item_stock_fk` (`item_stock_id`),
-  CONSTRAINT `inv_item_stock_detail_batch_fk` FOREIGN KEY (`batch_operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`),
-  CONSTRAINT `inv_item_stock_detail_item_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`),
-  CONSTRAINT `inv_item_stock_detail_item_stock_fk` FOREIGN KEY (`item_stock_id`) REFERENCES `inv_item_stock` (`item_stock_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_reserved_transaction`
---
-
-DROP TABLE IF EXISTS `inv_reserved_transaction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_reserved_transaction` (
-  `reserved_transaction_id` int(11) NOT NULL AUTO_INCREMENT,
-  `operation_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `expiration` date DEFAULT NULL,
-  `is_available` tinyint(1) NOT NULL DEFAULT '1',
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
-  `batch_operation_id` int(11) DEFAULT NULL,
-  `calculated_expiration` tinyint(1) DEFAULT '1',
-  `source_calculated_expiration` tinyint(1) DEFAULT '1',
-  `calculated_batch` tinyint(1) DEFAULT '1',
-  `source_calculated_batch` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`reserved_transaction_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_reserved_transaction_operation_fk` (`operation_id`),
-  KEY `inv_reserved_transaction_item_fk` (`item_id`),
-  KEY `inv_reserved_transaction_creator_fk` (`creator`),
-  KEY `inv_reserved_transaction_fk` (`batch_operation_id`),
-  CONSTRAINT `inv_reserved_transaction_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_reserved_transaction_fk` FOREIGN KEY (`batch_operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`),
-  CONSTRAINT `inv_reserved_transaction_item_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`),
-  CONSTRAINT `inv_reserved_transaction_operation_fk` FOREIGN KEY (`operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stock_operation`
---
-
-DROP TABLE IF EXISTS `inv_stock_operation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stock_operation` (
-  `stock_operation_id` int(11) NOT NULL AUTO_INCREMENT,
-  `operation_type_id` int(11) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `description` varchar(1024) DEFAULT NULL,
-  `operation_number` varchar(255) NOT NULL,
-  `source_id` int(11) DEFAULT NULL,
-  `destination_id` int(11) DEFAULT NULL,
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `operation_date` datetime NOT NULL,
-  `institution_id` int(11) DEFAULT NULL,
-  `patient_id` int(11) DEFAULT NULL,
-  `department_id` int(11) DEFAULT NULL,
-  `operation_order` int(11) DEFAULT NULL,
-  `cancel_reason` varchar(500) DEFAULT NULL,
-  PRIMARY KEY (`stock_operation_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_stock_operation_operation_type_fk` (`operation_type_id`),
-  KEY `inv_stock_operation_source_fk` (`source_id`),
-  KEY `inv_stock_operation_destination_fk` (`destination_id`),
-  KEY `inv_stock_operation_creator_fk` (`creator`),
-  KEY `inv_stock_operation_changed_by_fk` (`changed_by`),
-  KEY `inv_stock_operation_retired_by_fk` (`retired_by`),
-  KEY `inv_stock_operation_institution_fk` (`institution_id`),
-  KEY `inv_stock_operation_patient_fk` (`patient_id`),
-  KEY `inv_stock_operation_department_fk` (`department_id`),
-  CONSTRAINT `inv_stock_operation_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stock_operation_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stock_operation_department_fk` FOREIGN KEY (`department_id`) REFERENCES `inv_department` (`department_id`),
-  CONSTRAINT `inv_stock_operation_destination_fk` FOREIGN KEY (`destination_id`) REFERENCES `inv_stockroom` (`stockroom_id`),
-  CONSTRAINT `inv_stock_operation_institution_fk` FOREIGN KEY (`institution_id`) REFERENCES `inv_institution` (`institution_id`),
-  CONSTRAINT `inv_stock_operation_operation_type_fk` FOREIGN KEY (`operation_type_id`) REFERENCES `inv_stock_operation_type` (`stock_operation_type_id`),
-  CONSTRAINT `inv_stock_operation_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
-  CONSTRAINT `inv_stock_operation_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stock_operation_source_fk` FOREIGN KEY (`source_id`) REFERENCES `inv_stockroom` (`stockroom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stock_operation_attribute`
---
-
-DROP TABLE IF EXISTS `inv_stock_operation_attribute`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stock_operation_attribute` (
-  `stock_operation_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
-  `operation_id` int(11) NOT NULL,
-  `attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`stock_operation_attribute_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_stock_operation_attribute_idx` (`operation_id`,`attribute_type_id`),
-  KEY `inv_stock_operation_attribute_attribute_type_fk` (`attribute_type_id`),
-  CONSTRAINT `inv_stock_operation_attribute_attribute_type_fk` FOREIGN KEY (`attribute_type_id`) REFERENCES `inv_stock_operation_attribute_type` (`stock_operation_attribute_type_id`),
-  CONSTRAINT `inv_stock_operation_attribute_operation_fk` FOREIGN KEY (`operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stock_operation_attribute_type`
---
-
-DROP TABLE IF EXISTS `inv_stock_operation_attribute_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stock_operation_attribute_type` (
-  `stock_operation_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `operation_type_id` int(11) NOT NULL,
-  `attribute_order` int(11) NOT NULL,
-  `format` varchar(255) DEFAULT NULL,
-  `foreign_key` int(11) DEFAULT NULL,
-  `reg_exp` varchar(255) DEFAULT NULL,
-  `required` tinyint(1) DEFAULT '0',
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`stock_operation_attribute_type_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_stock_operation_attribute_type_idx` (`operation_type_id`,`attribute_order`),
-  KEY `inv_st_op_attr_type_creator_fk` (`creator`),
-  KEY `inv_st_op_attr_type_changed_by_fk` (`changed_by`),
-  KEY `inv_st_op_attr_type_retired_by_fk` (`retired_by`),
-  CONSTRAINT `inv_st_op_attr_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_st_op_attr_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_st_op_attr_type_operation_type_fk` FOREIGN KEY (`operation_type_id`) REFERENCES `inv_stock_operation_type` (`stock_operation_type_id`),
-  CONSTRAINT `inv_st_op_attr_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stock_operation_item`
---
-
-DROP TABLE IF EXISTS `inv_stock_operation_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stock_operation_item` (
-  `stock_operation_item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `operation_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `batch_operation_id` int(11) DEFAULT NULL,
-  `calculated_batch` tinyint(1) DEFAULT '1',
-  `expiration` date DEFAULT NULL,
-  `calculated_expiration` tinyint(1) DEFAULT '1',
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`stock_operation_item_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_stock_operation_item_stock_op_fk` (`operation_id`),
-  KEY `inv_stock_operation_item_item_fk` (`item_id`),
-  KEY `inv_stock_operation_item_batch_fk` (`batch_operation_id`),
-  CONSTRAINT `inv_stock_operation_item_batch_fk` FOREIGN KEY (`batch_operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`),
-  CONSTRAINT `inv_stock_operation_item_item_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`),
-  CONSTRAINT `inv_stock_operation_item_stock_op_fk` FOREIGN KEY (`operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stock_operation_type`
---
-
-DROP TABLE IF EXISTS `inv_stock_operation_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stock_operation_type` (
-  `stock_operation_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `operation_type` varchar(255) NOT NULL,
-  `has_source` tinyint(1) DEFAULT NULL,
-  `has_destination` tinyint(1) DEFAULT NULL,
-  `has_recipient` tinyint(1) DEFAULT NULL,
-  `recipient_required` tinyint(1) DEFAULT NULL,
-  `available_when_reserved` tinyint(1) DEFAULT NULL,
-  `user_id` int(11) DEFAULT NULL,
-  `role` varchar(50) DEFAULT NULL,
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`stock_operation_type_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_stock_operation_type_creator_fk` (`creator`),
-  KEY `inv_stock_operation_type_changed_by_fk` (`changed_by`),
-  KEY `inv_stock_operation_type_retired_by_fk` (`retired_by`),
-  KEY `inv_stock_operation_type_user_id_fk` (`user_id`),
-  KEY `inv_stock_operation_type_role_fk` (`role`),
-  CONSTRAINT `inv_stock_operation_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stock_operation_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stock_operation_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stock_operation_type_role_fk` FOREIGN KEY (`role`) REFERENCES `role` (`role`),
-  CONSTRAINT `inv_stock_operation_type_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stockroom`
---
-
-DROP TABLE IF EXISTS `inv_stockroom`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stockroom` (
-  `stockroom_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(1024) DEFAULT '',
-  `location_id` int(11) DEFAULT NULL,
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` datetime DEFAULT NULL,
-  `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` datetime DEFAULT NULL,
-  `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  PRIMARY KEY (`stockroom_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_stockroom_location_fk` (`location_id`),
-  KEY `inv_stockroom_creator_fk` (`creator`),
-  KEY `inv_stockroom_changed_by_fk` (`changed_by`),
-  KEY `inv_stockroom_retired_by_fk` (`retired_by`),
-  CONSTRAINT `inv_stockroom_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stockroom_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_stockroom_location_fk` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`),
-  CONSTRAINT `inv_stockroom_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_stockroom_operations`
---
-
-DROP TABLE IF EXISTS `inv_stockroom_operations`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_stockroom_operations` (
-  `stockroom_id` int(11) NOT NULL,
-  `operation_id` int(11) NOT NULL,
-  PRIMARY KEY (`stockroom_id`,`operation_id`),
-  KEY `inv_stock_operations_operation_fk` (`operation_id`),
-  CONSTRAINT `inv_stock_operations_operation_fk` FOREIGN KEY (`operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`),
-  CONSTRAINT `inv_stock_operations_stockroom_fk` FOREIGN KEY (`stockroom_id`) REFERENCES `inv_stockroom` (`stockroom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `inv_transaction`
---
-
-DROP TABLE IF EXISTS `inv_transaction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inv_transaction` (
-  `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
-  `operation_id` int(11) NOT NULL,
-  `item_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `expiration` date DEFAULT NULL,
-  `stockroom_id` int(11) DEFAULT NULL,
-  `creator` int(11) NOT NULL DEFAULT '0',
-  `date_created` datetime NOT NULL,
-  `uuid` char(38) NOT NULL,
-  `batch_operation_id` int(11) DEFAULT NULL,
-  `calculated_expiration` tinyint(1) DEFAULT '1',
-  `source_calculated_expiration` tinyint(1) DEFAULT '1',
-  `calculated_batch` tinyint(1) DEFAULT '1',
-  `source_calculated_batch` tinyint(1) DEFAULT '1',
-  `institution_id` int(11) DEFAULT NULL,
-  `patient_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`transaction_id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `inv_transaction_operation_fk` (`operation_id`),
-  KEY `inv_transaction_item_fk` (`item_id`),
-  KEY `inv_transaction_creator_fk` (`creator`),
-  KEY `inv_transaction_batch_fk` (`batch_operation_id`),
-  KEY `inv_transaction_institution_fk` (`institution_id`),
-  KEY `inv_transaction_patient_fk` (`patient_id`),
-  CONSTRAINT `inv_transaction_batch_fk` FOREIGN KEY (`batch_operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`),
-  CONSTRAINT `inv_transaction_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `inv_transaction_institution_fk` FOREIGN KEY (`institution_id`) REFERENCES `inv_institution` (`institution_id`),
-  CONSTRAINT `inv_transaction_item_fk` FOREIGN KEY (`item_id`) REFERENCES `inv_item` (`item_id`),
-  CONSTRAINT `inv_transaction_operation_fk` FOREIGN KEY (`operation_id`) REFERENCES `inv_stock_operation` (`stock_operation_id`),
-  CONSTRAINT `inv_transaction_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `jasper_parameters`
---
-
-DROP TABLE IF EXISTS `jasper_parameters`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `jasper_parameters` (
-  `parameter_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL DEFAULT '',
-  `class` varchar(50) DEFAULT NULL,
-  `reportId` int(10) unsigned NOT NULL DEFAULT '0',
-  `display_name` varchar(45) DEFAULT NULL,
-  `default_value` varchar(45) DEFAULT NULL,
-  `visible` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `mapped_class` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`parameter_id`),
-  KEY `jasper_parameters_report_id_fk` (`reportId`),
-  CONSTRAINT `jasper_parameters_report_id_fk` FOREIGN KEY (`reportId`) REFERENCES `jasper_reports` (`report_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `jasper_reports`
---
-
-DROP TABLE IF EXISTS `jasper_reports`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `jasper_reports` (
-  `report_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL DEFAULT '',
-  `filename` varchar(50) NOT NULL DEFAULT '',
-  `published` tinyint(1) NOT NULL DEFAULT '0',
-  `description` mediumtext,
-  PRIMARY KEY (`report_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -3594,13 +2339,13 @@ DROP TABLE IF EXISTS `kenyaemr_aop_encounter_entry`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kenyaemr_aop_encounter_entry` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `encounter_uuid` varchar(50) NOT NULL,
+  `encounter_uuid` varchar(50) DEFAULT NULL,
   `form_uuid` varchar(50) DEFAULT NULL,
-  `target_module` varchar(255) NOT NULL,
+  `target_module` varchar(255) DEFAULT NULL,
   `status` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3630,7 +2375,7 @@ CREATE TABLE `kenyaemr_facilityreporting_data` (
   KEY `kenyaemr_facilityreporting_dataset_data_constraint` (`dataset_id`),
   CONSTRAINT `kenyaemr_facilityreporting_dataset_data_constraint` FOREIGN KEY (`dataset_id`) REFERENCES `kenyaemr_facilityreporting_dataset` (`id`),
   CONSTRAINT `kenyaemr_facilityreporting_report_data_constraint` FOREIGN KEY (`report_id`) REFERENCES `kenyaemr_facilityreporting_report` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3642,11 +2387,11 @@ DROP TABLE IF EXISTS `kenyaemr_facilityreporting_dataset`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kenyaemr_facilityreporting_dataset` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `report_id` int(11) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `mapping` varchar(255) NOT NULL,
+  `mapping` varchar(255) DEFAULT NULL,
   `created_by` int(11) NOT NULL DEFAULT '1',
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -3656,12 +2401,10 @@ CREATE TABLE `kenyaemr_facilityreporting_dataset` (
   `date_voided` datetime DEFAULT NULL,
   `voided_reason` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  UNIQUE KEY `name` (`name`),
   UNIQUE KEY `mapping` (`mapping`),
-  KEY `kenyaemr_facilityreporting_report_constraint` (`report_id`),
-  CONSTRAINT `kenyaemr_facilityreporting_report_constraint` FOREIGN KEY (`report_id`) REFERENCES `kenyaemr_facilityreporting_report` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  UNIQUE KEY `name` (`name`),
+  UNIQUE KEY `uuid` (`uuid`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3673,11 +2416,11 @@ DROP TABLE IF EXISTS `kenyaemr_facilityreporting_indicator`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kenyaemr_facilityreporting_indicator` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `dataset_id` int(11) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `mapping` varchar(255) NOT NULL,
+  `mapping` varchar(255) DEFAULT NULL,
   `created_by` int(11) NOT NULL DEFAULT '1',
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -3687,12 +2430,12 @@ CREATE TABLE `kenyaemr_facilityreporting_indicator` (
   `date_voided` datetime DEFAULT NULL,
   `voided_reason` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`),
   UNIQUE KEY `mapping` (`mapping`),
+  UNIQUE KEY `name` (`name`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `kenyaemr_facilityreporting_dataset_constraint` (`dataset_id`),
   CONSTRAINT `kenyaemr_facilityreporting_dataset_constraint` FOREIGN KEY (`dataset_id`) REFERENCES `kenyaemr_facilityreporting_dataset` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3704,10 +2447,10 @@ DROP TABLE IF EXISTS `kenyaemr_facilityreporting_report`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kenyaemr_facilityreporting_report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `mapping` varchar(255) NOT NULL,
+  `mapping` varchar(255) DEFAULT NULL,
   `created_by` int(11) NOT NULL DEFAULT '1',
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -3717,10 +2460,10 @@ CREATE TABLE `kenyaemr_facilityreporting_report` (
   `date_voided` datetime DEFAULT NULL,
   `voided_reason` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `mapping` (`mapping`),
   UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `mapping` (`mapping`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  UNIQUE KEY `uuid` (`uuid`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3733,9 +2476,9 @@ DROP TABLE IF EXISTS `kenyaemr_hiv_testing_client_trace`;
 CREATE TABLE `kenyaemr_hiv_testing_client_trace` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
-  `uuid` char(38) NOT NULL,
-  `contact_type` varchar(50) NOT NULL,
-  `status` varchar(50) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `contact_type` varchar(50) DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
   `unique_patient_no` varchar(50) DEFAULT NULL,
   `facility_linked_to` varchar(255) DEFAULT NULL,
   `health_worker_handed_to` varchar(255) DEFAULT NULL,
@@ -3754,7 +2497,7 @@ CREATE TABLE `kenyaemr_hiv_testing_client_trace` (
   UNIQUE KEY `uuid` (`uuid`),
   KEY `tracing_related_patient_contact` (`client_id`),
   CONSTRAINT `tracing_related_patient_contact` FOREIGN KEY (`client_id`) REFERENCES `kenyaemr_hiv_testing_patient_contact` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3766,12 +2509,12 @@ DROP TABLE IF EXISTS `kenyaemr_hiv_testing_patient_contact`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kenyaemr_hiv_testing_patient_contact` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `obs_group_id` int(11) DEFAULT NULL,
-  `first_name` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
   `middle_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
-  `sex` varchar(10) NOT NULL,
+  `sex` varchar(10) DEFAULT NULL,
   `birth_date` datetime DEFAULT NULL,
   `physical_address` varchar(255) DEFAULT NULL,
   `phone_contact` varchar(255) DEFAULT NULL,
@@ -3799,7 +2542,7 @@ CREATE TABLE `kenyaemr_hiv_testing_patient_contact` (
   KEY `kemr_list_group_id` (`obs_group_id`),
   CONSTRAINT `kemr_list_group_id` FOREIGN KEY (`obs_group_id`) REFERENCES `obs` (`obs_id`),
   CONSTRAINT `kemr_patient_contact_related_patient` FOREIGN KEY (`patient_related_to`) REFERENCES `patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3832,7 +2575,7 @@ CREATE TABLE `kenyaemr_order_entry_lab_manifest` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `voided_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `index_manifest_status` (`status`,`voided`)
@@ -3850,8 +2593,8 @@ CREATE TABLE `kenyaemr_order_entry_lab_manifest_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `manifest_id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
-  `sample_type` varchar(255) NOT NULL,
-  `payload` text NOT NULL,
+  `sample_type` varchar(255) DEFAULT NULL,
+  `payload` text,
   `date_sent` datetime DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `result` varchar(255) DEFAULT NULL,
@@ -3862,7 +2605,7 @@ CREATE TABLE `kenyaemr_order_entry_lab_manifest_order` (
   `voided` tinyint(1) NOT NULL DEFAULT '0',
   `date_voided` datetime DEFAULT NULL,
   `voided_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `last_status_check_date` datetime DEFAULT NULL,
   `date_sample_received` date DEFAULT NULL,
   `date_sample_tested` date DEFAULT NULL,
@@ -3887,7 +2630,7 @@ CREATE TABLE `kenyaemr_vdot_nimeconfirm_enrolment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_id` int(11) DEFAULT NULL,
   `payload` text,
-  `status` varchar(255) NOT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `reason` varchar(255) DEFAULT NULL,
   `reason_other` varchar(300) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
@@ -3903,7 +2646,7 @@ CREATE TABLE `kenyaemr_vdot_nimeconfirm_enrolment` (
   PRIMARY KEY (`id`),
   KEY `kenyaemr_patient` (`patient_id`),
   CONSTRAINT `kenyaemr_patient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3918,8 +2661,8 @@ CREATE TABLE `kenyaemr_vdot_nimeconfirm_video_obs` (
   `patient_id` int(11) NOT NULL,
   `date` datetime NOT NULL,
   `score` double DEFAULT NULL,
-  `timestamp` text NOT NULL,
-  `patient_status` varchar(255) NOT NULL,
+  `timestamp` text,
+  `patient_status` varchar(255) DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -3931,7 +2674,7 @@ CREATE TABLE `kenyaemr_vdot_nimeconfirm_video_obs` (
   PRIMARY KEY (`id`),
   KEY `patient_for_video_obs` (`patient_id`),
   CONSTRAINT `patient_for_video_obs` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -3942,12 +2685,12 @@ DROP TABLE IF EXISTS `liquibasechangelog`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `liquibasechangelog` (
-  `ID` varchar(63) NOT NULL,
-  `AUTHOR` varchar(63) NOT NULL,
-  `FILENAME` varchar(200) NOT NULL,
+  `ID` varchar(63) NOT NULL DEFAULT '',
+  `AUTHOR` varchar(63) NOT NULL DEFAULT '',
+  `FILENAME` varchar(200) NOT NULL DEFAULT '',
   `DATEEXECUTED` datetime NOT NULL,
   `ORDEREXECUTED` int(11) NOT NULL,
-  `EXECTYPE` varchar(10) NOT NULL,
+  `EXECTYPE` varchar(10) DEFAULT NULL,
   `MD5SUM` varchar(35) DEFAULT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   `COMMENTS` varchar(255) DEFAULT NULL,
@@ -3982,7 +2725,7 @@ DROP TABLE IF EXISTS `location`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `location` (
   `location_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `address1` varchar(255) DEFAULT NULL,
   `address2` varchar(255) DEFAULT NULL,
@@ -4004,7 +2747,7 @@ CREATE TABLE `location` (
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
   `parent_location` int(11) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `address7` varchar(255) DEFAULT NULL,
@@ -4028,7 +2771,7 @@ CREATE TABLE `location` (
   CONSTRAINT `parent_location` FOREIGN KEY (`parent_location`) REFERENCES `location` (`location_id`),
   CONSTRAINT `user_who_created_location` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_location` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13703 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4042,8 +2785,8 @@ CREATE TABLE `location_attribute` (
   `location_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `location_id` int(11) NOT NULL,
   `attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `value_reference` text,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -4064,7 +2807,7 @@ CREATE TABLE `location_attribute` (
   CONSTRAINT `location_attribute_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `location_attribute_location_fk` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`),
   CONSTRAINT `location_attribute_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13703 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4076,7 +2819,7 @@ DROP TABLE IF EXISTS `location_attribute_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `location_attribute_type` (
   `location_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
@@ -4092,7 +2835,7 @@ CREATE TABLE `location_attribute_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`location_attribute_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `location_attribute_type_unique_name` (`name`),
@@ -4102,7 +2845,7 @@ CREATE TABLE `location_attribute_type` (
   CONSTRAINT `location_attribute_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `location_attribute_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `location_attribute_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4114,7 +2857,7 @@ DROP TABLE IF EXISTS `location_tag`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `location_tag` (
   `location_tag_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) DEFAULT NULL,
   `description` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -4122,7 +2865,7 @@ CREATE TABLE `location_tag` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   PRIMARY KEY (`location_tag_id`),
@@ -4133,7 +2876,7 @@ CREATE TABLE `location_tag` (
   CONSTRAINT `location_tag_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `location_tag_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `location_tag_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4162,11 +2905,11 @@ DROP TABLE IF EXISTS `logic_rule_definition`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `logic_rule_definition` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
-  `rule_content` varchar(2048) NOT NULL,
-  `language` varchar(255) NOT NULL,
+  `rule_content` varchar(2048) DEFAULT NULL,
+  `language` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL DEFAULT '0002-11-30 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
@@ -4199,10 +2942,10 @@ CREATE TABLE `logic_rule_token` (
   `date_created` datetime NOT NULL DEFAULT '0002-11-30 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `token` varchar(512) NOT NULL,
-  `class_name` varchar(512) NOT NULL,
+  `token` varchar(512) DEFAULT NULL,
+  `class_name` varchar(512) DEFAULT NULL,
   `state` varchar(512) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`logic_rule_token_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `token_creator` (`creator`),
@@ -4221,7 +2964,7 @@ DROP TABLE IF EXISTS `logic_rule_token_tag`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `logic_rule_token_tag` (
   `logic_rule_token_id` int(11) NOT NULL,
-  `tag` varchar(512) NOT NULL,
+  `tag` varchar(512) DEFAULT NULL,
   KEY `token_tag` (`logic_rule_token_id`),
   CONSTRAINT `token_tag` FOREIGN KEY (`logic_rule_token_id`) REFERENCES `logic_rule_token` (`logic_rule_token_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -4240,18 +2983,18 @@ CREATE TABLE `logic_token_registration` (
   `date_created` datetime NOT NULL DEFAULT '0002-11-30 00:00:00',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `token` varchar(512) NOT NULL,
-  `provider_class_name` varchar(512) NOT NULL,
-  `provider_token` varchar(512) NOT NULL,
+  `token` varchar(512) DEFAULT NULL,
+  `provider_class_name` varchar(512) DEFAULT NULL,
+  `provider_token` varchar(512) DEFAULT NULL,
   `configuration` varchar(2000) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`token_registration_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `token_registration_creator` (`creator`),
   KEY `token_registration_changed_by` (`changed_by`),
   CONSTRAINT `token_registration_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `token_registration_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4263,7 +3006,7 @@ DROP TABLE IF EXISTS `logic_token_registration_tag`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `logic_token_registration_tag` (
   `token_registration_id` int(11) NOT NULL,
-  `tag` varchar(512) NOT NULL,
+  `tag` varchar(512) DEFAULT NULL,
   KEY `token_registration_tag` (`token_registration_id`),
   CONSTRAINT `token_registration_tag` FOREIGN KEY (`token_registration_id`) REFERENCES `logic_token_registration` (`token_registration_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -4278,18 +3021,18 @@ DROP TABLE IF EXISTS `medic_archive_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medic_archive_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discriminator` varchar(255) NOT NULL,
+  `discriminator` varchar(255) DEFAULT NULL,
   `data_source` int(11) NOT NULL,
-  `payload` mediumtext NOT NULL,
-  `message` varchar(1024) NOT NULL,
+  `payload` mediumtext,
+  `message` varchar(1024) DEFAULT NULL,
   `form_data_uuid` varchar(255) DEFAULT NULL,
   `date_archived` datetime NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `patient_uuid` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `patient_uuid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `medic_archive_data_creator` (`creator`),
@@ -4298,7 +3041,7 @@ CREATE TABLE `medic_archive_data` (
   CONSTRAINT `medic_archive_data_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_archive_data_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_archive_data_data_source` FOREIGN KEY (`data_source`) REFERENCES `medic_data_source` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4310,7 +3053,7 @@ DROP TABLE IF EXISTS `medic_data_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medic_data_source` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -4320,7 +3063,7 @@ CREATE TABLE `medic_data_source` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `medic_data_source_creator` (`creator`),
@@ -4329,7 +3072,7 @@ CREATE TABLE `medic_data_source` (
   CONSTRAINT `medic_data_source_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_data_source_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_data_source_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4341,10 +3084,10 @@ DROP TABLE IF EXISTS `medic_error_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medic_error_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discriminator` varchar(255) NOT NULL,
+  `discriminator` varchar(255) DEFAULT NULL,
   `data_source` int(11) NOT NULL,
-  `payload` mediumtext NOT NULL,
-  `message` varchar(1024) NOT NULL,
+  `payload` mediumtext,
+  `message` varchar(1024) DEFAULT NULL,
   `date_processed` datetime NOT NULL,
   `location` int(11) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
@@ -4354,13 +3097,19 @@ CREATE TABLE `medic_error_data` (
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `patient_uuid` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `patient_uuid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `medic_error_data_creator` (`creator`),
-  CONSTRAINT `medic_error_data_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `medic_error_data_changed_by` (`changed_by`),
+  KEY `medic_error_data_data_source` (`data_source`),
+  KEY `medic_error_data_location` (`location`),
+  CONSTRAINT `medic_error_data_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `medic_error_data_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `medic_error_data_data_source` FOREIGN KEY (`data_source`) REFERENCES `medic_data_source` (`id`),
+  CONSTRAINT `medic_error_data_location` FOREIGN KEY (`location`) REFERENCES `location` (`location_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4373,12 +3122,12 @@ DROP TABLE IF EXISTS `medic_error_message`;
 CREATE TABLE `medic_error_message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `medic_error_data_id` int(11) DEFAULT NULL,
-  `message` varchar(1024) NOT NULL,
+  `message` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `medic_error_message_creator` (`creator`),
@@ -4387,35 +3136,6 @@ CREATE TABLE `medic_error_message` (
   CONSTRAINT `medic_error_message_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_error_message_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_error_message_data` FOREIGN KEY (`medic_error_data_id`) REFERENCES `medic_error_data` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `medic_form`
---
-
-DROP TABLE IF EXISTS `medic_form`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `medic_form` (
-  `form_id` int(11) NOT NULL DEFAULT '0',
-  `model_xml` longtext,
-  `form_html` longtext,
-  `model_json` longtext,
-  `meta_json` longtext,
-  `discriminator` varchar(255) DEFAULT NULL,
-  `form` char(38) DEFAULT NULL,
-  `creator` int(11) DEFAULT NULL,
-  `date_created` date DEFAULT NULL,
-  `changed_by` int(11) DEFAULT NULL,
-  `date_changed` date DEFAULT NULL,
-  `retired` tinyint(1) DEFAULT NULL,
-  `retired_by` int(11) DEFAULT NULL,
-  `date_retired` date DEFAULT NULL,
-  `retire_reason` text,
-  `uuid` char(38) DEFAULT NULL,
-  PRIMARY KEY (`form_id`),
-  UNIQUE KEY `unique-medicform-form-uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -4428,13 +3148,13 @@ DROP TABLE IF EXISTS `medic_notification_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medic_notification_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subject` varchar(1024) NOT NULL,
-  `payload` varchar(1024) NOT NULL,
+  `subject` varchar(1024) DEFAULT NULL,
+  `payload` varchar(1024) DEFAULT NULL,
   `receiver` int(11) DEFAULT NULL,
   `sender` int(11) NOT NULL,
   `patient` int(11) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `source` varchar(50) NOT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `source` varchar(50) DEFAULT NULL,
   `role` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -4444,7 +3164,7 @@ CREATE TABLE `medic_notification_data` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `medic_notification_data_creator` (`creator`),
@@ -4459,7 +3179,7 @@ CREATE TABLE `medic_notification_data` (
   CONSTRAINT `medic_notification_data_sender` FOREIGN KEY (`sender`) REFERENCES `person` (`person_id`),
   CONSTRAINT `medic_notification_data_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_notification_patient` FOREIGN KEY (`patient`) REFERENCES `patient` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4471,9 +3191,9 @@ DROP TABLE IF EXISTS `medic_queue_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medic_queue_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discriminator` varchar(255) NOT NULL,
+  `discriminator` varchar(255) DEFAULT NULL,
   `data_source` int(11) NOT NULL,
-  `payload` mediumtext NOT NULL,
+  `payload` mediumtext,
   `creator` int(11) NOT NULL,
   `location` int(11) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
@@ -4482,8 +3202,8 @@ CREATE TABLE `medic_queue_data` (
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `patient_uuid` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `patient_uuid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `medic_queue_data_creator` (`creator`),
@@ -4494,7 +3214,7 @@ CREATE TABLE `medic_queue_data` (
   CONSTRAINT `medic_queue_data_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_queue_data_data_source` FOREIGN KEY (`data_source`) REFERENCES `medic_data_source` (`id`),
   CONSTRAINT `medic_queue_data_location` FOREIGN KEY (`location`) REFERENCES `location` (`location_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4506,8 +3226,8 @@ DROP TABLE IF EXISTS `medic_registration_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `medic_registration_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `temporary_uuid` char(38) NOT NULL,
-  `assigned_uuid` char(38) NOT NULL,
+  `temporary_uuid` char(38) DEFAULT NULL,
+  `assigned_uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -4516,17 +3236,17 @@ CREATE TABLE `medic_registration_data` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `temporary_uuid` (`temporary_uuid`),
   UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `temporary_uuid` (`temporary_uuid`),
   KEY `medic_registration_data_creator` (`creator`),
   KEY `medic_registration_data_changed_by` (`changed_by`),
   KEY `medic_registration_data_voided_by` (`voided_by`),
   CONSTRAINT `medic_registration_data_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_registration_data_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `medic_registration_data_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4548,7 +3268,7 @@ CREATE TABLE `metadatamapping_metadata_set` (
   `date_retired` datetime DEFAULT NULL,
   `retired_by` int(11) DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`metadata_set_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `metadatamapping_metadata_set_creator` (`creator`),
@@ -4557,7 +3277,7 @@ CREATE TABLE `metadatamapping_metadata_set` (
   CONSTRAINT `metadatamapping_metadata_set_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `metadatamapping_metadata_set_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `metadatamapping_metadata_set_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4570,8 +3290,8 @@ DROP TABLE IF EXISTS `metadatamapping_metadata_set_member`;
 CREATE TABLE `metadatamapping_metadata_set_member` (
   `metadata_set_member_id` int(11) NOT NULL AUTO_INCREMENT,
   `metadata_set_id` int(11) NOT NULL,
-  `metadata_class` varchar(1024) NOT NULL,
-  `metadata_uuid` varchar(38) NOT NULL,
+  `metadata_class` varchar(1024) DEFAULT NULL,
+  `metadata_uuid` varchar(38) DEFAULT NULL,
   `sort_weight` double DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
@@ -4583,7 +3303,7 @@ CREATE TABLE `metadatamapping_metadata_set_member` (
   `date_retired` datetime DEFAULT NULL,
   `retired_by` int(11) DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`metadata_set_member_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `metadatamapping_metadata_set_member_term_unique_within_set` (`metadata_set_id`,`metadata_uuid`),
@@ -4594,7 +3314,7 @@ CREATE TABLE `metadatamapping_metadata_set_member` (
   CONSTRAINT `metadatamapping_metadata_set_member_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `metadatamapping_metadata_set_member_metadata_set_id` FOREIGN KEY (`metadata_set_id`) REFERENCES `metadatamapping_metadata_set` (`metadata_set_id`),
   CONSTRAINT `metadatamapping_metadata_set_member_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4606,7 +3326,7 @@ DROP TABLE IF EXISTS `metadatamapping_metadata_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `metadatamapping_metadata_source` (
   `metadata_source_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -4616,7 +3336,7 @@ CREATE TABLE `metadatamapping_metadata_source` (
   `date_retired` datetime DEFAULT NULL,
   `retired_by` int(11) DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`metadata_source_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `metadatamapping_metadata_source_name_unique` (`name`),
@@ -4626,7 +3346,7 @@ CREATE TABLE `metadatamapping_metadata_source` (
   CONSTRAINT `metadatamapping_metadata_source_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `metadatamapping_metadata_source_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `metadatamapping_metadata_source_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4639,7 +3359,7 @@ DROP TABLE IF EXISTS `metadatamapping_metadata_term_mapping`;
 CREATE TABLE `metadatamapping_metadata_term_mapping` (
   `metadata_term_mapping_id` int(11) NOT NULL AUTO_INCREMENT,
   `metadata_source_id` int(11) NOT NULL,
-  `code` varchar(255) NOT NULL,
+  `code` varchar(255) DEFAULT NULL,
   `metadata_class` varchar(1024) DEFAULT NULL,
   `metadata_uuid` varchar(38) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
@@ -4652,7 +3372,7 @@ CREATE TABLE `metadatamapping_metadata_term_mapping` (
   `date_retired` datetime DEFAULT NULL,
   `retired_by` int(11) DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`metadata_term_mapping_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `metadatamapping_metadata_term_code_unique_within_source` (`metadata_source_id`,`code`),
@@ -4667,7 +3387,7 @@ CREATE TABLE `metadatamapping_metadata_term_mapping` (
   CONSTRAINT `metadatamapping_metadata_term_mapping_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `metadatamapping_metadata_term_mapping_metadata_source_id` FOREIGN KEY (`metadata_source_id`) REFERENCES `metadatamapping_metadata_source` (`metadata_source_id`),
   CONSTRAINT `metadatamapping_metadata_term_mapping_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4679,13 +3399,13 @@ DROP TABLE IF EXISTS `metadatasharing_exported_package`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `metadatasharing_exported_package` (
   `exported_package_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `group_uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `group_uuid` char(38) DEFAULT NULL,
   `version` int(11) NOT NULL,
   `published` tinyint(1) NOT NULL,
   `date_created` datetime NOT NULL,
-  `name` varchar(64) NOT NULL,
-  `description` varchar(256) NOT NULL,
+  `name` varchar(64) DEFAULT NULL,
+  `description` varchar(256) DEFAULT NULL,
   `content` longblob,
   PRIMARY KEY (`exported_package_id`),
   UNIQUE KEY `uuid` (`uuid`),
@@ -4702,8 +3422,8 @@ DROP TABLE IF EXISTS `metadatasharing_imported_item`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `metadatasharing_imported_item` (
   `imported_item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `classname` varchar(256) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `classname` varchar(256) DEFAULT NULL,
   `existing_uuid` char(38) DEFAULT NULL,
   `date_imported` datetime DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
@@ -4712,7 +3432,7 @@ CREATE TABLE `metadatasharing_imported_item` (
   PRIMARY KEY (`imported_item_id`),
   KEY `uuid` (`uuid`),
   KEY `existing_uuid` (`existing_uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=654 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4724,8 +3444,8 @@ DROP TABLE IF EXISTS `metadatasharing_imported_package`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `metadatasharing_imported_package` (
   `imported_package_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `group_uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `group_uuid` char(38) DEFAULT NULL,
   `subscription_url` varchar(512) DEFAULT NULL,
   `subscription_status` tinyint(4) DEFAULT '0',
   `date_created` datetime NOT NULL,
@@ -4738,7 +3458,7 @@ CREATE TABLE `metadatasharing_imported_package` (
   PRIMARY KEY (`imported_package_id`),
   KEY `uuid` (`uuid`),
   KEY `group_uuid` (`group_uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4750,16 +3470,16 @@ DROP TABLE IF EXISTS `muzima_archive_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_archive_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discriminator` varchar(255) NOT NULL,
+  `discriminator` varchar(255) DEFAULT NULL,
   `data_source` int(11) NOT NULL,
-  `payload` longtext NOT NULL,
-  `message` varchar(1024) NOT NULL,
+  `payload` longtext,
+  `message` varchar(1024) DEFAULT NULL,
   `date_archived` datetime NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_uuid` varchar(255) DEFAULT NULL,
   `patientUuid` varchar(255) DEFAULT NULL,
   `form_data_uuid` varchar(255) DEFAULT NULL,
@@ -4791,7 +3511,7 @@ CREATE TABLE `muzima_cohort_metadata` (
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `voided` tinyint(4) NOT NULL DEFAULT '0',
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
@@ -4824,7 +3544,7 @@ DROP TABLE IF EXISTS `muzima_cohort_report_config`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_cohort_report_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cohort_uuid` char(38) NOT NULL,
+  `cohort_uuid` char(38) DEFAULT NULL,
   `report_designs` longtext,
   `priority` tinyint(4) NOT NULL DEFAULT '0',
   `creator` int(11) NOT NULL,
@@ -4835,7 +3555,7 @@ CREATE TABLE `muzima_cohort_report_config` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `muzima_cohort_report_config_creator` (`creator`),
@@ -4844,7 +3564,7 @@ CREATE TABLE `muzima_cohort_report_config` (
   CONSTRAINT `muzima_cohort_report_config_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_cohort_report_config_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_cohort_report_config_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4856,7 +3576,7 @@ DROP TABLE IF EXISTS `muzima_config`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `config_json` longtext,
   `creator` int(11) NOT NULL,
@@ -4867,7 +3587,7 @@ CREATE TABLE `muzima_config` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `muzima_config_creator` (`creator`),
@@ -4888,7 +3608,7 @@ DROP TABLE IF EXISTS `muzima_data_source`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_data_source` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -4898,7 +3618,7 @@ CREATE TABLE `muzima_data_source` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `muzima_data_source_creator` (`creator`),
@@ -4907,7 +3627,7 @@ CREATE TABLE `muzima_data_source` (
   CONSTRAINT `muzima_data_source_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_data_source_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_data_source_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4919,16 +3639,16 @@ DROP TABLE IF EXISTS `muzima_error_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_error_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discriminator` varchar(255) NOT NULL,
+  `discriminator` varchar(255) DEFAULT NULL,
   `data_source` int(11) NOT NULL,
-  `payload` longtext NOT NULL,
-  `message` varchar(1024) NOT NULL,
+  `payload` longtext,
+  `message` varchar(1024) DEFAULT NULL,
   `date_processed` datetime NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `form_name` varchar(255) DEFAULT NULL,
   `location` int(11) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
@@ -4964,12 +3684,12 @@ DROP TABLE IF EXISTS `muzima_error_message`;
 CREATE TABLE `muzima_error_message` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `muzima_error_data_id` int(11) DEFAULT NULL,
-  `message` varchar(1024) NOT NULL,
+  `message` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `muzima_error_message_creator` (`creator`),
@@ -5000,7 +3720,7 @@ CREATE TABLE `muzima_form` (
   `retired` tinyint(1) DEFAULT '0',
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` date DEFAULT NULL,
-  `retire_reason` text,
+  `retire_reason` mediumtext,
   `uuid` char(38) DEFAULT NULL,
   `discriminator` varchar(255) DEFAULT NULL,
   `form` char(38) DEFAULT NULL,
@@ -5069,7 +3789,7 @@ DROP TABLE IF EXISTS `muzima_generated_report`;
 CREATE TABLE `muzima_generated_report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_report_config_id` int(11) DEFAULT NULL,
-  `report_request_uuid` char(38) NOT NULL,
+  `report_request_uuid` char(38) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `report_json` longblob,
@@ -5082,10 +3802,10 @@ CREATE TABLE `muzima_generated_report` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5097,8 +3817,8 @@ DROP TABLE IF EXISTS `muzima_notification_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_notification_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subject` varchar(1024) NOT NULL,
-  `payload` varchar(1024) NOT NULL,
+  `subject` varchar(1024) DEFAULT NULL,
+  `payload` varchar(1024) DEFAULT NULL,
   `receiver` int(11) DEFAULT NULL,
   `sender` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
@@ -5109,11 +3829,10 @@ CREATE TABLE `muzima_notification_data` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `role` varchar(255) DEFAULT NULL,
-  `patient` int(11) DEFAULT NULL,
-  `status` varchar(50) NOT NULL,
-  `source` varchar(50) NOT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `source` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `muzima_notification_data_creator` (`creator`),
@@ -5122,14 +3841,12 @@ CREATE TABLE `muzima_notification_data` (
   KEY `muzima_notification_data_sender` (`sender`),
   KEY `muzima_notification_data_receiver` (`receiver`),
   KEY `muzima_notification_data_role` (`role`),
-  KEY `muzima_notification_patient` (`patient`),
   CONSTRAINT `muzima_notification_data_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_notification_data_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_notification_data_receiver` FOREIGN KEY (`receiver`) REFERENCES `person` (`person_id`),
   CONSTRAINT `muzima_notification_data_role` FOREIGN KEY (`role`) REFERENCES `role` (`role`),
   CONSTRAINT `muzima_notification_data_sender` FOREIGN KEY (`sender`) REFERENCES `person` (`person_id`),
-  CONSTRAINT `muzima_notification_data_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `muzima_notification_patient` FOREIGN KEY (`patient`) REFERENCES `patient` (`patient_id`)
+  CONSTRAINT `muzima_notification_data_voided_by` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -5143,7 +3860,7 @@ DROP TABLE IF EXISTS `muzima_patient_report`;
 CREATE TABLE `muzima_patient_report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_report_config_id` int(11) DEFAULT NULL,
-  `report_request_uuid` char(38) NOT NULL,
+  `report_request_uuid` char(38) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `report_json` longblob,
@@ -5156,11 +3873,11 @@ CREATE TABLE `muzima_patient_report` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5172,14 +3889,14 @@ DROP TABLE IF EXISTS `muzima_queue_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_queue_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `discriminator` varchar(255) NOT NULL,
+  `discriminator` varchar(255) DEFAULT NULL,
   `data_source` int(11) NOT NULL,
-  `payload` longtext NOT NULL,
+  `payload` longtext,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `form_name` varchar(255) DEFAULT NULL,
   `location` int(11) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
@@ -5214,8 +3931,8 @@ DROP TABLE IF EXISTS `muzima_registration_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_registration_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `temporary_uuid` char(38) NOT NULL,
-  `assigned_uuid` char(38) NOT NULL,
+  `temporary_uuid` char(38) DEFAULT NULL,
+  `assigned_uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -5224,10 +3941,10 @@ CREATE TABLE `muzima_registration_data` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `temporary_uuid` (`temporary_uuid`),
   UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `temporary_uuid` (`temporary_uuid`),
   KEY `muzima_registration_data_creator` (`creator`),
   KEY `muzima_registration_data_changed_by` (`changed_by`),
   KEY `muzima_registration_data_voided_by` (`voided_by`),
@@ -5246,12 +3963,12 @@ DROP TABLE IF EXISTS `muzima_setting`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzima_setting` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `property` varchar(255) NOT NULL,
+  `property` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `value_boolean` tinyint(4) DEFAULT NULL,
   `value_string` varchar(255) DEFAULT NULL,
-  `setting_data_type` varchar(255) NOT NULL,
+  `setting_data_type` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -5260,17 +3977,17 @@ CREATE TABLE `muzima_setting` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `property` (`property`),
   UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `property` (`property`),
   KEY `muzima_setting_creator` (`creator`),
   KEY `muzima_setting_changed_by` (`changed_by`),
   KEY `muzima_setting_retired_by` (`retired_by`),
   CONSTRAINT `muzima_setting_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_setting_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `muzima_setting_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5323,7 +4040,6 @@ CREATE TABLE `muzimaforms_tag` (
   `uuid` char(38) DEFAULT NULL,
   `muzimaforms_tag_id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`muzimaforms_tag_id`),
-  UNIQUE KEY `unique-tag-name` (`name`),
   UNIQUE KEY `unique-muzimaforms-tag-uuid` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -5359,8 +4075,8 @@ DROP TABLE IF EXISTS `muzimaregistration_registration_data`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `muzimaregistration_registration_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `temporary_uuid` char(38) NOT NULL,
-  `assigned_uuid` char(38) NOT NULL,
+  `temporary_uuid` char(38) DEFAULT NULL,
+  `assigned_uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -5369,7 +4085,7 @@ CREATE TABLE `muzimaregistration_registration_data` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `temporary_uuid` (`temporary_uuid`),
@@ -5395,14 +4111,14 @@ CREATE TABLE `note` (
   `patient_id` int(11) DEFAULT NULL,
   `obs_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) DEFAULT NULL,
-  `text` text NOT NULL,
+  `text` text,
   `priority` int(11) DEFAULT NULL,
   `parent` int(11) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`note_id`),
   UNIQUE KEY `note_uuid_index` (`uuid`),
   KEY `user_who_changed_note` (`changed_by`),
@@ -5429,7 +4145,7 @@ DROP TABLE IF EXISTS `notification_alert`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `notification_alert` (
   `alert_id` int(11) NOT NULL AUTO_INCREMENT,
-  `text` varchar(512) NOT NULL,
+  `text` varchar(512) DEFAULT NULL,
   `satisfied_by_any` tinyint(1) NOT NULL DEFAULT '0',
   `alert_read` tinyint(1) NOT NULL DEFAULT '0',
   `date_to_expire` datetime DEFAULT NULL,
@@ -5437,7 +4153,7 @@ CREATE TABLE `notification_alert` (
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`alert_id`),
   UNIQUE KEY `notification_alert_uuid_index` (`uuid`),
   KEY `alert_date_to_expire_idx` (`date_to_expire`),
@@ -5445,7 +4161,7 @@ CREATE TABLE `notification_alert` (
   KEY `alert_creator` (`creator`),
   CONSTRAINT `alert_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_changed_alert` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5460,7 +4176,7 @@ CREATE TABLE `notification_alert_recipient` (
   `user_id` int(11) NOT NULL,
   `alert_read` tinyint(1) NOT NULL DEFAULT '0',
   `date_changed` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`alert_id`,`user_id`),
   KEY `alert_read_by_user` (`user_id`),
   CONSTRAINT `alert_read_by_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
@@ -5483,7 +4199,7 @@ CREATE TABLE `notification_template` (
   `sender` varchar(255) DEFAULT NULL,
   `recipients` varchar(512) DEFAULT NULL,
   `ordinal` int(11) DEFAULT '0',
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`template_id`),
   UNIQUE KEY `notification_template_uuid_index` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -5522,10 +4238,10 @@ CREATE TABLE `obs` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `previous_version` int(11) DEFAULT NULL,
   `form_namespace_and_path` varchar(255) DEFAULT NULL,
-  `status` varchar(16) NOT NULL DEFAULT 'FINAL',
+  `status` varchar(16) DEFAULT NULL,
   `interpretation` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`obs_id`),
   UNIQUE KEY `obs_uuid_index` (`uuid`),
@@ -5554,47 +4270,7 @@ CREATE TABLE `obs` (
   CONSTRAINT `person_obs` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON UPDATE CASCADE,
   CONSTRAINT `previous_version` FOREIGN KEY (`previous_version`) REFERENCES `obs` (`obs_id`),
   CONSTRAINT `user_who_voided_obs` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `openconceptlab_item`
---
-
-DROP TABLE IF EXISTS `openconceptlab_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `openconceptlab_item` (
-  `item_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `update_id` bigint(20) NOT NULL,
-  `type` varchar(512) NOT NULL,
-  `uuid` char(38) DEFAULT NULL,
-  `version_url` varchar(1024) DEFAULT NULL,
-  `state` int(11) NOT NULL,
-  `error_message` varchar(1024) DEFAULT NULL,
-  `url` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `openconceptlab_item_update` (`update_id`),
-  KEY `openconceptlab_item_type_uuid` (`type`(255),`uuid`),
-  CONSTRAINT `openconceptlab_item_update` FOREIGN KEY (`update_id`) REFERENCES `openconceptlab_update` (`update_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `openconceptlab_update`
---
-
-DROP TABLE IF EXISTS `openconceptlab_update`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `openconceptlab_update` (
-  `update_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `local_date_started` datetime NOT NULL,
-  `local_date_stopped` datetime DEFAULT NULL,
-  `ocl_date_started` datetime DEFAULT NULL,
-  `error_message` varchar(1024) DEFAULT NULL,
-  PRIMARY KEY (`update_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=133604 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5616,7 +4292,7 @@ CREATE TABLE `order_frequency` (
   `retire_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`order_frequency_id`),
   UNIQUE KEY `concept_id` (`concept_id`),
   UNIQUE KEY `uuid` (`uuid`),
@@ -5627,7 +4303,7 @@ CREATE TABLE `order_frequency` (
   CONSTRAINT `order_frequency_concept_id_fk` FOREIGN KEY (`concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `order_frequency_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `order_frequency_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5650,7 +4326,7 @@ CREATE TABLE `order_group` (
   `void_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`order_group_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `order_group_patient_id_fk` (`patient_id`),
@@ -5665,7 +4341,7 @@ CREATE TABLE `order_group` (
   CONSTRAINT `order_group_patient_id_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `order_group_set_id_fk` FOREIGN KEY (`order_set_id`) REFERENCES `order_set` (`order_set_id`),
   CONSTRAINT `order_group_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5677,8 +4353,8 @@ DROP TABLE IF EXISTS `order_set`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_set` (
   `order_set_id` int(11) NOT NULL AUTO_INCREMENT,
-  `operator` varchar(50) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `operator` varchar(50) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -5688,7 +4364,7 @@ CREATE TABLE `order_set` (
   `retire_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `category` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_set_id`),
   UNIQUE KEY `uuid` (`uuid`),
@@ -5700,7 +4376,7 @@ CREATE TABLE `order_set` (
   CONSTRAINT `order_set_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `order_set_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `order_set_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5726,7 +4402,7 @@ CREATE TABLE `order_set_member` (
   `retire_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`order_set_member_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `order_set_member_creator_fk` (`creator`),
@@ -5741,7 +4417,7 @@ CREATE TABLE `order_set_member` (
   CONSTRAINT `order_set_member_order_set_id_fk` FOREIGN KEY (`order_set_id`) REFERENCES `order_set` (`order_set_id`),
   CONSTRAINT `order_set_member_order_type_fk` FOREIGN KEY (`order_type`) REFERENCES `order_type` (`order_type_id`),
   CONSTRAINT `order_set_member_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=182 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5753,7 +4429,7 @@ DROP TABLE IF EXISTS `order_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_type` (
   `order_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(255) DEFAULT NULL,
   `description` text,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
@@ -5761,14 +4437,14 @@ CREATE TABLE `order_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `java_class_name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `java_class_name` varchar(255) DEFAULT NULL,
   `parent` int(11) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   PRIMARY KEY (`order_type_id`),
-  UNIQUE KEY `name` (`name`),
   UNIQUE KEY `order_type_uuid_index` (`uuid`),
+  UNIQUE KEY `name` (`name`),
   KEY `order_type_retired_status` (`retired`),
   KEY `type_created_by` (`creator`),
   KEY `user_who_retired_order_type` (`retired_by`),
@@ -5778,7 +4454,7 @@ CREATE TABLE `order_type` (
   CONSTRAINT `order_type_parent_order_type` FOREIGN KEY (`parent`) REFERENCES `order_type` (`order_type_id`),
   CONSTRAINT `type_created_by` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_order_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5825,11 +4501,11 @@ CREATE TABLE `orders` (
   `void_reason` varchar(255) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `accession_number` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
-  `urgency` varchar(50) NOT NULL DEFAULT 'ROUTINE',
-  `order_number` varchar(50) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `urgency` varchar(50) DEFAULT NULL,
+  `order_number` varchar(50) DEFAULT NULL,
   `previous_order_id` int(11) DEFAULT NULL,
-  `order_action` varchar(50) NOT NULL,
+  `order_action` varchar(50) DEFAULT NULL,
   `comment_to_fulfiller` varchar(1024) DEFAULT NULL,
   `care_setting` int(11) NOT NULL,
   `scheduled_date` datetime DEFAULT NULL,
@@ -5853,15 +4529,15 @@ CREATE TABLE `orders` (
   KEY `orders_accession_number` (`accession_number`),
   CONSTRAINT `discontinued_because` FOREIGN KEY (`order_reason`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `fk_orderer_provider` FOREIGN KEY (`orderer`) REFERENCES `provider` (`provider_id`),
-  CONSTRAINT `order_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `order_for_patient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON UPDATE CASCADE,
   CONSTRAINT `orders_care_setting` FOREIGN KEY (`care_setting`) REFERENCES `care_setting` (`care_setting_id`),
   CONSTRAINT `orders_in_encounter` FOREIGN KEY (`encounter_id`) REFERENCES `encounter` (`encounter_id`),
   CONSTRAINT `orders_order_group_id_fk` FOREIGN KEY (`order_group_id`) REFERENCES `order_group` (`order_group_id`),
+  CONSTRAINT `order_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `order_for_patient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON UPDATE CASCADE,
   CONSTRAINT `previous_order_id_order_id` FOREIGN KEY (`previous_order_id`) REFERENCES `orders` (`order_id`),
   CONSTRAINT `type_of_order` FOREIGN KEY (`order_type_id`) REFERENCES `order_type` (`order_type_id`),
   CONSTRAINT `user_who_voided_order` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1141 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5881,7 +4557,7 @@ CREATE TABLE `patient` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `allergy_status` varchar(50) NOT NULL DEFAULT 'Unknown',
+  `allergy_status` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`patient_id`),
   KEY `user_who_changed_pat` (`changed_by`),
   KEY `user_who_created_patient` (`creator`),
@@ -5903,7 +4579,7 @@ DROP TABLE IF EXISTS `patient_identifier`;
 CREATE TABLE `patient_identifier` (
   `patient_identifier_id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_id` int(11) NOT NULL DEFAULT '0',
-  `identifier` varchar(50) NOT NULL DEFAULT '',
+  `identifier` varchar(50) DEFAULT NULL,
   `identifier_type` int(11) NOT NULL DEFAULT '0',
   `preferred` tinyint(1) NOT NULL DEFAULT '0',
   `location_id` int(11) DEFAULT '0',
@@ -5915,7 +4591,7 @@ CREATE TABLE `patient_identifier` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`patient_identifier_id`),
   UNIQUE KEY `patient_identifier_uuid_index` (`uuid`),
   KEY `identifier_name` (`identifier`),
@@ -5931,7 +4607,7 @@ CREATE TABLE `patient_identifier` (
   CONSTRAINT `identifier_voider` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `patient_identifier_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `patient_identifier_ibfk_2` FOREIGN KEY (`location_id`) REFERENCES `location` (`location_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1772 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5943,7 +4619,7 @@ DROP TABLE IF EXISTS `patient_identifier_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patient_identifier_type` (
   `patient_identifier_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(50) DEFAULT NULL,
   `description` text,
   `format` varchar(255) DEFAULT NULL,
   `check_digit` tinyint(1) NOT NULL DEFAULT '0',
@@ -5957,7 +4633,7 @@ CREATE TABLE `patient_identifier_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `uniqueness_behavior` varchar(50) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -5970,7 +4646,7 @@ CREATE TABLE `patient_identifier_type` (
   CONSTRAINT `patient_identifier_type_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `type_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_patient_identifier_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -5996,7 +4672,7 @@ CREATE TABLE `patient_program` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`patient_program_id`),
   UNIQUE KEY `patient_program_uuid_index` (`uuid`),
   KEY `user_who_changed` (`changed_by`),
@@ -6013,7 +4689,7 @@ CREATE TABLE `patient_program` (
   CONSTRAINT `program_for_patient` FOREIGN KEY (`program_id`) REFERENCES `program` (`program_id`),
   CONSTRAINT `user_who_changed` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_voided_patient_program` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=904 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6027,8 +4703,8 @@ CREATE TABLE `patient_program_attribute` (
   `patient_program_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `patient_program_id` int(11) NOT NULL,
   `attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `value_reference` text,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -6049,7 +4725,7 @@ CREATE TABLE `patient_program_attribute` (
   CONSTRAINT `patient_program_attribute_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `patient_program_attribute_programid_fk` FOREIGN KEY (`patient_program_id`) REFERENCES `patient_program` (`patient_program_id`),
   CONSTRAINT `patient_program_attribute_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6073,7 +4749,7 @@ CREATE TABLE `patient_state` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`patient_state_id`),
   UNIQUE KEY `patient_state_uuid_index` (`uuid`),
   KEY `patient_state_changer` (`changed_by`),
@@ -6098,7 +4774,7 @@ DROP TABLE IF EXISTS `person`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `person` (
   `person_id` int(11) NOT NULL AUTO_INCREMENT,
-  `gender` varchar(50) DEFAULT '',
+  `gender` varchar(50) DEFAULT NULL,
   `birthdate` date DEFAULT NULL,
   `birthdate_estimated` tinyint(1) NOT NULL DEFAULT '0',
   `dead` tinyint(1) NOT NULL DEFAULT '0',
@@ -6112,7 +4788,7 @@ CREATE TABLE `person` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `deathdate_estimated` tinyint(1) NOT NULL DEFAULT '0',
   `birthtime` time DEFAULT NULL,
   `cause_of_death_non_coded` varchar(255) DEFAULT NULL,
@@ -6128,7 +4804,7 @@ CREATE TABLE `person` (
   CONSTRAINT `user_who_changed_person` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_created_person` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_voided_person` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=484 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6165,7 +4841,7 @@ CREATE TABLE `person_address` (
   `address6` varchar(255) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `address7` varchar(255) DEFAULT NULL,
   `address8` varchar(255) DEFAULT NULL,
   `address9` varchar(255) DEFAULT NULL,
@@ -6185,7 +4861,7 @@ CREATE TABLE `person_address` (
   CONSTRAINT `patient_address_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `patient_address_void` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `person_address_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=471 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6198,7 +4874,7 @@ DROP TABLE IF EXISTS `person_attribute`;
 CREATE TABLE `person_attribute` (
   `person_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `person_id` int(11) NOT NULL DEFAULT '0',
-  `value` varchar(50) NOT NULL DEFAULT '',
+  `value` varchar(50) DEFAULT NULL,
   `person_attribute_type_id` int(11) NOT NULL DEFAULT '0',
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
@@ -6208,7 +4884,7 @@ CREATE TABLE `person_attribute` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`person_attribute_id`),
   UNIQUE KEY `person_attribute_uuid_index` (`uuid`),
   KEY `attribute_changer` (`changed_by`),
@@ -6221,7 +4897,7 @@ CREATE TABLE `person_attribute` (
   CONSTRAINT `attribute_voider` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `defines_attribute_type` FOREIGN KEY (`person_attribute_type_id`) REFERENCES `person_attribute_type` (`person_attribute_type_id`),
   CONSTRAINT `identifies_person` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1623 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6233,7 +4909,7 @@ DROP TABLE IF EXISTS `person_attribute_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `person_attribute_type` (
   `person_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(50) DEFAULT NULL,
   `description` text,
   `format` varchar(50) DEFAULT NULL,
   `foreign_key` int(11) DEFAULT NULL,
@@ -6248,7 +4924,7 @@ CREATE TABLE `person_attribute_type` (
   `retire_reason` varchar(255) DEFAULT NULL,
   `edit_privilege` varchar(255) DEFAULT NULL,
   `sort_weight` double DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`person_attribute_type_id`),
   UNIQUE KEY `person_attribute_type_uuid_index` (`uuid`),
   KEY `attribute_is_searchable` (`searchable`),
@@ -6262,7 +4938,7 @@ CREATE TABLE `person_attribute_type` (
   CONSTRAINT `attribute_type_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `privilege_which_can_edit` FOREIGN KEY (`edit_privilege`) REFERENCES `privilege` (`privilege`),
   CONSTRAINT `user_who_retired_person_attribute_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6278,8 +4954,8 @@ CREATE TABLE `person_merge_log` (
   `loser_person_id` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
-  `merged_data` longtext NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `merged_data` longtext,
+  `uuid` char(38) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `voided` tinyint(1) NOT NULL DEFAULT '0',
@@ -6298,7 +4974,7 @@ CREATE TABLE `person_merge_log` (
   CONSTRAINT `person_merge_log_loser` FOREIGN KEY (`loser_person_id`) REFERENCES `person` (`person_id`),
   CONSTRAINT `person_merge_log_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `person_merge_log_winner` FOREIGN KEY (`winner_person_id`) REFERENCES `person` (`person_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6328,7 +5004,7 @@ CREATE TABLE `person_name` (
   `void_reason` varchar(255) DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`person_name_id`),
   UNIQUE KEY `person_name_uuid_index` (`uuid`),
   KEY `first_name` (`given_name`),
@@ -6341,7 +5017,7 @@ CREATE TABLE `person_name` (
   CONSTRAINT `name_for_person` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON UPDATE CASCADE,
   CONSTRAINT `user_who_made_name` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_voided_name` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=485 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6352,9 +5028,9 @@ DROP TABLE IF EXISTS `privilege`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `privilege` (
-  `privilege` varchar(255) NOT NULL,
+  `privilege` varchar(255) NOT NULL DEFAULT '',
   `description` text,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`privilege`),
   UNIQUE KEY `privilege_uuid_index` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -6376,9 +5052,9 @@ CREATE TABLE `program` (
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `retired` tinyint(1) NOT NULL DEFAULT '0',
-  `name` varchar(50) NOT NULL,
+  `name` varchar(50) DEFAULT NULL,
   `description` text,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`program_id`),
   UNIQUE KEY `program_uuid_index` (`uuid`),
   KEY `user_who_changed_program` (`changed_by`),
@@ -6389,7 +5065,7 @@ CREATE TABLE `program` (
   CONSTRAINT `program_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `program_outcomes_concept_id_fk` FOREIGN KEY (`outcomes_concept_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `user_who_changed_program` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6401,7 +5077,7 @@ DROP TABLE IF EXISTS `program_attribute_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `program_attribute_type` (
   `program_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
@@ -6417,7 +5093,7 @@ CREATE TABLE `program_attribute_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`program_attribute_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `name` (`name`),
@@ -6427,7 +5103,7 @@ CREATE TABLE `program_attribute_type` (
   CONSTRAINT `program_attribute_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `program_attribute_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `program_attribute_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6446,7 +5122,7 @@ CREATE TABLE `program_workflow` (
   `retired` tinyint(1) NOT NULL DEFAULT '0',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`program_workflow_id`),
   UNIQUE KEY `program_workflow_uuid_index` (`uuid`),
   KEY `workflow_changed_by` (`changed_by`),
@@ -6478,7 +5154,7 @@ CREATE TABLE `program_workflow_state` (
   `retired` tinyint(1) NOT NULL DEFAULT '0',
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`program_workflow_state_id`),
   UNIQUE KEY `program_workflow_state_uuid_index` (`uuid`),
   KEY `state_changed_by` (`changed_by`),
@@ -6512,7 +5188,7 @@ CREATE TABLE `provider` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
   `speciality_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`provider_id`),
@@ -6529,7 +5205,7 @@ CREATE TABLE `provider` (
   CONSTRAINT `provider_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `provider_role_id_fk` FOREIGN KEY (`role_id`) REFERENCES `concept` (`concept_id`),
   CONSTRAINT `provider_speciality_id_fk` FOREIGN KEY (`speciality_id`) REFERENCES `concept` (`concept_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6543,8 +5219,8 @@ CREATE TABLE `provider_attribute` (
   `provider_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `provider_id` int(11) NOT NULL,
   `attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `value_reference` text,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -6577,7 +5253,7 @@ DROP TABLE IF EXISTS `provider_attribute_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `provider_attribute_type` (
   `provider_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
@@ -6593,7 +5269,7 @@ CREATE TABLE `provider_attribute_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`provider_attribute_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `provider_attribute_type_creator_fk` (`creator`),
@@ -6614,29 +5290,13 @@ DROP TABLE IF EXISTS `psmart_store`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `psmart_store` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `shr` text,
   `date_created` datetime DEFAULT NULL,
   `status` varchar(20) DEFAULT NULL,
   `status_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `random_names`
---
-
-DROP TABLE IF EXISTS `random_names`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `random_names` (
-  `rid` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`rid`),
-  UNIQUE KEY `name` (`name`),
-  UNIQUE KEY `rid` (`rid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6662,7 +5322,7 @@ CREATE TABLE `relationship` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`relationship_id`),
   UNIQUE KEY `relationship_uuid_index` (`uuid`),
   KEY `relation_creator` (`creator`),
@@ -6673,11 +5333,11 @@ CREATE TABLE `relationship` (
   KEY `relationship_changed_by` (`changed_by`),
   CONSTRAINT `person_a_is_person` FOREIGN KEY (`person_a`) REFERENCES `person` (`person_id`),
   CONSTRAINT `person_b_is_person` FOREIGN KEY (`person_b`) REFERENCES `person` (`person_id`),
-  CONSTRAINT `relation_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `relation_voider` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `relationship_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `relationship_type_id` FOREIGN KEY (`relationship`) REFERENCES `relationship_type` (`relationship_type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `relationship_type_id` FOREIGN KEY (`relationship`) REFERENCES `relationship_type` (`relationship_type_id`),
+  CONSTRAINT `relation_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
+  CONSTRAINT `relation_voider` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6689,8 +5349,8 @@ DROP TABLE IF EXISTS `relationship_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `relationship_type` (
   `relationship_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `a_is_to_b` varchar(50) NOT NULL,
-  `b_is_to_a` varchar(50) NOT NULL,
+  `a_is_to_b` varchar(50) DEFAULT NULL,
+  `b_is_to_a` varchar(50) DEFAULT NULL,
   `preferred` tinyint(1) NOT NULL DEFAULT '0',
   `weight` int(11) NOT NULL DEFAULT '0',
   `description` varchar(255) DEFAULT NULL,
@@ -6700,7 +5360,7 @@ CREATE TABLE `relationship_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `changed_by` int(11) DEFAULT NULL,
   PRIMARY KEY (`relationship_type_id`),
@@ -6711,7 +5371,7 @@ CREATE TABLE `relationship_type` (
   CONSTRAINT `relationship_type_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_created_rel` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_relationship_type` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6723,10 +5383,10 @@ DROP TABLE IF EXISTS `report_object`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `report_object` (
   `report_object_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
-  `report_object_type` varchar(255) NOT NULL,
-  `report_object_sub_type` varchar(255) NOT NULL,
+  `report_object_type` varchar(255) DEFAULT NULL,
+  `report_object_sub_type` varchar(255) DEFAULT NULL,
   `xml_data` text,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -6736,7 +5396,7 @@ CREATE TABLE `report_object` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`report_object_id`),
   UNIQUE KEY `report_object_uuid_index` (`uuid`),
   KEY `user_who_changed_report_object` (`changed_by`),
@@ -6757,10 +5417,10 @@ DROP TABLE IF EXISTS `report_schema_xml`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `report_schema_xml` (
   `report_schema_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `xml_data` text NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `xml_data` text,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`report_schema_id`),
   UNIQUE KEY `report_schema_xml_uuid_index` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -6775,10 +5435,10 @@ DROP TABLE IF EXISTS `reporting_report_design`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reporting_report_design` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
-  `renderer_type` varchar(255) NOT NULL,
+  `renderer_type` varchar(255) DEFAULT NULL,
   `properties` text,
   `creator` int(11) NOT NULL DEFAULT '0',
   `date_created` datetime NOT NULL,
@@ -6788,7 +5448,7 @@ CREATE TABLE `reporting_report_design` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `report_definition_uuid` char(38) NOT NULL,
+  `report_definition_uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `creator for reporting_report_design` (`creator`),
@@ -6810,8 +5470,8 @@ DROP TABLE IF EXISTS `reporting_report_design_resource`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reporting_report_design_resource` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
   `report_design_id` int(11) NOT NULL DEFAULT '0',
   `content_type` varchar(50) DEFAULT NULL,
@@ -6847,10 +5507,10 @@ DROP TABLE IF EXISTS `reporting_report_processor`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reporting_report_processor` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
-  `processor_type` varchar(255) NOT NULL,
+  `processor_type` varchar(255) DEFAULT NULL,
   `configuration` mediumtext,
   `run_on_success` tinyint(1) NOT NULL DEFAULT '1',
   `run_on_error` tinyint(1) NOT NULL DEFAULT '0',
@@ -6886,17 +5546,17 @@ DROP TABLE IF EXISTS `reporting_report_request`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `reporting_report_request` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `base_cohort_uuid` char(38) DEFAULT NULL,
   `base_cohort_parameters` text,
-  `report_definition_uuid` char(38) NOT NULL,
+  `report_definition_uuid` char(38) DEFAULT NULL,
   `report_definition_parameters` text,
-  `renderer_type` varchar(255) NOT NULL,
+  `renderer_type` varchar(255) DEFAULT NULL,
   `renderer_argument` varchar(255) DEFAULT NULL,
   `requested_by` int(11) NOT NULL DEFAULT '0',
   `request_datetime` datetime NOT NULL,
-  `priority` varchar(255) NOT NULL,
-  `status` varchar(255) NOT NULL,
+  `priority` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `evaluation_start_datetime` datetime DEFAULT NULL,
   `evaluation_complete_datetime` datetime DEFAULT NULL,
   `render_complete_datetime` datetime DEFAULT NULL,
@@ -6921,7 +5581,7 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role` (
   `role` varchar(50) NOT NULL DEFAULT '',
   `description` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`role`),
   UNIQUE KEY `role_uuid_index` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -6936,7 +5596,7 @@ DROP TABLE IF EXISTS `role_privilege`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `role_privilege` (
   `role` varchar(50) NOT NULL DEFAULT '',
-  `privilege` varchar(255) NOT NULL,
+  `privilege` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`privilege`,`role`),
   KEY `role_privilege_to_role` (`role`),
   CONSTRAINT `privilege_definitions` FOREIGN KEY (`privilege`) REFERENCES `privilege` (`privilege`),
@@ -6970,7 +5630,7 @@ DROP TABLE IF EXISTS `scheduler_task_config`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scheduler_task_config` (
   `task_config_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `schedulable_class` text,
   `start_time` datetime DEFAULT NULL,
@@ -6983,14 +5643,14 @@ CREATE TABLE `scheduler_task_config` (
   `changed_by` int(11) DEFAULT NULL,
   `date_changed` datetime DEFAULT NULL,
   `last_execution_time` datetime DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`task_config_id`),
   UNIQUE KEY `scheduler_task_config_uuid_index` (`uuid`),
   KEY `scheduler_changer` (`changed_by`),
   KEY `scheduler_creator` (`created_by`),
   CONSTRAINT `scheduler_changer` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `scheduler_creator` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7002,7 +5662,7 @@ DROP TABLE IF EXISTS `scheduler_task_config_property`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `scheduler_task_config_property` (
   `task_config_property_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `value` text,
   `task_config_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`task_config_property_id`),
@@ -7020,12 +5680,12 @@ DROP TABLE IF EXISTS `serialized_object`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `serialized_object` (
   `serialized_object_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(5000) DEFAULT NULL,
-  `type` varchar(255) NOT NULL,
-  `subtype` varchar(255) NOT NULL,
-  `serialization_class` varchar(255) NOT NULL,
-  `serialized_data` mediumtext NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `subtype` varchar(255) DEFAULT NULL,
+  `serialization_class` varchar(255) DEFAULT NULL,
+  `serialized_data` mediumtext,
   `date_created` datetime NOT NULL,
   `creator` int(11) NOT NULL,
   `date_changed` datetime DEFAULT NULL,
@@ -7034,7 +5694,7 @@ CREATE TABLE `serialized_object` (
   `date_retired` datetime DEFAULT NULL,
   `retired_by` int(11) DEFAULT NULL,
   `retire_reason` varchar(1000) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`serialized_object_id`),
   UNIQUE KEY `serialized_object_uuid_index` (`uuid`),
   KEY `serialized_object_creator` (`creator`),
@@ -7043,7 +5703,7 @@ CREATE TABLE `serialized_object` (
   CONSTRAINT `serialized_object_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `serialized_object_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `serialized_object_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7055,8 +5715,8 @@ DROP TABLE IF EXISTS `spreadsheetimport_template`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `spreadsheetimport_template` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `description` varchar(1000) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `description` varchar(1000) DEFAULT NULL,
   `encounter` tinyint(1) DEFAULT '0',
   `target_form` varchar(255) DEFAULT NULL,
   `creator` int(11) NOT NULL DEFAULT '0',
@@ -7081,8 +5741,8 @@ DROP TABLE IF EXISTS `spreadsheetimport_template_column`;
 CREATE TABLE `spreadsheetimport_template_column` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
   `template_id` int(32) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `database_table_dot_column` varchar(1000) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `database_table_dot_column` varchar(1000) DEFAULT NULL,
   `database_table_dataset_index` int(11) DEFAULT NULL,
   `column_import_index` int(32) NOT NULL,
   `disallow_duplicate_value` tinyint(1) NOT NULL DEFAULT '0',
@@ -7103,7 +5763,7 @@ CREATE TABLE `spreadsheetimport_template_column_column` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
   `template_column_id_import_first` int(32) NOT NULL,
   `template_column_id_import_next` int(32) NOT NULL,
-  `foreign_key_column_name` varchar(1000) NOT NULL,
+  `foreign_key_column_name` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Template column which must be imported first` (`template_column_id_import_first`),
   KEY `Template column which must be imported next` (`template_column_id_import_next`),
@@ -7123,7 +5783,7 @@ CREATE TABLE `spreadsheetimport_template_column_prespecified_value` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
   `template_column_id` int(32) NOT NULL,
   `template_prespecified_value_id` int(32) NOT NULL,
-  `foreign_key_column_name` varchar(1000) NOT NULL,
+  `foreign_key_column_name` varchar(1000) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Template column which is being mapped to a pre-specified value` (`template_column_id`),
   KEY `Pre-specified value which is being mapped to a template column` (`template_prespecified_value_id`),
@@ -7142,8 +5802,8 @@ DROP TABLE IF EXISTS `spreadsheetimport_template_prespecified_value`;
 CREATE TABLE `spreadsheetimport_template_prespecified_value` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
   `template_id` int(32) NOT NULL,
-  `database_table_dot_column` varchar(1000) NOT NULL,
-  `value` varchar(100) NOT NULL,
+  `database_table_dot_column` varchar(1000) DEFAULT NULL,
+  `value` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Template to which this pre-specified value belongs` (`template_id`),
   CONSTRAINT `Template to which this pre-specified value belongs` FOREIGN KEY (`template_id`) REFERENCES `spreadsheetimport_template` (`id`)
@@ -7159,11 +5819,11 @@ DROP TABLE IF EXISTS `sync_class`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sync_class` (
   `class_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `default_send_to` tinyint(1) NOT NULL,
   `default_receive_from` tinyint(1) NOT NULL,
   PRIMARY KEY (`class_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7175,7 +5835,7 @@ DROP TABLE IF EXISTS `sync_import`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sync_import` (
   `sync_import_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(36) NOT NULL,
+  `uuid` char(36) DEFAULT NULL,
   `creator` char(36) DEFAULT NULL,
   `database_version` char(20) DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
@@ -7200,21 +5860,21 @@ DROP TABLE IF EXISTS `sync_record`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sync_record` (
   `record_id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(36) NOT NULL,
+  `uuid` char(36) DEFAULT NULL,
   `creator` char(36) DEFAULT NULL,
   `database_version` char(20) DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
   `retry_count` int(11) DEFAULT NULL,
   `state` char(32) DEFAULT NULL,
   `payload` longtext,
-  `contained_classes` varchar(1000) DEFAULT '',
-  `original_uuid` varchar(36) NOT NULL,
+  `contained_classes` varchar(1000) DEFAULT NULL,
+  `original_uuid` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`record_id`),
-  UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `original_uuid` (`original_uuid`),
+  UNIQUE KEY `uuid` (`uuid`),
   KEY `timestamp` (`timestamp`),
   KEY `state` (`state`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -7227,15 +5887,15 @@ DROP TABLE IF EXISTS `sync_server`;
 CREATE TABLE `sync_server` (
   `server_id` int(11) NOT NULL AUTO_INCREMENT,
   `nickname` varchar(255) DEFAULT NULL,
-  `address` varchar(255) NOT NULL,
-  `server_type` varchar(20) NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `server_type` varchar(20) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `uuid` char(36) DEFAULT NULL,
   `last_sync` datetime DEFAULT NULL,
   `last_sync_state` varchar(50) DEFAULT NULL,
   `disabled` tinyint(1) NOT NULL,
-  `child_username` varchar(50) DEFAULT '',
+  `child_username` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`server_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -7309,1550 +5969,6 @@ CREATE TABLE `test_order` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `tr_art_fastrack`
---
-
-DROP TABLE IF EXISTS `tr_art_fastrack`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_art_fastrack` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Refill_model` varchar(6) DEFAULT NULL,
-  `Condoms_dispensed` varchar(4) DEFAULT NULL,
-  `Missed_doses` varchar(4) DEFAULT NULL,
-  `Fatigue` varchar(4) DEFAULT NULL,
-  `Cough` varchar(4) DEFAULT NULL,
-  `Fever` varchar(4) DEFAULT NULL,
-  `Rash` varchar(4) DEFAULT NULL,
-  `Nausea_vomiting` varchar(4) DEFAULT NULL,
-  `Genital_sore_discharge` varchar(4) DEFAULT NULL,
-  `Diarrhea` varchar(4) DEFAULT NULL,
-  `Other_symptoms` text,
-  `Other_medications` varchar(4) DEFAULT NULL,
-  `Other_medications_specify` text,
-  `Pregnancy_status` varchar(4) DEFAULT NULL,
-  `FP_use` varchar(4) DEFAULT NULL,
-  `FP_use_specify` text,
-  `Reason_not_using_FP` varchar(100) DEFAULT NULL,
-  `Referred` varchar(4) DEFAULT NULL,
-  `Referral_specify` varchar(100) DEFAULT NULL,
-  `Next_Appointment_Date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_art_preparation`
---
-
-DROP TABLE IF EXISTS `tr_art_preparation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_art_preparation` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Understands_hiv_art_benefits` int(4) DEFAULT NULL,
-  `Screened_negative_substance_abuse` int(4) DEFAULT NULL,
-  `Screened_negative_psychiatric_illness` int(4) DEFAULT NULL,
-  `HIV_status_disclosure` int(11) DEFAULT NULL,
-  `Trained_drug_admin` int(4) DEFAULT NULL,
-  `Informed_drug_side_effects` int(11) DEFAULT NULL,
-  `Caregiver_committed` int(4) DEFAULT NULL,
-  `Adherance_barriers_identified` int(4) DEFAULT NULL,
-  `Caregiver_location_contacts_known` int(4) DEFAULT NULL,
-  `Ready_to_start_art` int(4) DEFAULT NULL,
-  `Identified_drug_time` int(4) DEFAULT NULL,
-  `Treatment_supporter_engaged` int(4) DEFAULT NULL,
-  `Support_grp_meeting_awareness` int(4) DEFAULT NULL,
-  `Enrolled_in_reminder_system` int(4) DEFAULT NULL,
-  `Other_support_systems` int(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_cage_alcohol_screening`
---
-
-DROP TABLE IF EXISTS `tr_cage_alcohol_screening`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_cage_alcohol_screening` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `DrinkAlcohol` int(4) DEFAULT NULL,
-  `Smoke` int(6) DEFAULT NULL,
-  `UseDrugs` int(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_defaulter_tracing`
---
-
-DROP TABLE IF EXISTS `tr_defaulter_tracing`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_defaulter_tracing` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Tracing_type` varchar(100) DEFAULT NULL,
-  `Tracing_outcome` int(4) DEFAULT NULL,
-  `Attempt_number` varchar(100) DEFAULT NULL,
-  `Is_final_trace` varchar(100) DEFAULT NULL,
-  `True_status` varchar(100) DEFAULT NULL,
-  `Cause_of_death` int(6) DEFAULT NULL,
-  `Comments` text,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_demographics`
---
-
-DROP TABLE IF EXISTS `tr_demographics`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_demographics` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `First_Name` varchar(100) DEFAULT NULL,
-  `Middle_Name` varchar(100) DEFAULT NULL,
-  `Last_Name` varchar(100) DEFAULT NULL,
-  `DOB` date DEFAULT NULL,
-  `Exact_DOB` varchar(100) DEFAULT NULL,
-  `Sex` varchar(1) DEFAULT NULL,
-  `UPN` varchar(300) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(100) DEFAULT NULL,
-  `National_id_no` varchar(100) DEFAULT NULL,
-  `Patient_clinic_number` varchar(100) DEFAULT NULL,
-  `Phone_number` varchar(100) DEFAULT NULL,
-  `Alternate_Phone_number` varchar(100) DEFAULT NULL,
-  `Postal_Address` varchar(100) DEFAULT NULL,
-  `Email_address` varchar(100) DEFAULT NULL,
-  `County` varchar(100) DEFAULT NULL,
-  `Sub_county` varchar(100) DEFAULT NULL,
-  `Ward` varchar(100) DEFAULT NULL,
-  `Village` varchar(255) DEFAULT NULL,
-  `Landmark` varchar(255) DEFAULT NULL,
-  `Nearest_Health_Centre` varchar(255) DEFAULT NULL,
-  `Next_of_kin` varchar(255) DEFAULT NULL,
-  `Next_of_kin_phone` varchar(255) DEFAULT NULL,
-  `Next_of_kin_relationship` varchar(255) DEFAULT NULL,
-  `Next_of_kin_address` varchar(100) DEFAULT NULL,
-  `Marital_status` int(6) DEFAULT NULL,
-  `Occupation` int(6) DEFAULT NULL,
-  `Education_level` int(6) DEFAULT NULL,
-  `Dead` varchar(100) DEFAULT NULL,
-  `Death_date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_depression_screening`
---
-
-DROP TABLE IF EXISTS `tr_depression_screening`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_depression_screening` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `FeelingDownDepressed` varchar(4) DEFAULT NULL,
-  `LittleNoInterest` varchar(4) DEFAULT NULL,
-  `PHQLittleNoInterest` varchar(6) DEFAULT NULL,
-  `PHQFeelingDownDepressed` varchar(6) DEFAULT NULL,
-  `PHQTroubleSleeping` varchar(6) DEFAULT NULL,
-  `PHQFeelingTiredLittleEnergy` varchar(6) DEFAULT NULL,
-  `PHQPoorAppetiteOvereating` varchar(6) DEFAULT NULL,
-  `PHQFeelingBadAboutYourSelf` varchar(6) DEFAULT NULL,
-  `PHQTroubleConcentrating` varchar(6) DEFAULT NULL,
-  `PHQMovingSpeakingSlowly` varchar(6) DEFAULT NULL,
-  `RecommendedManagement` text,
-  `DepressionSeverity` varchar(6) DEFAULT NULL,
-  `DepressionTotal` text
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_enhanced_adherence`
---
-
-DROP TABLE IF EXISTS `tr_enhanced_adherence`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_enhanced_adherence` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Session_number` int(50) DEFAULT NULL,
-  `First_session_date` date DEFAULT NULL,
-  `Pill_count` varchar(255) DEFAULT NULL,
-  `Arv_adherence` int(6) DEFAULT NULL,
-  `Has_vl_results` int(4) DEFAULT NULL,
-  `Vl_results_suppressed` int(4) DEFAULT NULL,
-  `Vl_results_feeling` text,
-  `Cause_of_high_vl` text,
-  `Way_forward` text,
-  `Patient_hiv_knowledge` text,
-  `Patient_drugs_uptake` text,
-  `Patient_drugs_reminder_tools` text,
-  `Patient_drugs_uptake_during_travels` text,
-  `Patient_drugs_side_effects_response` text,
-  `Patient_drugs_uptake_most_difficult_times` text,
-  `Patient_drugs_daily_uptake_feeling` text,
-  `Patient_ambitions` text,
-  `Patient_has_people_to_talk` int(4) DEFAULT NULL,
-  `Patient_enlisting_social_support` text,
-  `Patient_income_sources` text,
-  `Patient_challenges_reaching_clinic` int(4) DEFAULT NULL,
-  `Patient_worried_of_accidental_disclosure` int(4) DEFAULT NULL,
-  `Patient_treated_differently` int(4) DEFAULT NULL,
-  `Stigma_hinders_adherence` int(4) DEFAULT NULL,
-  `Patient_tried_faith_healing` int(4) DEFAULT NULL,
-  `Patient_adherence_improved` int(4) DEFAULT NULL,
-  `Patient_doses_missed` int(11) DEFAULT NULL,
-  `Review_and_barriers_to_adherence` text,
-  `Other_referrals` int(4) DEFAULT NULL,
-  `Appointments_honoured` int(4) DEFAULT NULL,
-  `Referral_experience` text,
-  `Home_visit_benefit` int(4) DEFAULT NULL,
-  `Adherence_plan` text,
-  `Next_appointment_date` varchar(10) DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_family_history`
---
-
-DROP TABLE IF EXISTS `tr_family_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_family_history` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Relative_Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Name` varchar(255) DEFAULT NULL,
-  `RelativeFirst_Name` varchar(255) DEFAULT NULL,
-  `RelativeMiddle_Name` varchar(255) DEFAULT NULL,
-  `RelativeLast_Name` varchar(255) DEFAULT NULL,
-  `DoB` date DEFAULT NULL,
-  `Age` int(11) DEFAULT NULL,
-  `Age_unit` int(4) DEFAULT NULL,
-  `Relationship` int(6) DEFAULT NULL,
-  `BaselineResult` varchar(4) DEFAULT NULL,
-  `Hiv_status` varchar(4) DEFAULT NULL,
-  `In_Care` int(4) DEFAULT NULL,
-  `Linkage_CCC_Number` varchar(100) DEFAULT NULL,
-  `CCC_Number` varchar(200) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hei_enrollment`
---
-
-DROP TABLE IF EXISTS `tr_hei_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hei_enrollment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Gestation_at_birth` double DEFAULT NULL,
-  `Birth_weight` double DEFAULT NULL,
-  `Child_exposed` varchar(100) DEFAULT NULL,
-  `Hei_id_number` varchar(100) DEFAULT NULL,
-  `Spd_number` varchar(100) DEFAULT NULL,
-  `Birth_length` varchar(100) DEFAULT NULL,
-  `Birth_order` varchar(100) DEFAULT NULL,
-  `Birth_type` varchar(50) DEFAULT NULL,
-  `Place_of_delivery` int(4) DEFAULT NULL,
-  `Mode_of_delivery` int(6) DEFAULT NULL,
-  `Birth_notification_number` varchar(50) DEFAULT NULL,
-  `Date_birth_notification_number_issued` date DEFAULT NULL,
-  `Birth_certificate_number` varchar(100) DEFAULT NULL,
-  `Date_first_enrolled_in_hei_care` date DEFAULT NULL,
-  `Birth_registration_place` varchar(50) DEFAULT NULL,
-  `Birth_registration_date` date DEFAULT NULL,
-  `Mothers_name` varchar(100) DEFAULT NULL,
-  `Fathers_name` varchar(100) DEFAULT NULL,
-  `Guardians_name` varchar(100) DEFAULT NULL,
-  `Community_HealthWorkers_name` varchar(100) DEFAULT NULL,
-  `Alternative_Contact_name` varchar(100) DEFAULT NULL,
-  `Contacts_For_Alternative_Contact` varchar(100) DEFAULT NULL,
-  `Need_for_special_care` varchar(100) DEFAULT NULL,
-  `Reason_for_special_care` varchar(100) DEFAULT NULL,
-  `TB_contact_history_in_household` int(4) DEFAULT NULL,
-  `Mother_alive` int(11) DEFAULT NULL,
-  `Health_facility_name` varchar(100) DEFAULT NULL,
-  `Mother_breastfeeding` int(4) DEFAULT NULL,
-  `Referral_source` varchar(100) DEFAULT NULL,
-  `Transfer_in` varchar(100) DEFAULT NULL,
-  `Transfer_in_date` date DEFAULT NULL,
-  `Facility_transferred_from` varchar(50) DEFAULT NULL,
-  `District_transferred_from` varchar(50) DEFAULT NULL,
-  `Child_arv_prophylaxis` varchar(100) DEFAULT NULL,
-  `Mother_on_NVP_during_breastfeeding` int(4) DEFAULT NULL,
-  `Infant_mother_link` varchar(100) DEFAULT NULL,
-  `Mother_on_pmtct_drugs` int(4) DEFAULT NULL,
-  `Mother_on_pmtct_drugs_regimen` int(6) DEFAULT NULL,
-  `Mother_on_pmtct_other_regimen` varchar(300) DEFAULT NULL,
-  `Mother_on_art_at_infant_enrollment` int(4) DEFAULT NULL,
-  `Mother_drug_regimen` int(6) DEFAULT NULL,
-  `Infant_prophylaxis` int(6) DEFAULT NULL,
-  `Infant_prophylaxis_other` varchar(200) DEFAULT NULL,
-  `Mother_ccc_number` varchar(100) DEFAULT NULL,
-  `Voided` int(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hei_followup`
---
-
-DROP TABLE IF EXISTS `tr_hei_followup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hei_followup` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Weight` double DEFAULT NULL,
-  `Height` double DEFAULT NULL,
-  `Primary_care_give` int(4) DEFAULT NULL,
-  `Infant_feeding` varchar(4) DEFAULT NULL,
-  `TB_Assessment_outcome` varchar(6) DEFAULT NULL,
-  `Social_smile_milestone_Under_2Months` int(6) DEFAULT NULL,
-  `Social_smile_milestone_2Months` int(6) DEFAULT NULL,
-  `Head_control_milestone_3Months` int(6) DEFAULT NULL,
-  `Head_control_milestone_4Months` int(6) DEFAULT NULL,
-  `Hand_extension_milestone_9months` int(6) DEFAULT NULL,
-  `Sitting_milestone_12months` int(6) DEFAULT NULL,
-  `Standing_milestone_15months` int(6) DEFAULT NULL,
-  `Walking_milestone_18months` int(6) DEFAULT NULL,
-  `Talking_milestone_36months` int(6) DEFAULT NULL,
-  `First_DNA_PCRSampleDate` date DEFAULT NULL,
-  `First_DNA_PCRResult` varchar(100) DEFAULT NULL,
-  `First_DNA_PCRResultDate` date DEFAULT NULL,
-  `Second_DNA_PCRSampleDate` date DEFAULT NULL,
-  `Second_DNA_PCRResult` varchar(100) DEFAULT NULL,
-  `Second_DNA_PCRResultDate` date DEFAULT NULL,
-  `Third_DNA_PCRSampleDate` date DEFAULT NULL,
-  `Third_DNA_PCRResult` varchar(100) DEFAULT NULL,
-  `Third_DNA_PCRResultDate` date DEFAULT NULL,
-  `ConfimatoryPCR_SampleDate` date DEFAULT NULL,
-  `ConfirmatoryPCR_Result` varchar(100) DEFAULT NULL,
-  `ConfimatoryPCR_ResultDate` date DEFAULT NULL,
-  `RepeatConfirmatoryPCR_SampleDate` date DEFAULT NULL,
-  `RepeatConfirmatoryPCR_Result` varchar(100) DEFAULT NULL,
-  `RepeatConfirmatoryPCR_ResultDate` date DEFAULT NULL,
-  `BaselineViralLoadSampleDate` date DEFAULT NULL,
-  `BaselineViralLoadResult` varchar(100) DEFAULT NULL,
-  `BaselineViralLoadResultDate` date DEFAULT NULL,
-  `Final_AntibodySampleDate` date DEFAULT NULL,
-  `Final_AntibodyResult` varchar(100) DEFAULT NULL,
-  `Final_AntibodyResultDate` date DEFAULT NULL,
-  `Dna_pcr_sample_date` date DEFAULT NULL,
-  `Dna_pcr_contextual_status` varchar(100) DEFAULT NULL,
-  `Dna_pcr_results` varchar(100) DEFAULT NULL,
-  `Dna_pcr_dbs_sample_code` varchar(100) DEFAULT NULL,
-  `Dna_pcr_results_date` date DEFAULT NULL,
-  `Azt_given` varchar(4) DEFAULT NULL,
-  `Nvp_given` varchar(4) DEFAULT NULL,
-  `Ctx_given` varchar(4) DEFAULT NULL,
-  `ARV_prophylaxis_received` int(6) DEFAULT NULL,
-  `ARV_prophylaxis_Other_received` varchar(100) DEFAULT NULL,
-  `First_antibody_sample_date` date DEFAULT NULL,
-  `First_antibody_result` varchar(100) DEFAULT NULL,
-  `First_antibody_dbs_sample_code` varchar(100) DEFAULT NULL,
-  `First_antibody_result_date` date DEFAULT NULL,
-  `Final_antibody_sample_date` date DEFAULT NULL,
-  `Final_antibody_result` varchar(100) DEFAULT NULL,
-  `Final_antibody_dbs_sample_code` varchar(100) DEFAULT NULL,
-  `Final_antibody_result_date` date DEFAULT NULL,
-  `Tetracycline_Eye_Ointment` varchar(100) DEFAULT NULL,
-  `Pupil` varchar(100) DEFAULT NULL,
-  `Sight` varchar(100) DEFAULT NULL,
-  `Squint` varchar(100) DEFAULT NULL,
-  `Deworming_Drug` varchar(100) DEFAULT NULL,
-  `Deworming_Dosage_Units` varchar(100) DEFAULT NULL,
-  `Date_of_next_appointment` date DEFAULT NULL,
-  `Comments` varchar(100) DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hei_immunization`
---
-
-DROP TABLE IF EXISTS `tr_hei_immunization`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hei_immunization` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `BCG` varchar(50) DEFAULT NULL,
-  `BCG_Date` date DEFAULT NULL,
-  `BCG_Period` varchar(50) DEFAULT NULL,
-  `OPV_birth` varchar(50) DEFAULT NULL,
-  `OPV_Birth_Date` date DEFAULT NULL,
-  `OPV_Birth_Period` varchar(50) DEFAULT NULL,
-  `OPV_1` varchar(50) DEFAULT NULL,
-  `OPV_1_Date` date DEFAULT NULL,
-  `OPV_1_Period` varchar(50) DEFAULT NULL,
-  `OPV_2` varchar(50) DEFAULT NULL,
-  `OPV_2_Date` date DEFAULT NULL,
-  `OPV_2_Period` varchar(100) DEFAULT NULL,
-  `OPV_3` varchar(50) DEFAULT NULL,
-  `OPV_3_Date` date DEFAULT NULL,
-  `OPV_3_Period` varchar(50) DEFAULT NULL,
-  `DPT_Hep_B_Hib_1` varchar(50) DEFAULT NULL,
-  `DPT_Hep_B_Hib_2` varchar(50) DEFAULT NULL,
-  `DPT_Hep_B_Hib_3` varchar(50) DEFAULT NULL,
-  `IPV` varchar(50) DEFAULT NULL,
-  `IPV_Date` date DEFAULT NULL,
-  `IPV_Period` varchar(50) DEFAULT NULL,
-  `ROTA_1` varchar(100) DEFAULT NULL,
-  `ROTA_1_Date` date DEFAULT NULL,
-  `ROTA_1_Period` varchar(100) DEFAULT NULL,
-  `ROTA_2` varchar(100) DEFAULT NULL,
-  `ROTA_2_Date` date DEFAULT NULL,
-  `ROTA_2_Period` varchar(100) DEFAULT NULL,
-  `Measles_rubella_1` varchar(50) DEFAULT NULL,
-  `Measles_rubella_2` varchar(50) DEFAULT NULL,
-  `Yellow_fever` varchar(50) DEFAULT NULL,
-  `Measles_6_months` varchar(100) DEFAULT NULL,
-  `Measles_6_Date` date DEFAULT NULL,
-  `Measles_6_Period` varchar(100) DEFAULT NULL,
-  `Measles_9_Months` varchar(100) DEFAULT NULL,
-  `Measles_9_Date` date DEFAULT NULL,
-  `Measles_9_Period` varchar(100) DEFAULT NULL,
-  `Measles_18_Months` varchar(100) DEFAULT NULL,
-  `Measles_18_Date` date DEFAULT NULL,
-  `Measles_18_Period` varchar(100) DEFAULT NULL,
-  `Pentavalent_1` varchar(100) DEFAULT NULL,
-  `Pentavalent_1_Date` date DEFAULT NULL,
-  `Pentavalent_1_Period` varchar(100) DEFAULT NULL,
-  `Pentavalent_2` varchar(100) DEFAULT NULL,
-  `Pentavalent_2_Date` date DEFAULT NULL,
-  `Pentavalent_2_Period` varchar(100) DEFAULT NULL,
-  `Pentavalent_3` varchar(100) DEFAULT NULL,
-  `Pentavalent_3_Date` date DEFAULT NULL,
-  `Pentavalent_3_Period` varchar(100) DEFAULT NULL,
-  `PCV_10_1` varchar(50) DEFAULT NULL,
-  `PCV_10_1_Date` date DEFAULT NULL,
-  `PCV_10_1_Period` varchar(50) DEFAULT NULL,
-  `PCV_10_2` varchar(50) DEFAULT NULL,
-  `PCV_10_2_Date` date DEFAULT NULL,
-  `PCV_10_2_Period` varchar(50) DEFAULT NULL,
-  `PCV_10_3` varchar(50) DEFAULT NULL,
-  `PCV_10_3_Date` date DEFAULT NULL,
-  `PCV_10_3_Period` varchar(50) DEFAULT NULL,
-  `Other` varchar(50) DEFAULT NULL,
-  `Other_Date` date DEFAULT NULL,
-  `Other_Period` varchar(50) DEFAULT NULL,
-  `VitaminA_6_months` varchar(50) DEFAULT NULL,
-  `VitaminA_1_yr` varchar(50) DEFAULT NULL,
-  `VitaminA_1_and_half_yr` varchar(50) DEFAULT NULL,
-  `VitaminA_2_yr` varchar(50) DEFAULT NULL,
-  `VitaminA2_to_5_yr` varchar(50) DEFAULT NULL,
-  `fully_immunized` date DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hei_outcome`
---
-
-DROP TABLE IF EXISTS `tr_hei_outcome`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hei_outcome` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Child_hei_outcomes_exit_date` date DEFAULT NULL,
-  `Child_hei_outcomes_HIV_status` int(6) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hiv_enrollment`
---
-
-DROP TABLE IF EXISTS `tr_hiv_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hiv_enrollment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `UPN` varchar(20) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Patient_Type` int(6) DEFAULT NULL,
-  `Entry_point` int(6) DEFAULT NULL,
-  `TI_Facility` varchar(100) DEFAULT NULL,
-  `Date_first_enrolled_in_care` date DEFAULT NULL,
-  `Transfer_in_date` date DEFAULT NULL,
-  `Date_started_art_at_transferring_facility` date DEFAULT NULL,
-  `Date_confirmed_hiv_positive` date DEFAULT NULL,
-  `Facility_confirmed_hiv_positive` varchar(100) DEFAULT NULL,
-  `Baseline_arv_use` varchar(100) DEFAULT NULL,
-  `Purpose_of_baseline_arv_use` int(4) DEFAULT NULL,
-  `Baseline_arv_regimen` int(6) DEFAULT NULL,
-  `Baseline_arv_regimen_line` varchar(100) DEFAULT NULL,
-  `Baseline_arv_date_last_used` date DEFAULT NULL,
-  `Baseline_who_stage` int(4) DEFAULT NULL,
-  `Baseline_cd4_results` int(11) DEFAULT NULL,
-  `Baseline_cd4_date` date DEFAULT NULL,
-  `Baseline_vl_results` int(11) DEFAULT NULL,
-  `Baseline_vl_date` date DEFAULT NULL,
-  `Baseline_vl_ldl_results` int(11) DEFAULT NULL,
-  `Baseline_vl_ldl_date` date DEFAULT NULL,
-  `Baseline_HBV_Infected` varchar(50) DEFAULT NULL,
-  `Baseline_TB_Infected` varchar(50) DEFAULT NULL,
-  `Baseline_Pregnant` varchar(50) DEFAULT NULL,
-  `Baseline_Breastfeeding` varchar(50) DEFAULT NULL,
-  `Baseline_Weight` double DEFAULT NULL,
-  `Baseline_Height` double DEFAULT NULL,
-  `Baseline_BMI` double DEFAULT NULL,
-  `Name_of_treatment_supporter` varchar(255) DEFAULT NULL,
-  `Relationship_of_treatment_supporter` varchar(100) DEFAULT NULL,
-  `Treatment_supporter_telephone` varchar(100) DEFAULT NULL,
-  `Treatment_supporter_address` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hiv_followup`
---
-
-DROP TABLE IF EXISTS `tr_hiv_followup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hiv_followup` (
-  `Person_Id` int(100) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(100) DEFAULT NULL,
-  `Visit_scheduled` int(11) DEFAULT NULL,
-  `Visit_by` int(6) DEFAULT NULL,
-  `Visit_by_other` varchar(100) DEFAULT NULL,
-  `Nutritional_status` int(6) DEFAULT NULL,
-  `Population_type` int(6) DEFAULT NULL,
-  `Key_population_type_pwid` int(3) DEFAULT NULL,
-  `Key_population_type_msm` int(6) DEFAULT NULL,
-  `Key_population_type_fsw` int(6) DEFAULT NULL,
-  `Who_stage` int(4) DEFAULT NULL,
-  `Presenting_complaints` int(4) DEFAULT NULL,
-  `Has_known_allergies` int(4) DEFAULT NULL,
-  `Has_Chronic_illnesses_cormobidities` int(4) DEFAULT NULL,
-  `Has_adverse_drug_reaction` int(4) DEFAULT NULL,
-  `Vaccinations_today_bcg` int(3) DEFAULT NULL,
-  `Vaccinations_today_pv` int(5) DEFAULT NULL,
-  `Vaccinations_today_penta` int(4) DEFAULT NULL,
-  `Vaccinations_today_pcv` int(6) DEFAULT NULL,
-  `Vaccinations_today_measles` int(2) DEFAULT NULL,
-  `Vaccinations_today_hbv` int(3) DEFAULT NULL,
-  `Vaccinations_today_flu` int(4) DEFAULT NULL,
-  `Vaccinations_today_other` int(4) DEFAULT NULL,
-  `Vaccinations_today_other_nc` binary(0) DEFAULT NULL,
-  `Last_menstrual_period` date DEFAULT NULL,
-  `Pregnancy_status` int(4) DEFAULT NULL,
-  `Wants_pregnancy` int(4) DEFAULT NULL,
-  `Anc_number` varchar(100) DEFAULT NULL,
-  `Anc_profile` int(4) DEFAULT NULL,
-  `Expected_delivery_date` date DEFAULT NULL,
-  `Gravida` int(11) DEFAULT NULL,
-  `Parity_term` int(11) DEFAULT NULL,
-  `Parity_abortion` int(11) DEFAULT NULL,
-  `Family_planning_status` int(6) DEFAULT NULL,
-  `Ctx_adherence` int(6) DEFAULT NULL,
-  `Ctx_dispensed` int(4) DEFAULT NULL,
-  `Dapsone_adherence` int(6) DEFAULT NULL,
-  `Dapsone_dispensed` int(4) DEFAULT NULL,
-  `Arv_adherence` int(6) DEFAULT NULL,
-  `Condom_provided` int(4) DEFAULT NULL,
-  `Screened_for_substance_abuse` int(4) DEFAULT NULL,
-  `Pwp_disclosure` int(4) DEFAULT NULL,
-  `Pwp_partner_tested` int(4) DEFAULT NULL,
-  `Cacx_screening` int(4) DEFAULT NULL,
-  `Screened_for_sti` int(4) DEFAULT NULL,
-  `Sti_partner_notification` int(4) DEFAULT NULL,
-  `Stability` int(11) DEFAULT NULL,
-  `Next_appointment_date` date DEFAULT NULL,
-  `Next_appointment_reason` int(6) DEFAULT NULL,
-  `Differentiated_care` int(6) DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hiv_program_discontinuation`
---
-
-DROP TABLE IF EXISTS `tr_hiv_program_discontinuation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hiv_program_discontinuation` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Program` varchar(100) DEFAULT NULL,
-  `Date_Enrolled` date DEFAULT NULL,
-  `Date_Completed` date DEFAULT NULL,
-  `Care_Ending_Reason` int(6) DEFAULT NULL,
-  `Facility_Transfered_To` varchar(255) DEFAULT NULL,
-  `Death_Date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hiv_program_enrollment`
---
-
-DROP TABLE IF EXISTS `tr_hiv_program_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hiv_program_enrollment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Program` varchar(100) DEFAULT NULL,
-  `Date_Enrolled` date DEFAULT NULL,
-  `Date_Completed` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hiv_regimen_history`
---
-
-DROP TABLE IF EXISTS `tr_hiv_regimen_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hiv_regimen_history` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Program` int(6) DEFAULT NULL,
-  `Drug_Event` int(4) DEFAULT NULL,
-  `Regimen_Name` varchar(6) DEFAULT NULL,
-  `Date_Started` date DEFAULT NULL,
-  `Regimen_Discontinued` varchar(6) DEFAULT NULL,
-  `Date_Discontinued` date DEFAULT NULL,
-  `Reason_Discontinued` varchar(255) DEFAULT NULL,
-  `RegimenSwitchTo` varchar(6) DEFAULT NULL,
-  `CurrentRegimen` varchar(6) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hts_contact_listing`
---
-
-DROP TABLE IF EXISTS `tr_hts_contact_listing`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hts_contact_listing` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Contact_Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Consent` int(4) DEFAULT NULL,
-  `First_Name` varchar(100) DEFAULT NULL,
-  `Middle_Name` varchar(100) DEFAULT NULL,
-  `Last_Name` varchar(100) DEFAULT NULL,
-  `Sex` int(4) DEFAULT NULL,
-  `DoB` date DEFAULT NULL,
-  `Marital_Status` int(6) DEFAULT NULL,
-  `Physical_Address` varchar(255) DEFAULT NULL,
-  `Phone_Number` varchar(100) DEFAULT NULL,
-  `Relationship_To_Index` int(6) DEFAULT NULL,
-  `PNSScreeningDate` date DEFAULT NULL,
-  `Currently_Living_With_Index` int(6) DEFAULT NULL,
-  `IPV_Physically_Hurt` int(4) DEFAULT NULL,
-  `IPV_Threatened_Hurt` int(4) DEFAULT NULL,
-  `IPV_Sexual_Hurt` int(4) DEFAULT NULL,
-  `IPV_Outcome` int(4) DEFAULT NULL,
-  `HIV_Status` int(4) DEFAULT NULL,
-  `PNS_Approach` int(4) DEFAULT NULL,
-  `Booking_Date` date DEFAULT NULL,
-  `Date_Reminded` date DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hts_initial`
---
-
-DROP TABLE IF EXISTS `tr_hts_initial`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hts_initial` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Pop_Type` int(6) DEFAULT NULL,
-  `Key_Pop_Type` int(6) DEFAULT NULL,
-  `Priority_Pop_Type` int(6) DEFAULT NULL,
-  `Patient_disabled` int(4) DEFAULT NULL,
-  `Disability` int(6) DEFAULT NULL,
-  `Ever_Tested` int(4) DEFAULT NULL,
-  `Self_Tested` int(4) DEFAULT NULL,
-  `HTS_Strategy` int(6) DEFAULT NULL,
-  `HTS_Entry_Point` int(6) DEFAULT NULL,
-  `Consented` int(11) DEFAULT NULL,
-  `Tested_As` int(6) DEFAULT NULL,
-  `Test_1_Kit_Name` int(6) DEFAULT NULL,
-  `Test_1_Lot_Number` varchar(255) DEFAULT NULL,
-  `Test_1_Expiry_Date` date DEFAULT NULL,
-  `Test_1_Final_Result` int(4) DEFAULT NULL,
-  `Test_2_Kit_Name` int(6) DEFAULT NULL,
-  `Test_2_Lot_Number` varchar(255) DEFAULT NULL,
-  `Test_2_Expiry_Date` date DEFAULT NULL,
-  `Test_2_Final_Result` int(4) DEFAULT NULL,
-  `Final_Result` int(4) DEFAULT NULL,
-  `Result_given` int(4) DEFAULT NULL,
-  `Couple_Discordant` int(4) DEFAULT NULL,
-  `Tb_Screening_Results` int(6) DEFAULT NULL,
-  `Remarks` text
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hts_linkage`
---
-
-DROP TABLE IF EXISTS `tr_hts_linkage`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hts_linkage` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Facility_Linked` varchar(255) DEFAULT NULL,
-  `CCC_Number` varchar(100) DEFAULT NULL,
-  `Health_Worker_Handed_To` varchar(255) DEFAULT NULL,
-  `Cadre` int(4) DEFAULT NULL,
-  `Date_Enrolled` date DEFAULT NULL,
-  `ART_Start_Date` date DEFAULT NULL,
-  `Remarks` text,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hts_referral`
---
-
-DROP TABLE IF EXISTS `tr_hts_referral`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hts_referral` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Facility_Referred` varchar(255) DEFAULT NULL,
-  `Date_To_Be_Enrolled` date DEFAULT NULL,
-  `Remarks` text,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hts_retest`
---
-
-DROP TABLE IF EXISTS `tr_hts_retest`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hts_retest` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Pop_Type` int(6) DEFAULT NULL,
-  `Key_Pop_Type` int(6) DEFAULT NULL,
-  `Priority_Pop_Type` int(6) DEFAULT NULL,
-  `Patient_disabled` int(4) DEFAULT NULL,
-  `Disability` int(6) DEFAULT NULL,
-  `Ever_Tested` int(4) DEFAULT NULL,
-  `Self_Tested` int(4) DEFAULT NULL,
-  `HTS_Strategy` int(6) DEFAULT NULL,
-  `HTS_Entry_Point` varchar(6) DEFAULT NULL,
-  `Consented` int(11) DEFAULT NULL,
-  `Tested_As` int(6) DEFAULT NULL,
-  `Test_1_Kit_Name` int(6) DEFAULT NULL,
-  `Test_1_Lot_Number` varchar(255) DEFAULT NULL,
-  `Test_1_Expiry_Date` date DEFAULT NULL,
-  `Test_1_Final_Result` int(4) DEFAULT NULL,
-  `Test_2_Kit_Name` int(6) DEFAULT NULL,
-  `Test_2_Lot_Number` varchar(255) DEFAULT NULL,
-  `Test_2_Expiry_Date` date DEFAULT NULL,
-  `Test_2_Final_Result` int(4) DEFAULT NULL,
-  `Final_Result` int(4) DEFAULT NULL,
-  `Result_given` int(4) DEFAULT NULL,
-  `Couple_Discordant` int(4) DEFAULT NULL,
-  `Tb_Screening_Results` int(6) DEFAULT NULL,
-  `Remarks` text
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_hts_tracing`
---
-
-DROP TABLE IF EXISTS `tr_hts_tracing`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_hts_tracing` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Contact_Type` int(6) DEFAULT NULL,
-  `Contact_Outcome` int(4) DEFAULT NULL,
-  `Reason_uncontacted` int(6) DEFAULT NULL,
-  `Remarks` text,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_ipt_enrollment`
---
-
-DROP TABLE IF EXISTS `tr_ipt_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_ipt_enrollment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `IPT_Start_Date` date DEFAULT NULL,
-  `Indication_for_IPT` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_ipt_followup`
---
-
-DROP TABLE IF EXISTS `tr_ipt_followup`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_ipt_followup` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Ipt_due_date` date DEFAULT NULL,
-  `Date_collected_ipt` date DEFAULT NULL,
-  `Weight` double DEFAULT NULL,
-  `Hepatotoxity` int(4) DEFAULT NULL,
-  `Peripheral_neuropathy` int(4) DEFAULT NULL,
-  `Rash` int(4) DEFAULT NULL,
-  `Adherence` int(6) DEFAULT NULL,
-  `AdheranceMeasurement_Action` varchar(500) DEFAULT NULL,
-  `IPT_Outcome` varchar(100) DEFAULT NULL,
-  `Outcome_Date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_ipt_outcome`
---
-
-DROP TABLE IF EXISTS `tr_ipt_outcome`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_ipt_outcome` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `IPT_Outcome` int(6) DEFAULT NULL,
-  `Outcome_Date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_ipt_program`
---
-
-DROP TABLE IF EXISTS `tr_ipt_program`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_ipt_program` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `IPT_Start_Date` date DEFAULT NULL,
-  `Indication_for_IPT` varchar(100) DEFAULT NULL,
-  `IPT_Outcome` int(6) DEFAULT NULL,
-  `Outcome_Date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_laboratory`
---
-
-DROP TABLE IF EXISTS `tr_laboratory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_laboratory` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `LabTestName` varchar(200) DEFAULT NULL,
-  `Test_result` varchar(200) DEFAULT NULL,
-  `Date_test_requested` date DEFAULT NULL,
-  `Date_test_result_received` date DEFAULT NULL,
-  `OrderNumber` varchar(100) DEFAULT NULL,
-  `Urgency` varchar(50) DEFAULT NULL,
-  `Lab_test` int(6) DEFAULT NULL,
-  `CD4` varchar(180) DEFAULT NULL,
-  `CD4PERCENT` varchar(180) DEFAULT NULL,
-  `VIRALLOAD` varchar(180) DEFAULT NULL,
-  `VIRALLOADUNDETECTABLE` varchar(180) DEFAULT NULL,
-  `STOREPLASMA` varchar(180) DEFAULT NULL,
-  `HCT` varchar(180) DEFAULT NULL,
-  `HB` varchar(180) DEFAULT NULL,
-  `WBC` varchar(180) DEFAULT NULL,
-  `WBCDIFF` varchar(180) DEFAULT NULL,
-  `WBCDIFF_NEUT` varchar(180) DEFAULT NULL,
-  `WBCDIFF_NEUT_PERCENT` varchar(180) DEFAULT NULL,
-  `WBCDIFF_LYMPH` varchar(180) DEFAULT NULL,
-  `WBCDIFF_LYMPH_PERCENT` varchar(180) DEFAULT NULL,
-  `WBCDIFF_MONO` varchar(180) DEFAULT NULL,
-  `WBCDIFF_MONO_PERCENT` varchar(180) DEFAULT NULL,
-  `WBCDIFF_EOSIN` varchar(180) DEFAULT NULL,
-  `WBCDIFF_EOSIN_PERCENT` varchar(180) DEFAULT NULL,
-  `PLATELETS` varchar(180) DEFAULT NULL,
-  `AST_SGOT` varchar(180) DEFAULT NULL,
-  `ALT_SGPT` varchar(180) DEFAULT NULL,
-  `CREATININE` varchar(180) DEFAULT NULL,
-  `CREATININEMM` varchar(180) DEFAULT NULL,
-  `AMYLASE` varchar(180) DEFAULT NULL,
-  `PREGNANCY` varchar(180) DEFAULT NULL,
-  `MALARIA` varchar(180) DEFAULT NULL,
-  `SERUMCRYPTO` varchar(180) DEFAULT NULL,
-  `SPUTUMAFB1` varchar(180) DEFAULT NULL,
-  `SPUTUMAFB2` varchar(180) DEFAULT NULL,
-  `SPUTUMAFB3` varchar(180) DEFAULT NULL,
-  `SPUTUMGRAMSTAIN` varchar(180) DEFAULT NULL,
-  `URINALYSIS` varchar(180) DEFAULT NULL,
-  `STOOLSTATUS` varchar(180) DEFAULT NULL,
-  `URINALYSIS_SPECGRAV` varchar(180) DEFAULT NULL,
-  `URINALYSIS_GLUCOSE` varchar(180) DEFAULT NULL,
-  `URINALYSIS_KETONE` varchar(180) DEFAULT NULL,
-  `URINALYSIS_PROTEIN` varchar(180) DEFAULT NULL,
-  `URINALYSIS_LEUKEST` varchar(180) DEFAULT NULL,
-  `URINALYSIS_NITRATE` varchar(180) DEFAULT NULL,
-  `URINALYSIS_BLOOD` varchar(180) DEFAULT NULL,
-  `URINALYSISMICROSCOPICBLOOD` varchar(180) DEFAULT NULL,
-  `URINALYSISMICROSCOPICWBC` varchar(180) DEFAULT NULL,
-  `URINALYSISMICROSCOPICBACTERIA` varchar(180) DEFAULT NULL,
-  `URINALYSISMICROSCOPICCASTS` varchar(180) DEFAULT NULL,
-  `CULTURESENSITIVITY` varchar(180) DEFAULT NULL,
-  `STOOL` varchar(180) DEFAULT NULL,
-  `URINECULTURE_SENSIVITY` varchar(180) DEFAULT NULL,
-  `CSFCRYPTO` varchar(180) DEFAULT NULL,
-  `CSFINDIAINK` varchar(180) DEFAULT NULL,
-  `CSFGRAMSTAIN` varchar(180) DEFAULT NULL,
-  `CSFCULTURE` varchar(180) DEFAULT NULL,
-  `CSFBIOCHEMISTRY` varchar(180) DEFAULT NULL,
-  `GLUCOSEMG` varchar(180) DEFAULT NULL,
-  `GLUCOSEMM` varchar(180) DEFAULT NULL,
-  `ESR` varchar(180) DEFAULT NULL,
-  `CELLCOUNTNEUTROPHILS` varchar(180) DEFAULT NULL,
-  `CELLCOUNTLYMPHOCYTES` varchar(180) DEFAULT NULL,
-  `PROTEIN` varchar(180) DEFAULT NULL,
-  `PROTEINMG` varchar(180) DEFAULT NULL,
-  `PROTEINMM` varchar(180) DEFAULT NULL,
-  `HIVRAPIDTEST` varchar(180) DEFAULT NULL,
-  `CSFBIOCHEMISTRY_GLUCOSE` varchar(180) DEFAULT NULL,
-  `CELLCOUNTRBCS` varchar(180) DEFAULT NULL,
-  `RBC` varchar(180) DEFAULT NULL,
-  `CELLCOUNTWBCS` varchar(180) DEFAULT NULL,
-  `ALBUMIN_MG_DL_` varchar(180) DEFAULT NULL,
-  `COLPOSCOPY_CERVICALCA_FEMALEONLY_` varchar(180) DEFAULT NULL,
-  `CYTOMEGALOVIRUS_CMV_` varchar(180) DEFAULT NULL,
-  `EPSTEINBARRVIRUS_EBV_` varchar(180) DEFAULT NULL,
-  `HDL_MG_DL_` varchar(180) DEFAULT NULL,
-  `HEPATITISAAB_TOTAL` varchar(180) DEFAULT NULL,
-  `HEPATITISAAB_IGM` varchar(180) DEFAULT NULL,
-  `HEPATITISBCORE_ANTIBODYIGM_HBSAB_` varchar(180) DEFAULT NULL,
-  `HEPATITISBCORE_ANTIBODY_TOTAL` varchar(180) DEFAULT NULL,
-  `HEPATITISBSURFACE_ANTIBODY_HBSAB_` varchar(180) DEFAULT NULL,
-  `HEPATITISBSURFACE_ANTIGEN_HBSAG_` varchar(180) DEFAULT NULL,
-  `LDL_MG_DL_` varchar(180) DEFAULT NULL,
-  `PAPSMEAR_CERVICALCA_FEMALEONLY_` varchar(180) DEFAULT NULL,
-  `GONORRHEA` varchar(180) DEFAULT NULL,
-  `CHLAMYDIA` varchar(180) DEFAULT NULL,
-  `RECTALPAPSMEAR` varchar(180) DEFAULT NULL,
-  `SYPHILIS_FTA_` varchar(180) DEFAULT NULL,
-  `SYPHILIS_RPR_` varchar(180) DEFAULT NULL,
-  `TOTALCHOLESTEROL_MG_DL_` varchar(180) DEFAULT NULL,
-  `TOXOPLASMAIGGANTIBODY` varchar(180) DEFAULT NULL,
-  `TRIGLYCERIDES_MG_DL_` varchar(180) DEFAULT NULL,
-  `VAGINALINSPECTIONWITHACETICACID_VIA_` varchar(180) DEFAULT NULL,
-  `VARICELLA_CHICKENPOX_` varchar(180) DEFAULT NULL,
-  `HEPATITISCANTIBODY` varchar(180) DEFAULT NULL,
-  `HIVCONFIRM` varchar(180) DEFAULT NULL,
-  `PCR` varchar(180) DEFAULT NULL,
-  `RDT` varchar(180) DEFAULT NULL,
-  `MPS` varchar(180) DEFAULT NULL,
-  `SPECIES_REPORT` varchar(180) DEFAULT NULL,
-  `CAS` varchar(180) DEFAULT NULL,
-  `SAFB` varchar(180) DEFAULT NULL,
-  `QBL` varchar(180) DEFAULT NULL,
-  `GeneXpert` varchar(180) DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_mch_anc_visit`
---
-
-DROP TABLE IF EXISTS `tr_mch_anc_visit`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_mch_anc_visit` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Anc_visit_number` varchar(100) DEFAULT NULL,
-  `Anc_number` varchar(50) DEFAULT NULL,
-  `Temperature` double DEFAULT NULL,
-  `Pulse_rate` double DEFAULT NULL,
-  `Systolic_bp` double DEFAULT NULL,
-  `Diastolic_bp` double DEFAULT NULL,
-  `Respiratory_rate` double DEFAULT NULL,
-  `Oxygen_saturation` varchar(100) DEFAULT NULL,
-  `Weight` double DEFAULT NULL,
-  `Height` double DEFAULT NULL,
-  `Muac` double DEFAULT NULL,
-  `Hemoglobin` double DEFAULT NULL,
-  `Breast_exam_done` int(4) DEFAULT NULL,
-  `Pallor` varchar(50) DEFAULT NULL,
-  `Maturity` int(11) DEFAULT NULL,
-  `Fundal_height` double DEFAULT NULL,
-  `Fetal_presentation` varchar(100) DEFAULT NULL,
-  `Lie` varchar(100) DEFAULT NULL,
-  `Fetal_heart_rate` int(11) DEFAULT NULL,
-  `Fetal_movement` varchar(50) DEFAULT NULL,
-  `Who_stage` int(4) DEFAULT NULL,
-  `Viral_load_sample_taken` int(4) DEFAULT NULL,
-  `Test_1_Kit_Name` int(6) DEFAULT NULL,
-  `Test_1_kit_lot_no` varchar(50) DEFAULT NULL,
-  `Test_1_kit_expiry` date DEFAULT NULL,
-  `Test_1_Result` int(4) DEFAULT NULL,
-  `Test_2_Kit_Name` int(6) DEFAULT NULL,
-  `Test_2_kit_lot_no` varchar(50) DEFAULT NULL,
-  `Test_2_kit_expiry` date DEFAULT NULL,
-  `Test_2_Result` int(4) DEFAULT NULL,
-  `Final_test_result` int(4) DEFAULT NULL,
-  `Patient_given_result` varchar(4) DEFAULT NULL,
-  `Partner_hiv_tested` int(4) DEFAULT NULL,
-  `Partner_hiv_status` int(4) DEFAULT NULL,
-  `Urine_microscopy` varchar(255) DEFAULT NULL,
-  `Urinary_albumin` varchar(100) DEFAULT NULL,
-  `Glucose_measurement` varchar(100) DEFAULT NULL,
-  `Urine_ph` int(11) DEFAULT NULL,
-  `Urine_gravity` int(11) DEFAULT NULL,
-  `Urine_nitrite_test` varchar(100) DEFAULT NULL,
-  `Urine_leukocyte_esterace_test` varchar(100) DEFAULT NULL,
-  `Urinary_ketone` varchar(100) DEFAULT NULL,
-  `Urine_bile_salt_test` varchar(100) DEFAULT NULL,
-  `Urine_bile_pigment_test` varchar(100) DEFAULT NULL,
-  `Urine_colour` varchar(100) DEFAULT NULL,
-  `Urine_turbidity` varchar(100) DEFAULT NULL,
-  `Urine_dipstick_for_blood` varchar(100) DEFAULT NULL,
-  `Syphilis_test_status` int(4) DEFAULT NULL,
-  `Syphilis_treated_status` int(4) DEFAULT NULL,
-  `Bs_for_mps` varchar(100) DEFAULT NULL,
-  `Anc_exercises` int(4) DEFAULT NULL,
-  `Tb_screening_results` int(6) DEFAULT NULL,
-  `Cacx_screening` int(6) DEFAULT NULL,
-  `Cacx_screening_method` int(6) DEFAULT NULL,
-  `Prophylaxis_given` int(4) DEFAULT NULL,
-  `Baby_azt_dispensed` int(4) DEFAULT NULL,
-  `Baby_nvp_dispensed` int(4) DEFAULT NULL,
-  `Has_other_illnes` int(4) DEFAULT NULL,
-  `Drug` int(4) DEFAULT NULL,
-  `Anc_counselled` int(4) DEFAULT NULL,
-  `Counselled_subject` int(6) DEFAULT NULL,
-  `Referred_From` int(6) DEFAULT NULL,
-  `Referred_To` int(6) DEFAULT NULL,
-  `Next_appointment_date` date DEFAULT NULL,
-  `Clinical_notes` text,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_mch_delivery`
---
-
-DROP TABLE IF EXISTS `tr_mch_delivery`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_mch_delivery` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Admission_number` varchar(200) DEFAULT NULL,
-  `Gestation_Weeks` int(50) DEFAULT NULL,
-  `Duration_Labour` int(50) DEFAULT NULL,
-  `Delivery_Mode` int(6) DEFAULT NULL,
-  `Delivery_Date_Time` date DEFAULT NULL,
-  `Placenta_Complete` int(4) DEFAULT NULL,
-  `Blood_Loss` int(4) DEFAULT NULL,
-  `Mother_Condition` int(6) DEFAULT NULL,
-  `Death_Audited` varchar(100) DEFAULT NULL,
-  `Resuscitation_Done` int(4) DEFAULT NULL,
-  `Delivery_Complications` int(4) DEFAULT NULL,
-  `Delivery_Complications_Type` varchar(200) DEFAULT NULL,
-  `Delivery_Complications_Other` varchar(255) DEFAULT NULL,
-  `Delivery_Place` int(4) DEFAULT NULL,
-  `Delivery_Conducted_By` varchar(200) DEFAULT NULL,
-  `Delivery_Cadre` varchar(100) DEFAULT NULL,
-  `Delivery_Outcome` varchar(100) DEFAULT NULL,
-  `Baby_Name` varchar(200) DEFAULT NULL,
-  `Baby_Sex` int(4) DEFAULT NULL,
-  `Baby_Weight` double DEFAULT NULL,
-  `Baby_Condition` int(6) DEFAULT NULL,
-  `Birth_Deformity` int(6) DEFAULT NULL,
-  `TEO_Birth` int(5) DEFAULT NULL,
-  `BF_At_Birth_Less_1_hr` int(4) DEFAULT NULL,
-  `Apgar_1` int(50) DEFAULT NULL,
-  `Apgar_5` int(50) DEFAULT NULL,
-  `Apgar_10` int(50) DEFAULT NULL,
-  `Test_1_Kit_Name` int(6) DEFAULT NULL,
-  `Test_1_kit_lot_no` varchar(50) DEFAULT NULL,
-  `Test_1_kit_expiry` date DEFAULT NULL,
-  `Test_1_Result` int(4) DEFAULT NULL,
-  `Test_2_Kit_Name` int(6) DEFAULT NULL,
-  `Test_2_kit_lot_no` varchar(50) DEFAULT NULL,
-  `Test_2_kit_expiry` date DEFAULT NULL,
-  `Test_2_Result` int(4) DEFAULT NULL,
-  `Final_test_result` int(4) DEFAULT NULL,
-  `Patient_given_result` int(4) DEFAULT NULL,
-  `Partner_hiv_tested` int(4) DEFAULT NULL,
-  `Partner_hiv_status` int(4) DEFAULT NULL,
-  `Syphilis_Treated` int(4) DEFAULT NULL,
-  `Prophylaxis_given` int(4) DEFAULT NULL,
-  `Baby_azt_dispensed` int(4) DEFAULT NULL,
-  `Baby_nvp_dispensed` int(4) DEFAULT NULL,
-  `Clinical_notes` text,
-  `Next_Appointment_Date` date DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_mch_discharge`
---
-
-DROP TABLE IF EXISTS `tr_mch_discharge`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_mch_discharge` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Discharge_Date` date DEFAULT NULL,
-  `Vitamin_A_Supplimentation` int(4) DEFAULT NULL,
-  `Counselled_Infant_Feeding` int(4) DEFAULT NULL,
-  `Baby_Status_On_Discharge` int(6) DEFAULT NULL,
-  `Mother_Status_On_Discharge` varchar(200) DEFAULT NULL,
-  `Birth_Notification_Number` varchar(200) DEFAULT NULL,
-  `Referred_From` int(6) DEFAULT NULL,
-  `Referred_To` int(6) DEFAULT NULL,
-  `Clinical_notes` text,
-  `Next_Appointment_Date` date DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_mch_enrollment`
---
-
-DROP TABLE IF EXISTS `tr_mch_enrollment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_mch_enrollment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Anc_number` varchar(50) DEFAULT NULL,
-  `Parity` int(11) DEFAULT NULL,
-  `Parity_abortion` int(11) DEFAULT NULL,
-  `Gravida` int(11) DEFAULT NULL,
-  `EDD` date DEFAULT NULL,
-  `Age_at_menarche` int(11) DEFAULT NULL,
-  `TB_screening_results` int(6) DEFAULT NULL,
-  `LMP` date DEFAULT NULL,
-  `Hiv_status` int(4) DEFAULT NULL,
-  `Partner_hiv_status` int(4) DEFAULT NULL,
-  `Syphilis_test_status` int(4) DEFAULT NULL,
-  `Bs_for_mps` int(4) DEFAULT NULL,
-  `Blood_group` int(4) DEFAULT NULL,
-  `Urine_microscopy` varchar(255) DEFAULT NULL,
-  `Urinary_albumin` varchar(4) DEFAULT NULL,
-  `Glucose_measurement` int(4) DEFAULT NULL,
-  `Urine_ph` int(11) DEFAULT NULL,
-  `Urine_gravity` int(11) DEFAULT NULL,
-  `Urine_nitrite_test` int(4) DEFAULT NULL,
-  `Urine_leukocyte_esterace_test` int(4) DEFAULT NULL,
-  `Urinary_ketone` int(4) DEFAULT NULL,
-  `Urine_bile_salt_test` int(4) DEFAULT NULL,
-  `Urine_bile_pigment_test` int(4) DEFAULT NULL,
-  `Urine_colour` int(6) DEFAULT NULL,
-  `Urine_turbidity` int(6) DEFAULT NULL,
-  `Urine_dipstick_for_blood` int(4) DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_mch_pnc_visit`
---
-
-DROP TABLE IF EXISTS `tr_mch_pnc_visit`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_mch_pnc_visit` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `PNC_Register_number` varchar(100) DEFAULT NULL,
-  `PNC_VisitNumber` int(11) DEFAULT NULL,
-  `Delivery_Date` date DEFAULT NULL,
-  `Mode_Of_Delivery` int(4) DEFAULT NULL,
-  `Place_Of_delivery` varchar(255) DEFAULT NULL,
-  `Temperature` double DEFAULT NULL,
-  `Pulse_rate` double DEFAULT NULL,
-  `Systolic_bp` double DEFAULT NULL,
-  `Diastolic_bp` double DEFAULT NULL,
-  `Respiratory_rate` double DEFAULT NULL,
-  `Oxygen_saturation` int(11) DEFAULT NULL,
-  `Weight` double DEFAULT NULL,
-  `Height` double DEFAULT NULL,
-  `BMI` double DEFAULT NULL,
-  `Muac` double DEFAULT NULL,
-  `General_Condition` varchar(200) DEFAULT NULL,
-  `Pallor` int(4) DEFAULT NULL,
-  `Breast_Examination` int(6) DEFAULT NULL,
-  `PPH` int(4) DEFAULT NULL,
-  `CS_Scar` int(6) DEFAULT NULL,
-  `Haemoglobin` double DEFAULT NULL,
-  `Involution_Of_Uterus` int(6) DEFAULT NULL,
-  `Condition_Of_Episiotomy` int(6) DEFAULT NULL,
-  `Lochia` int(6) DEFAULT NULL,
-  `Counselling_On_Infant_Feeding` int(4) DEFAULT NULL,
-  `Counselling_On_FamilyPlanning` varchar(100) DEFAULT NULL,
-  `Delivery_outcome` varchar(100) DEFAULT NULL,
-  `Baby_Condition` int(6) DEFAULT NULL,
-  `Feeding_Method` varchar(100) DEFAULT NULL,
-  `Umblical_Cord` varchar(100) DEFAULT NULL,
-  `Immunization_Started` varchar(100) DEFAULT NULL,
-  `Test_1_Kit_Name` varchar(6) DEFAULT NULL,
-  `Test_1_kit_lot_no` varchar(50) DEFAULT NULL,
-  `Test_1_kit_expiry` date DEFAULT NULL,
-  `Test_1_Result` varchar(4) DEFAULT NULL,
-  `Test_2_Kit_Name` varchar(6) DEFAULT NULL,
-  `Test_2_kit_lot_no` varchar(50) DEFAULT NULL,
-  `Test_2_kit_expiry` date DEFAULT NULL,
-  `Test_2_Result` varchar(4) DEFAULT NULL,
-  `Final_test_result` varchar(4) DEFAULT NULL,
-  `Patient_given_result` varchar(4) DEFAULT NULL,
-  `Partner_hiv_tested` varchar(4) DEFAULT NULL,
-  `Partner_hiv_status` varchar(4) DEFAULT NULL,
-  `Prophylaxis_given` varchar(4) DEFAULT NULL,
-  `Baby_azt_dispensed` varchar(4) DEFAULT NULL,
-  `Baby_nvp_dispensed` varchar(4) DEFAULT NULL,
-  `Pnc_exercises` varchar(4) DEFAULT NULL,
-  `Maternal_condition` varchar(255) DEFAULT NULL,
-  `Iron_supplementation` varchar(4) DEFAULT NULL,
-  `Cacx_screening` int(6) DEFAULT NULL,
-  `Cacx_screening_method` int(6) DEFAULT NULL,
-  `Fistula_screening` int(6) DEFAULT NULL,
-  `On_FP` int(4) DEFAULT NULL,
-  `FP_Method` varchar(6) DEFAULT NULL,
-  `Referred_From` int(6) DEFAULT NULL,
-  `Referred_To` int(6) DEFAULT NULL,
-  `Clinical_notes` varchar(255) DEFAULT NULL,
-  `Next_Appointment_Date` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_obstetric_history`
---
-
-DROP TABLE IF EXISTS `tr_obstetric_history`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_obstetric_history` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Pregnancy_order` varchar(100) DEFAULT NULL,
-  `Number_ANC_Visits_Attended` varchar(255) DEFAULT NULL,
-  `Place_of_delivery` varchar(100) DEFAULT NULL,
-  `Maturity_in_weeks` varchar(100) DEFAULT NULL,
-  `Duration_of_labour` varchar(255) DEFAULT NULL,
-  `Type_of_delivery` int(6) DEFAULT NULL,
-  `Birth_weight` varchar(50) DEFAULT NULL,
-  `Sex` int(4) DEFAULT NULL,
-  `Outcome` varchar(255) DEFAULT NULL,
-  `Puerperium_events` varchar(255) DEFAULT NULL,
-  `Voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_otz_activity`
---
-
-DROP TABLE IF EXISTS `tr_otz_activity`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_otz_activity` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Orientation` int(4) DEFAULT NULL,
-  `Leadership` int(4) DEFAULT NULL,
-  `Participation` int(4) DEFAULT NULL,
-  `Treatment_Literacy` int(4) DEFAULT NULL,
-  `Transition_to_Adult_Care` int(4) DEFAULT NULL,
-  `Making_Decision_Future` int(4) DEFAULT NULL,
-  `srh` int(4) DEFAULT NULL,
-  `Beyond_Third_Ninety` int(4) DEFAULT NULL,
-  `Attended_Support_Group` int(4) DEFAULT NULL,
-  `Remarks` text,
-  `voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_otz_enrolment`
---
-
-DROP TABLE IF EXISTS `tr_otz_enrolment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_otz_enrolment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Orientation` int(4) DEFAULT NULL,
-  `Leadership` int(4) DEFAULT NULL,
-  `Participation` int(4) DEFAULT NULL,
-  `Treatment_literacy` int(4) DEFAULT NULL,
-  `Transition_to_adult_care` int(4) DEFAULT NULL,
-  `Making_decision_future` int(4) DEFAULT NULL,
-  `Srh` int(4) DEFAULT NULL,
-  `Beyond_third_ninety` int(4) DEFAULT NULL,
-  `Transfer_in` int(4) DEFAULT NULL,
-  `Initial_Enrolment_Date` date DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_otz_outcome`
---
-
-DROP TABLE IF EXISTS `tr_otz_outcome`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_otz_outcome` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Discontinuation_Reason` int(6) DEFAULT NULL,
-  `Death_Date` date DEFAULT NULL,
-  `Transfer_Facility` varchar(255) DEFAULT NULL,
-  `Transfer_Date` date DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_ovc_enrolment`
---
-
-DROP TABLE IF EXISTS `tr_ovc_enrolment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_ovc_enrolment` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Caregiver_enrolled_here` int(4) DEFAULT NULL,
-  `Caregiver_name` varchar(255) DEFAULT NULL,
-  `Caregiver_gender` int(4) DEFAULT NULL,
-  `Relationship_to_Client` int(6) DEFAULT NULL,
-  `Caregiver_Phone_Number` varchar(255) DEFAULT NULL,
-  `Client_Enrolled_cpims` int(4) DEFAULT NULL,
-  `Partner_Offering_OVC` varchar(255) DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_ovc_outcome`
---
-
-DROP TABLE IF EXISTS `tr_ovc_outcome`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_ovc_outcome` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `ExitDate` date DEFAULT NULL,
-  `Exit_Reason` int(6) DEFAULT NULL,
-  `Transfer_Facility` varchar(255) DEFAULT NULL,
-  `Transfer_Date` date DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_person_relationship`
---
-
-DROP TABLE IF EXISTS `tr_person_relationship`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_person_relationship` (
-  `Index_Person_Id` int(11) DEFAULT NULL,
-  `Relative_Person_Id` int(11) DEFAULT NULL,
-  `RelativeFirstName` varchar(255) DEFAULT NULL,
-  `RelativeMiddleName` varchar(255) DEFAULT NULL,
-  `RelativeLastName` varchar(255) DEFAULT NULL,
-  `RelativeSex` int(4) DEFAULT NULL,
-  `Relationship` int(6) DEFAULT NULL,
-  `Voided` varchar(10) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_tb_screening`
---
-
-DROP TABLE IF EXISTS `tr_tb_screening`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_tb_screening` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Cough` int(6) DEFAULT NULL,
-  `Fever` int(4) DEFAULT NULL,
-  `Weight_loss` int(4) DEFAULT NULL,
-  `Night_sweats` int(6) DEFAULT NULL,
-  `Tests_Ordered` int(4) DEFAULT NULL,
-  `Sputum_Smear` int(3) DEFAULT NULL,
-  `X_ray` int(6) DEFAULT NULL,
-  `Gene_xpert` int(6) DEFAULT NULL,
-  `Contact_tb_case` varchar(100) DEFAULT NULL,
-  `Lethergy` varchar(100) DEFAULT NULL,
-  `Referral` varchar(100) DEFAULT NULL,
-  `Clinical_diagnosis` varchar(100) DEFAULT NULL,
-  `Invitation_contacts` int(4) DEFAULT NULL,
-  `Evaluated_for_IPT` int(4) DEFAULT NULL,
-  `TB_results` int(6) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_triage`
---
-
-DROP TABLE IF EXISTS `tr_triage`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_triage` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `Visit_reason` varchar(255) DEFAULT NULL,
-  `Systolic_pressure` varchar(100) DEFAULT NULL,
-  `Diastolic_pressure` varchar(100) DEFAULT NULL,
-  `Respiratory_rate` varchar(100) DEFAULT NULL,
-  `Pulse_rate` varchar(100) DEFAULT NULL,
-  `Oxygen_saturation` varchar(100) DEFAULT NULL,
-  `Weight` varchar(100) DEFAULT NULL,
-  `Height` varchar(100) DEFAULT NULL,
-  `Temperature` varchar(100) DEFAULT NULL,
-  `BMI` varchar(100) DEFAULT NULL,
-  `Muac` varchar(100) DEFAULT NULL,
-  `Nutritional_status` varchar(100) DEFAULT NULL,
-  `Last_menstrual_period` date DEFAULT NULL,
-  `Nurse_comments` text
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_users`
---
-
-DROP TABLE IF EXISTS `tr_users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_users` (
-  `User_Id` int(11) DEFAULT NULL,
-  `First_Name` varchar(100) DEFAULT NULL,
-  `Last_Name` varchar(100) DEFAULT NULL,
-  `User_Name` varchar(100) DEFAULT NULL,
-  `Status` varchar(100) DEFAULT NULL,
-  `Designation` varchar(100) DEFAULT NULL,
-  `GroupNames` text,
-  `OpenMRS_User_Id` int(11) DEFAULT NULL,
-  KEY `User_Id` (`User_Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tr_vital_labs`
---
-
-DROP TABLE IF EXISTS `tr_vital_labs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tr_vital_labs` (
-  `Person_Id` int(11) DEFAULT NULL,
-  `Encounter_Date` date DEFAULT NULL,
-  `Encounter_ID` varchar(50) DEFAULT NULL,
-  `LabTestName` varchar(200) DEFAULT NULL,
-  `Test_result` varchar(200) DEFAULT NULL,
-  `Date_test_requested` date DEFAULT NULL,
-  `Date_test_result_received` date DEFAULT NULL,
-  `OrderNumber` varchar(100) DEFAULT NULL,
-  `Lab_Reason` int(6) DEFAULT NULL,
-  `Urgency` varchar(50) DEFAULT NULL,
-  `Lab_test` int(4) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `uiframework_user_defined_page_view`
 --
 
@@ -8861,10 +5977,10 @@ DROP TABLE IF EXISTS `uiframework_user_defined_page_view`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `uiframework_user_defined_page_view` (
   `page_view_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `template_type` varchar(50) NOT NULL,
-  `template_text` mediumtext NOT NULL,
-  `uuid` varchar(38) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `template_type` varchar(50) DEFAULT NULL,
+  `template_text` mediumtext,
+  `uuid` varchar(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   PRIMARY KEY (`page_view_id`),
@@ -8883,7 +5999,7 @@ DROP TABLE IF EXISTS `user_property`;
 CREATE TABLE `user_property` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `property` varchar(100) NOT NULL DEFAULT '',
-  `property_value` varchar(255) NOT NULL DEFAULT '',
+  `property_value` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`,`property`),
   CONSTRAINT `user_property_to_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -8915,7 +6031,7 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `system_id` varchar(50) NOT NULL DEFAULT '',
+  `system_id` varchar(50) DEFAULT NULL,
   `username` varchar(50) DEFAULT NULL,
   `password` varchar(128) DEFAULT NULL,
   `salt` varchar(128) DEFAULT NULL,
@@ -8930,7 +6046,7 @@ CREATE TABLE `users` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `activation_key` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
@@ -8943,7 +6059,7 @@ CREATE TABLE `users` (
   CONSTRAINT `user_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_changed_user` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `user_who_retired_this_user` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8969,7 +6085,7 @@ CREATE TABLE `visit` (
   `voided_by` int(11) DEFAULT NULL,
   `date_voided` datetime DEFAULT NULL,
   `void_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`visit_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `visit_patient_index` (`patient_id`),
@@ -8986,7 +6102,7 @@ CREATE TABLE `visit` (
   CONSTRAINT `visit_patient_fk` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`),
   CONSTRAINT `visit_type_fk` FOREIGN KEY (`visit_type_id`) REFERENCES `visit_type` (`visit_type_id`),
   CONSTRAINT `visit_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3479 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9000,8 +6116,8 @@ CREATE TABLE `visit_attribute` (
   `visit_attribute_id` int(11) NOT NULL AUTO_INCREMENT,
   `visit_id` int(11) NOT NULL,
   `attribute_type_id` int(11) NOT NULL,
-  `value_reference` text NOT NULL,
-  `uuid` char(38) NOT NULL,
+  `value_reference` text,
+  `uuid` char(38) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `changed_by` int(11) DEFAULT NULL,
@@ -9022,7 +6138,7 @@ CREATE TABLE `visit_attribute` (
   CONSTRAINT `visit_attribute_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `visit_attribute_visit_fk` FOREIGN KEY (`visit_id`) REFERENCES `visit` (`visit_id`),
   CONSTRAINT `visit_attribute_voided_by_fk` FOREIGN KEY (`voided_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9034,7 +6150,7 @@ DROP TABLE IF EXISTS `visit_attribute_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `visit_attribute_type` (
   `visit_attribute_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `datatype` varchar(255) DEFAULT NULL,
   `datatype_config` text,
@@ -9050,7 +6166,7 @@ CREATE TABLE `visit_attribute_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`visit_attribute_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `visit_attribute_type_creator_fk` (`creator`),
@@ -9059,7 +6175,7 @@ CREATE TABLE `visit_attribute_type` (
   CONSTRAINT `visit_attribute_type_changed_by_fk` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `visit_attribute_type_creator_fk` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `visit_attribute_type_retired_by_fk` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9071,7 +6187,7 @@ DROP TABLE IF EXISTS `visit_type`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `visit_type` (
   `visit_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `description` varchar(1024) DEFAULT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
@@ -9081,7 +6197,7 @@ CREATE TABLE `visit_type` (
   `retired_by` int(11) DEFAULT NULL,
   `date_retired` datetime DEFAULT NULL,
   `retire_reason` varchar(255) DEFAULT NULL,
-  `uuid` char(38) NOT NULL,
+  `uuid` char(38) DEFAULT NULL,
   PRIMARY KEY (`visit_type_id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `visit_type_creator` (`creator`),
@@ -9090,7 +6206,7 @@ CREATE TABLE `visit_type` (
   CONSTRAINT `visit_type_changed_by` FOREIGN KEY (`changed_by`) REFERENCES `users` (`user_id`),
   CONSTRAINT `visit_type_creator` FOREIGN KEY (`creator`) REFERENCES `users` (`user_id`),
   CONSTRAINT `visit_type_retired_by` FOREIGN KEY (`retired_by`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -9108,9 +6224,9 @@ CREATE TABLE `visit_type` (
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` FUNCTION `fn_getPatientNameDoubleMetaphone`(st VARCHAR(55)) RETURNS varchar(128) CHARSET utf8
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_getPatientNameDoubleMetaphone`(st VARCHAR(55)) RETURNS varchar(128) CHARSET utf8
     NO SQL
 BEGIN
 	DECLARE length, first, last, pos, prevpos, is_slavo_germanic SMALLINT;
@@ -9542,16 +6658,16 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `create_datatools_tables`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_datatools_tables`()
 BEGIN
 DECLARE script_id INT(11);
 INSERT INTO kenyaemr_etl.etl_script_status(script_name, start_time) VALUES('KenyaEMR_Data_Tool', NOW());
 SET script_id = LAST_INSERT_ID();
 
 drop database if exists kenyaemr_datatools;
-create database kenyaemr_datatools;
+create database kenyaemr_datatools DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 create table kenyaemr_datatools.patient_demographics as
 select 
@@ -9565,8 +6681,11 @@ national_id_no,
 unique_patient_no,
 patient_clinic_number,
 Tb_no,
+CPIMS_unique_identifier,
+openmrs_id,
 district_reg_no,
 hei_no,
+cwc_number,
 phone_number,
 birth_place,
 citizenship,
@@ -9674,16 +6793,23 @@ oxygen_saturation,
 muac,
 (case nutritional_status when 1115 then "Normal" when 163302 then "Severe acute malnutrition" when 163303 then "Moderate acute malnutrition" when 114413 then "Overweight/Obese" else "" end) as nutritional_status,
 (case population_type when 164928 then "General Population" when 164929 then "Key Population" else "" end) as population_type,
-(case key_population_type when 105 then "People who inject drugs" when 160578 then "Men who have sex with men" when 160579 then "Female sex Worker" else "" end) as key_population_type,
+(case key_population_type when 105 then "People who inject drugs" when 160578 then "Men who have sex with men" when 160579 then "Female sex Worker" when 165100 then "Transgender" else "" end) as key_population_type,
 IF(who_stage in (1204,1220),"WHO Stage1", IF(who_stage in (1205,1221),"WHO Stage2", IF(who_stage in (1206,1222),"WHO Stage3", IF(who_stage in (1207,1223),"WHO Stage4", "")))) as who_stage,
 (case presenting_complaints when 1 then "Yes" when 0 then "No" else "" end) as presenting_complaints, 
 clinical_notes,
 (case on_anti_tb_drugs when 1065 then "Yes" when 1066 then "No" else "" end) as on_anti_tb_drugs,
 (case on_ipt when 1065 then "Yes" when 1066 then "No" else "" end) as on_ipt,
 (case ever_on_ipt when 1065 then "Yes" when 1066 then "No" else "" end) as ever_on_ipt,
-(case spatum_smear_ordered when 1065 then "Yes" when 1066 then "No" else "" end) as spatum_smear_ordered,
-(case chest_xray_ordered when 1065 then "Yes" when 1066 then "No" else "" end) as chest_xray_ordered,
-(case genexpert_ordered when 1065 then "Yes" when 1066 then "No" else "" end) as genexpert_ordered,
+(case cough when 159799 then "Yes" else "" end) as cough,
+(case fever when 1494 then "Yes" else "" end) as fever,
+(case weight_loss_poor_gain when 832 then "Yes" else "" end) as weight_loss_poor_gain,
+(case night_sweats when 133027 then "Yes" else "" end) as night_sweats,
+(case tb_case_contact when 124068 then "Yes" else "" end) as tb_case_contact,
+(case lethargy when 116334 then "Yes"  else "" end) as lethargy,
+ screened_for_tb,
+(case spatum_smear_ordered when 307 then "Yes" when 1066 then "No" else "" end) as spatum_smear_ordered,
+(case chest_xray_ordered when 12 then "Yes" when 1066 then "No" else "" end) as chest_xray_ordered,
+(case genexpert_ordered when 162202 then "Yes" when 1066 then "No" else "" end) as genexpert_ordered,
 (case spatum_smear_result when 703 then "POSITIVE" when 664 then "NEGATIVE" else "" end) as spatum_smear_result,
 (case chest_xray_result when 1115 then "NORMAL" when 152526 then "ABNORMAL" else "" end) as chest_xray_result,
 (case genexpert_result when 664 then "NEGATIVE" when 162203 then "Mycobacterium tuberculosis detected with rifampin resistance" when 162204 then "Mycobacterium tuberculosis detected without rifampin resistance" 
@@ -9715,6 +6841,18 @@ when 1472 then "Tubal Ligation" when 190 then "Condoms" when 1489 then "Vasectom
 (case reason_not_using_family_planning when 160572 then "Thinks can't get pregnant" when 160573 then "Not sexually active now" when 5622 then "Other" else "" end) as reason_not_using_family_planning,
 (case tb_status when 1660 then "No TB Signs" when 142177 then "Presumed TB" when 1662 then "TB Confirmed" when 160737 then "TB Screening Not Done"  else "" end) as tb_status,
 tb_treatment_no,
+general_examination,
+(case system_examination when 1115 then 'Normal' when 1116 then 'Abnormal' end) as system_examination,
+(case skin_findings when 150555 then 'Abscess' when 125201 then 'Swelling/Growth' when 135591 then 'Hair Loss' when 136455 then 'Itching' when 507 then 'Kaposi Sarcoma' when 1249 then 'Skin eruptions/Rashes' when 5244 then 'Oral sores' end) as skin_findings,
+(case eyes_findings when 123074 then 'Visual Disturbance' when 140940 then 'Excessive tearing' when 131040 then 'Eye pain' when 127777 then 'Eye redness' when 140827 then 'Light sensitive' when 139100 then 'Itchy eyes' end) as eyes_findings,
+(case ent_findings when 148517 then 'Apnea' when 139075 then 'Hearing disorder' when 119558 then 'Dental caries' when 118536 then 'Erythema' when 106 then 'Frequent colds' when 147230 then 'Gingival bleeding' when 135841 then 'Hairy cell leukoplakia' when 117698
+then 'Hearing loss' when 138554 then 'Hoarseness' when 507 then 'Kaposi Sarcoma' when 152228 then 'Masses' when 128055 then 'Nasal discharge' when 133499 then 'Nosebleed' when 160285 then 'Pain' when 110099 then 'Post nasal discharge' when 126423 then 'Sinus problems' when 126318 then 'Snoring' when 158843 then 'Sore throat' when 5244 then 'Oral sores' when 5334 then 'Thrush' when 123588 then 'Tinnitus'
+when 124601 then 'Toothache' when 123919 then 'Ulcers' when 111525 then 'Vertigo' end) as ent_findings,
+(case chest_findings when 146893 then 'Bronchial breathing' when 127640 then 'Crackles' when 145712 then 'Dullness' when 164440 then 'Reduced breathing' when 127639 then 'Respiratory distress' when 5209 then 'Wheezing' end) as chest_findings,
+(case cvs_findings when 140147 then 'Elevated blood pressure' when 136522 then 'Irregular heartbeat' when 562 then 'Cardiac murmur' when 130560 then 'Cardiac rub' end) as cvs_findings,
+(case abdomen_findings when 150915 then 'Abdominal distension' when 5008 then 'Hepatomegaly' when 5103 then 'Abdominal mass' when 5009 then 'Splenomegaly' when 5105 then 'Abdominal tenderness' end) as abdomen_findings,
+(case cns_findings when 118872 then 'Altered sensations' when 1836 then 'Bulging fontenelle' when 150817 then 'Abnormal reflexes' when 120345 then 'Confusion' when 157498 then 'Limb weakness' when 112721 then 'Stiff neck' when 136282 then 'Kernicterus' end) as cns_findings,
+(case genitourinary_findings when 147241 then 'Bleeding' when 154311 then 'Rectal discharge' when 123529 then 'Urethral discharge' when 123396 then 'Vaginal discharge' when 124087 then 'Ulceration' end) as genitourinary_findings,
 (case prophylaxis_given when 105281 then 'Cotrimoxazole' when 74250 then 'Dapsone' when 1107 then 'None' end) as prophylaxis_given,
 (case ctx_adherence when 159405 then "Good" when 163794 then "Inadequate" when 159407 then "Poor" else "" end) as ctx_adherence,
 (case ctx_dispensed when 1065 then "Yes" when 1066 then "No" when 1175 then "Not applicable" else "" end) as ctx_dispensed,
@@ -9826,7 +6964,40 @@ encounter_id,
   when 5622 then "Other" when 1067 then "Unknown" else "" end) as discontinuation_reason,
 date_died,
 transfer_facility,
-transfer_date
+transfer_date,
+(case death_reason when 163324 then "HIV disease resulting in TB"
+                   when 116030 then "HIV disease resulting in cancer"
+                   when 160159 then "HIV disease resulting in other infectious and parasitic diseases"
+                   when 160158 then "Other HIV disease resulting in other diseases or conditions leading to death"
+                   when 133478 then "Other natural causes not directly related to HIV"
+                   when 145439 then "Non-communicable diseases such as Diabetes and hypertension"
+                   when 123812 then "Non-natural causes"
+                   when 42917 then "Unknown cause" else "" end) as death_reason,
+(case specific_death_cause
+   when 165609 then "COVID-19 Complications"
+   when 156673 then "HIV disease resulting in mycobacterial infection"
+   when 155010 then "HIV disease resulting in Kaposis sarcoma"
+   when 156667 then "HIV disease resulting in Burkitts lymphoma"
+   when 115195 then "HIV disease resulting in other types of non-Hodgkin lymphoma"
+   when 157593 then "HIV disease resulting in other malignant neoplasms of lymphoid and haematopoietic and related tissue"
+   when 156672 then "HIV disease resulting in multiple malignant neoplasms"
+   when 159988 then "HIV disease resulting in other malignant neoplasms"
+   when 5333 then "HIV disease resulting in other bacterial infections"
+   when 116031 then "HIV disease resulting in unspecified malignant neoplasms"
+   when 123122 then "HIV disease resulting in other viral infections"
+   when 156669 then "HIV disease resulting in cytomegaloviral disease"
+   when 156668 then "HIV disease resulting in candidiasis"
+   when 5350 then "HIV disease resulting in other mycoses"
+   when 882 then "HIV disease resulting in Pneumocystis jirovecii pneumonia - HIV disease resulting in Pneumocystis carinii pneumonia"
+   when 156671 then "HIV disease resulting in multiple infections"
+   when 160159 then "HIV disease resulting in other infectious and parasitic diseases"
+   when 171 then "HIV disease resulting in unspecified infectious or parasitic disease - HIV disease resulting in infection NOS"
+   when 156670 then "HIV disease resulting in other specified diseases including encephalopathy or lymphoid interstitial pneumonitis or wasting syndrome and others"
+   when 160160 then "HIV disease resulting in other conditions including acute HIV infection syndrome or persistent generalized lymphadenopathy or hematological and immunological abnormalities and others"
+   when 161548 then "HIV disease resulting in Unspecified HIV disease"
+ else "" end) as specific_death_cause,
+natural_causes,
+non_natural_cause
 from kenyaemr_etl.etl_patient_program_discontinuation;
 
 ALTER TABLE kenyaemr_datatools.patient_program_discontinuation ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
@@ -9842,6 +7013,7 @@ SELECT "Successfully created pharmacy extract table";
       visit_date,
       location_id,
       encounter_id,
+      (case service_type when 1622 then 'ANC' when 164835 then 'Delivery' when 1623 then 'PNC' else '' end)as service_type,
       anc_number,
       first_anc_visit_date,
       gravida,
@@ -9911,6 +7083,7 @@ SELECT "Successfully created pharmacy extract table";
       (case fetal_movement when 162090 then "Increased fetal movements" when 113377 then "Decreased fetal movements" when 1452 then "No fetal movements" when 162108 then "Fetal movements present" else "" end) as fetal_movement,
       (case who_stage when 1204 then "WHO Stage1" when 1205 then "WHO Stage2" when 1206 then "WHO Stage3" when 1207 then "WHO Stage4" else "" end) as who_stage,
       cd4,
+      (case vl_sample_taken when 856 then 'Yes' when 1066 then 'No' end) as vl_sample_taken,
       viral_load,
       (case ldl when 1302 then "LDL"  else "" end) as ldl,
       (case arv_status when 1148 then "ARV Prophylaxis" when 1149 then "HAART" when 1175 then "NA" else "" end) as arv_status,
@@ -9919,6 +7092,7 @@ SELECT "Successfully created pharmacy extract table";
       (case partner_hiv_tested when 1065 then "Yes" when 1066 then "No" else "" end) as partner_hiv_tested,
       (case partner_hiv_status when 664 then "HIV Negative" when 703 then "HIV Positive" when 1067 then "Unknown" else "" end) as partner_hiv_status,
       (case prophylaxis_given when 105281 then "Cotrimoxazole" when 74250 then "Dapsone" when 1107 then "None" else "" end) as prophylaxis_given,
+      date_given_haart,
       (case baby_azt_dispensed when 160123 then "Yes" when 1066 then "No" when 1175 then "N/A" else "" end) as baby_azt_dispensed,
       (case baby_nvp_dispensed when 80586 then "Yes" when 1066 then "No" when 1175 then "N/A" else "" end) as baby_nvp_dispensed,
       TTT,
@@ -9948,6 +7122,14 @@ SELECT "Successfully created pharmacy extract table";
       (case cacx_screening_method when 885 then "PAP Smear" when 162816 then "VIA" when 5622 then "Other" else "" end) as cacx_screening_method,
       (case has_other_illnes  when 1065 then "Yes" when 1066 then "No" else "" end) as has_other_illnes,
       (case counselled  when 1065 then "Yes" when 1066 then "No" else "" end) as counselled,
+      (case counselled_on_birth_plans when 159758 then 'Yes' end) as counselled_on_birth_plans,
+      (case counselled_on_danger_signs when 159857 then 'Yes' end) as counselled_on_danger_signs,
+      (case counselled_on_family_planning when 156277 then 'Yes' end) as counselled_on_family_planning,
+      (case counselled_on_hiv when 1914 then 'Yes' end) as counselled_on_hiv,
+      (case counselled_on_supplimental_feeding when 159854 then 'Yes' end) as counselled_on_supplimental_feeding,
+      (case counselled_on_breast_care when 159856 then 'Yes' end) as counselled_on_breast_care,
+      (case counselled_on_infant_feeding when 161651 then 'Yes' end) as counselled_on_infant_feeding,
+      (case counselled_on_treated_nets when 1381 then 'Yes' end) as counselled_on_treated_nets,
       (case referred_from when 1537 then "Another Health Facility" when 163488 then "Community Unit" when 1175 then "N/A" else "" end) as referred_from,
       (case referred_to when 1537 then "Another Health Facility" when 163488 then "Community Unit" when 1175 then "N/A" else "" end) as referred_to,
       next_appointment_date,
@@ -9976,6 +7158,7 @@ SELECT "Successfully created pharmacy extract table";
       date_of_delivery,
       (case blood_loss when 1499 then "Moderate" when 1107 then "None" when 1498 then "Mild" when 1500 then "Severe" else "" end) as blood_loss,
       (case condition_of_mother when 160429 then "Alive" when 134612 then "Dead" else "" end) as condition_of_mother,
+      (case delivery_outcome when 159913 then 'Single' when 159914 then 'Twins' when 159915 then 'Triplets' end) as delivery_outcome,
       apgar_score_1min,
       apgar_score_5min,
       apgar_score_10min,
@@ -10058,6 +7241,7 @@ SELECT "Successfully created pharmacy extract table";
       delivery_date,
       (case mode_of_delivery when 1170 then "SVD" when 1171 then "C-Section" else "" end) as mode_of_delivery,
       (case place_of_delivery when 1589 then "Facility" when 1536 then "Home" when 5622 then "Other" else "" end) as place_of_delivery,
+      (case delivery_outcome when 159913 then 'Single' when 159914 then 'Twins' when 159915 then 'Triplets' end) as delivery_outcome,
       temperature,
       pulse_rate,
       systolic_bp,
@@ -10077,6 +7261,7 @@ SELECT "Successfully created pharmacy extract table";
        when 162119 then "On exam, uterine fundus 38 weeks-term size" when 123427 then "Uterus Involuted"  else "" end) as gravid_uterus,
       (case episiotomy when 159842 then "repaired, episiotomy wound" when 159843 then "healed, episiotomy wound" when 159841 then "gap, episiotomy wound" when 113919 then "Postoperative Wound Infection" else "" end) as episiotomy,
       (case lochia when 159845 then "lochia excessive" when 159846 then "lochia foul smelling" when 159721 then "Lochia type" else "" end) as lochia,
+      (case counselled_on_infant_feeding when 1065 then 'Yes' when 1066 then 'No' end) as counselled_on_infant_feeding,
       (case pallor when 1065 then "Yes" when 1066 then "No" when 1175 then "Not applicable" else "" end) as pallor,
       (case pph when 1065 then "Present" when 1066 then "Absent" else "" end) as pph,
       (case mother_hiv_status when 1067 then "Unknown" when 664 then "NEGATIVE" when 703 then "POSITIVE" else "" end) as mother_hiv_status,
@@ -10111,7 +7296,8 @@ SELECT "Successfully created pharmacy extract table";
        when 1472 then "Tubal Ligation" when 190 then "Condoms" when 1489 then "Vasectomy" when 162332 then "Undecided" else "" end) as family_planning_method,
       (case referred_from when 1537 then "Another Health Facility" when 163488 then "Community Unit" when 1175 then "N/A" else "" end) as referred_from,
       (case referred_to when 1537 then "Another Health Facility" when 163488 then "Community Unit" when 1175 then "N/A" else "" end) as referred_to,
-      clinical_notes
+      clinical_notes,
+      appointment_date
 
     from kenyaemr_etl.etl_mch_postnatal_visit;
 
@@ -10132,6 +7318,7 @@ SELECT "Successfully created post natal visit table";
       spd_number,
       birth_weight,
       gestation_at_birth,
+      (case birth_type when 159913 then 'Single' when 159914 then 'Twins' when 159915 then 'Triplets' when 113450 then 'Quadruplets' when 113440 then 'Quintuplets' end) as birth_type,
       date_first_seen,
       birth_notification_number,
       birth_certificate_number,
@@ -10187,8 +7374,10 @@ SELECT "Successfully created post natal visit table";
       encounter_id,
       weight,
       height,
+      (case muac when 160909 then "Green" when 160910 then "Yellow" when 127778 then "Red" else "" end) as muac,
       (case primary_caregiver when 970 then "Mother" when 973 then "Guardian" when 972 then "Guardian" when 160639 then "Guardian" when 5622 then "Guardian" else "" end) as primary_caregiver,
       (case infant_feeding when 5526 then "Exclusive Breastfeeding(EBF)" when 1595 then "Exclusive Replacement(ERF)" when 6046 then "Mixed Feeding(MF)" else "" end) as infant_feeding,
+      (case stunted when 164085 then "Yes" when 1115 then "No" else "" end) as stunted,
       (case tb_assessment_outcome when 1660 then "No TB Signs" when 142177 then "Presumed TB" when 1661 then "TB Confirmed" when 1662 then "TB Rx" when 1679 then "INH" when 160737 then "TB Screening Not Done" else "" end) as tb_assessment_outcome,
       (case social_smile_milestone when 162056 then "Social Smile" else "" end) as social_smile_milestone,
       (case head_control_milestone when 162057 then "Head Holding/Control" else "" end) as head_control_milestone,
@@ -10199,12 +7388,14 @@ SELECT "Successfully created post natal visit table";
       (case standing_milestone when 162062 then "Standing" else "" end) as standing_milestone,
       (case talking_milestone when 162060 then "Talking" else "" end) as talking_milestone,
       (case review_of_systems_developmental when 1115 then "Normal(N)" when 6022 then "Delayed(D)" when 6025 then "Regressed(R)" else "" end) as review_of_systems_developmental,
+      (case weight_category when 123814 then "Underweight(UW)" when 126598 then "Severely Underweight(SUW)" when 114413 then "Overweight(OW)" when 115115 then "Obese(O)" when 1115 then "Normal(N)" else "" end) as weight_category,
       dna_pcr_sample_date,
       (case dna_pcr_contextual_status when 162081 then "Repeat" when 162083 then "Final test (end of pediatric window)" when 162082 then "Confirmation" when 162080 then "Initial" else "" end) as dna_pcr_contextual_status,
       (case dna_pcr_result when 1138 then "INDETERMINATE" when 664 then "NEGATIVE" when 703 then "POSITIVE" when 1304 then "POOR SAMPLE QUALITY" else "" end) as dna_pcr_result,
       (case azt_given when 86663 then "Yes" else "No" end) as azt_given,
       (case nvp_given when 80586 then "Yes" else "No" end) as nvp_given,
       (case ctx_given when 105281 then "Yes" else "No" end) as ctx_given,
+      (case multi_vitamin_given when 461 then "Yes" else "No" end) as multi_vitamin_given,
       (case first_antibody_result when 664 then "NEGATIVE" when 703 then "POSITIVE" when 1304 then "POOR SAMPLE QUALITY" else "" end) as first_antibody_result,
       (case final_antibody_result when 664 then "NEGATIVE" when 703 then "POSITIVE" when 1304 then "POOR SAMPLE QUALITY" else "" end) as final_antibody_result,
       (case tetracycline_ointment_given  when 1065 then "Yes" when 1066 then "No" else "" end) as tetracycline_ointment_given,
@@ -10214,6 +7405,12 @@ SELECT "Successfully created post natal visit table";
       (case deworming_drug when 79413 then "Mebendazole" when 70439 then "Albendazole" else "" end) as deworming_drug,
       dosage,
       unit,
+      (case vitaminA_given when 1065 then "Yes" when 1066 then "No" else "" end) as vitaminA_given,
+      (case disability when 1065 then "Yes" when 1066 then "No" else "" end) as disability,
+      (case referred_from when 1537 then "Another Health Facility" when 163488 then "Community Unit" when 1175 then "N/A" else "" end) as referred_from,
+      (case referred_to when 1537 then "Another Health Facility" when 163488 then "Community Unit" when 1175 then "N/A" else "" end) as referred_to,
+      (case counselled_on when 1914 then "HIV" when 1380 then "Nutrition" else "" end) as counselled_on,
+     (case mnps_supplementation when 161649 then "Yes" when 1107 then "No" else "" end) as MNPS_Supplementation,
       comments,
       next_appointment_date
     from kenyaemr_etl.etl_hei_follow_up_visit;
@@ -10349,9 +7546,23 @@ location_id,
 (case fever_for_2wks_or_more when 1494 then "Yes" when 1066 then "No" else "" end) as fever_for_2wks_or_more,
 (case noticeable_weight_loss when 832 then "Yes" when 1066 then "No" else "" end) as noticeable_weight_loss,
 (case night_sweat_for_2wks_or_more when 133027 then "Yes" when 1066 then "No" else "" end) as night_sweat_for_2wks_or_more,
+(case lethargy when 116334 then "Yes"  else "" end) as lethargy,
+(case spatum_smear_ordered when 307 then "Yes" when 1066 then "No" else "" end) as spatum_smear_ordered,
+(case chest_xray_ordered when 12 then "Yes" when 1066 then "No" else "" end) as chest_xray_ordered,
+(case genexpert_ordered when 162202 then "Yes" when 1066 then "No" else "" end) as genexpert_ordered,
+(case spatum_smear_result when 703 then "POSITIVE" when 664 then "NEGATIVE" else "" end) as spatum_smear_result,
+(case chest_xray_result when 1115 then "NORMAL" when 152526 then "ABNORMAL" else "" end) as chest_xray_result,
+(case genexpert_result when 664 then "NEGATIVE" when 162203 then "Mycobacterium tuberculosis detected with rifampin resistance" when 162204 then "Mycobacterium tuberculosis detected without rifampin resistance"
+  when 164104 then "Mycobacterium tuberculosis detected with indeterminate rifampin resistance"  when 163611 then "Invalid" when 1138 then "INDETERMINATE" else "" end) as genexpert_result,
+(case referral when 1065 then "Yes" when 1066 then "No" else "" end) as referral,
+(case clinical_tb_diagnosis when 703 then "POSITIVE" when 664 then "NEGATIVE" else "" end) as clinical_tb_diagnosis,
+(case contact_invitation when 1065 then "Yes" when 1066 then "No" else "" end) as contact_invitation,
+(case evaluated_for_ipt when 1065 then "Yes" when 1066 then "No" else "" end) as evaluated_for_ipt,
 (case resulting_tb_status when 1660 then "No TB Signs" when 142177 then "Presumed TB" when 1662 then "TB Confirmed" when 160737 then "TB Screening Not Done" else "" end) as resulting_tb_status,
 tb_treatment_start_date,
-notes
+(case tb_prophylaxis when 105281 then 'Cotrimoxazole' when 74250 then 'Dapsone' when 1107 then 'None' end) as tb_prophylaxis,
+notes,
+(case person_present when 978 then 'Yes' else 'No' end) as person_present
 from kenyaemr_etl.etl_tb_screening;
 
 ALTER TABLE kenyaemr_datatools.tb_screening ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
@@ -10588,9 +7799,7 @@ ALTER TABLE kenyaemr_datatools.alcohol_drug_abuse_screening ADD FOREIGN KEY (pat
 ALTER TABLE kenyaemr_datatools.alcohol_drug_abuse_screening ADD INDEX(visit_date);
 SELECT "Successfully created alcohol_drug_abuse_screening table";
 
-create table kenyaemr_datatools.gender_based_violence as select * from kenyaemr_etl.etl_gender_based_violence;
-alter table kenyaemr_datatools.gender_based_violence add FOREIGN KEY(client_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
-ALTER TABLE kenyaemr_datatools.gender_based_violence ADD INDEX(visit_date);
+
 create table kenyaemr_datatools.gbv_screening as
 select
 patient_id,
@@ -10613,6 +7822,56 @@ from kenyaemr_etl.etl_gbv_screening;
 ALTER TABLE kenyaemr_datatools.gbv_screening ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
 ALTER TABLE kenyaemr_datatools.gbv_screening ADD INDEX(visit_date);
 SELECT "Successfully created gbv_screening table";
+create table kenyaemr_datatools.gbv_screening_action as
+select
+patient_id,
+uuid,
+provider,
+visit_id,
+visit_date,
+obs_id,
+location_id,
+(case help_provider when 1589 THEN "Hospital" when 165284 then "Police" when 165037 then "Peer Educator" when 1560 then "Family" when 165294 then "Peers" when 5618 then "Friends"
+                          when 165290 then "Religious Leader" when 165350 then "Dice" when 162690 then "Chief" when 5622 then "Other" else "" end) as help_provider,
+(case action_taken when 1066 then "No action taken"
+        when 165070 then "Counselling"
+        when 160570 then "Emergency pills"
+        when 1356 then "Hiv testing"
+        when 130719 then "Investigation done"
+        when 135914 then "Matter presented to court"
+        when 165228 then "P3 form issued"
+        when 165171 then "PEP given"
+        when 165192 then "Perpetrator arrested"
+        when 127910 then "Post rape care"
+        when 165203 then "PrEP given"
+        when 5618 then "Reconciliation"
+        when 165093 then "Referred back to the family"
+        when 165274 then "Referred to hospital"
+        when 165180 then "Statement taken"
+        when 165200 then "STI Prophylaxis"
+        when 165184 then "Trauma counselling done"
+        when 1185 then "Treatment"
+        when 5622 then "Other"
+        else "" end) as action_taken,
+(case reason_for_not_reporting when 1067 then "Did not know where to report"
+       when 1811 then "Distance"
+       when 140923 then "Exhaustion/Lack of energy"
+       when 163473 then "Fear shame"
+       when 159418 then "Lack of faith in system"
+       when 162951 then "Lack of knowledge"
+       when 664 then "Negative attitude of the person reported to"
+       when 143100 then "Not allowed culturally"
+       when 165161 then "Perpetrator above the law"
+       when 163475 then "Self blame"
+       else "" end) as reason_for_not_reporting,
+date_created,
+date_last_modified,
+voided
+from kenyaemr_etl.etl_gbv_screening_action;
+
+ALTER TABLE kenyaemr_datatools.gbv_screening_action ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
+ALTER TABLE kenyaemr_datatools.gbv_screening_action ADD INDEX(visit_date);
+SELECT "Successfully created gbv_screening_action table";
 create table kenyaemr_datatools.depression_screening as
 select
 patient_id,
@@ -10775,6 +8034,166 @@ from kenyaemr_etl.etl_ipt_screening;
 ALTER TABLE kenyaemr_datatools.ipt_screening ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
 ALTER TABLE kenyaemr_datatools.ipt_screening ADD INDEX(visit_date);
 SELECT "Successfully created ipt_screening table";
+create table kenyaemr_datatools.pre_hiv_enrollment_art as
+  select
+         uuid,
+         provider,
+         patient_id,
+         visit_id,
+         visit_date,
+         location_id,
+         encounter_id,
+         obs_id,
+         (case PMTCT when 1065 then 'Yes' else '' end) as PMTCT,
+         (case PMTCT_regimen when 164968 then 'AZT/3TC/DTG'
+when 164969 then 'TDF/3TC/DTG'
+when 164970 then 'ABC/3TC/DTG'
+when 164505 then 'TDF-3TC-EFV'
+when 792 then 'D4T/3TC/NVP'
+when 160124 then 'AZT/3TC/EFV'
+when 160104 then 'D4T/3TC/EFV'
+when 1652 then '3TC/NVP/AZT'
+when 161361 then 'EDF/3TC/EFV'
+when 104565 then 'EFV/FTC/TDF'
+when 162201 then '3TC/LPV/TDF/r'
+when 817 then 'ABC/3TC/AZT'
+when 162199 then 'ABC/NVP/3TC'
+when 162200 then '3TC/ABC/LPV/r'
+when 162565 then '3TC/NVP/TDF'
+when 1652 then '3TC/NVP/AZT'
+when 162561 then '3TC/AZT/LPV/r'
+when 164511 then 'AZT-3TC-ATV/r'
+when 164512 then 'TDF-3TC-ATV/r'
+when 162560 then '3TC/D4T/LPV/r'
+when 162563 then '3TC/ABC/EFV'
+when 162562 then 'ABC/LPV/R/TDF'
+when 162559 then 'ABC/DDI/LPV/r' end) as PMTCT_regimen,
+         (case PEP when 1065 then 'Yes' else '' end) as PEP,
+         (case PEP_regimen when 164968 then 'AZT/3TC/DTG'
+when 164969 then 'TDF/3TC/DTG'
+when 164970 then 'ABC/3TC/DTG'
+when 164505 then 'TDF-3TC-EFV'
+when 792 then 'D4T/3TC/NVP'
+when 160124 then 'AZT/3TC/EFV'
+when 160104 then 'D4T/3TC/EFV'
+when 1652 then '3TC/NVP/AZT'
+when 161361 then 'EDF/3TC/EFV'
+when 104565 then 'EFV/FTC/TDF'
+when 162201 then '3TC/LPV/TDF/r'
+when 817 then 'ABC/3TC/AZT'
+when 162199 then 'ABC/NVP/3TC'
+when 162200 then '3TC/ABC/LPV/r'
+when 162565 then '3TC/NVP/TDF'
+when 1652 then '3TC/NVP/AZT'
+when 162561 then '3TC/AZT/LPV/r'
+when 164511 then 'AZT-3TC-ATV/r'
+when 164512 then 'TDF-3TC-ATV/r'
+when 162560 then '3TC/D4T/LPV/r'
+when 162563 then '3TC/ABC/EFV'
+when 162562 then 'ABC/LPV/R/TDF'
+when 162559 then 'ABC/DDI/LPV/r' end) as PEP_regimen,
+         (case PrEP when 1065 then 'Yes' else '' end) as PrEP,
+         (case PrEP_regimen when 164968 then 'AZT/3TC/DTG'
+when 164969 then 'TDF/3TC/DTG'
+when 164970 then 'ABC/3TC/DTG'
+when 164505 then 'TDF-3TC-EFV'
+when 792 then 'D4T/3TC/NVP'
+when 160124 then 'AZT/3TC/EFV'
+when 160104 then 'D4T/3TC/EFV'
+when 1652 then '3TC/NVP/AZT'
+when 161361 then 'EDF/3TC/EFV'
+when 104565 then 'EFV/FTC/TDF'
+when 162201 then '3TC/LPV/TDF/r'
+when 817 then 'ABC/3TC/AZT'
+when 162199 then 'ABC/NVP/3TC'
+when 162200 then '3TC/ABC/LPV/r'
+when 162565 then '3TC/NVP/TDF'
+when 1652 then '3TC/NVP/AZT'
+when 162561 then '3TC/AZT/LPV/r'
+when 164511 then 'AZT-3TC-ATV/r'
+when 164512 then 'TDF-3TC-ATV/r'
+when 162560 then '3TC/D4T/LPV/r'
+when 162563 then '3TC/ABC/EFV'
+when 162562 then 'ABC/LPV/R/TDF'
+when 162559 then 'ABC/DDI/LPV/r' end) as PrEP_regimen,
+         (case HAART when 1185 then 'Yes' else '' end) as HAART,
+         (case HAART_regimen when 164968 then 'AZT/3TC/DTG'
+when 164969 then 'TDF/3TC/DTG'
+when 164970 then 'ABC/3TC/DTG'
+when 164505 then 'TDF-3TC-EFV'
+when 792 then 'D4T/3TC/NVP'
+when 160124 then 'AZT/3TC/EFV'
+when 160104 then 'D4T/3TC/EFV'
+when 1652 then '3TC/NVP/AZT'
+when 161361 then 'EDF/3TC/EFV'
+when 104565 then 'EFV/FTC/TDF'
+when 162201 then '3TC/LPV/TDF/r'
+when 817 then 'ABC/3TC/AZT'
+when 162199 then 'ABC/NVP/3TC'
+when 162200 then '3TC/ABC/LPV/r'
+when 162565 then '3TC/NVP/TDF'
+when 1652 then '3TC/NVP/AZT'
+when 162561 then '3TC/AZT/LPV/r'
+when 164511 then 'AZT-3TC-ATV/r'
+when 164512 then 'TDF-3TC-ATV/r'
+when 162560 then '3TC/D4T/LPV/r'
+when 162563 then '3TC/ABC/EFV'
+when 162562 then 'ABC/LPV/R/TDF'
+when 162559 then 'ABC/DDI/LPV/r' end) as HAART_regimen,
+         date_created,
+         date_last_modified,
+         voided
+  from kenyaemr_etl.etl_pre_hiv_enrollment_art;
+
+ALTER TABLE kenyaemr_datatools.pre_hiv_enrollment_art ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
+ALTER TABLE kenyaemr_datatools.pre_hiv_enrollment_art ADD INDEX(visit_date);
+SELECT "Successfully created pre_hiv_enrollment_art table";
+create table kenyaemr_datatools.covid_19_assessment as
+select
+       uuid,
+       provider,
+       patient_id,
+       visit_id,
+       visit_date,
+       location_id,
+       encounter_id,
+       obs_id,
+       (case ever_vaccinated when 1065 then 'Yes' when 1066 then 'No' end) as ever_vaccinated,
+       (case first_vaccine_type when 166156 then 'Astrazeneca' when 166355 then 'Johnson and Johnson'
+                                when 166154 then 'Moderna' when 166155 then 'Pfizer' when 166157 then 'Sputnik' when
+           166379 then 'Sinopharm' when 1067 then 'Unknown' when 5622 then 'Other' end) as first_vaccine_type,
+       (case second_vaccine_type when 166156 then 'Astrazeneca' when 166355 then 'Johnson and Johnson'
+                                 when 166154 then 'Moderna' when 166155 then 'Pfizer' when 166157 then 'Sputnik' when
+           166379 then 'Sinopharm' when 1067 then 'Unknown' when 5622 then 'Other(Specify)' end) as second_vaccine_type,
+       first_dose,
+       second_dose,
+       first_dose_date,
+       second_dose_date,
+       (case first_vaccination_verified when 164134 then 'Yes' end ) as first_vaccination_verified,
+       (case second_vaccination_verified when 164134 then 'Yes' end) as second_vaccination_verified,
+       (case final_vaccination_status when 166192 then 'Partially Vaccinated' when 5585 then 'Fully Vaccinated' end) as final_vaccination_status,
+       (case ever_received_booster when 1065 then 'Yes' when 1066 then 'No' end) as ever_received_booster,
+       (case booster_vaccine_taken when 166156 then 'Astrazeneca' when 166355 then 'Johnson and Johnson'
+                                   when 166154 then 'Moderna' when 166155 then 'Pfizer' when 166157 then 'Sputnik' when
+           166379 then 'Sinopharm' when 1067 then 'Unknown' when 5622 then 'Other(Specify)' end) as booster_vaccine_taken,
+       date_taken_booster_vaccine,
+       booster_sequence,
+       (case booster_dose_verified when 164134 then 'Yes' end) as booster_dose_verified,
+       (case ever_tested_covid_19_positive when 703 then 'Yes' when 664 then 'No' when 1067 then 'Unknown' end) as ever_tested_covid_19_positive,
+       (case symptomatic when 1068 then 'Yes' when 165912 then 'No' END) as symptomatic,
+       date_tested_positive,
+       (case hospital_admission when 1065 then 'Yes' when 1066 then 'No' end) as hospital_admission,
+       admission_unit,
+       (case on_ventillator when 1065 then 'Yes' when 1066 then 'No' end) as on_ventillator,
+       (case on_oxygen_supplement when 1065 then 'Yes' when 1066 then 'No' end) as on_oxygen_supplement,
+       date_created,
+       date_last_modified,
+       voided
+from kenyaemr_etl.etl_covid19_assessment;
+
+ALTER TABLE kenyaemr_datatools.covid_19_assessment ADD FOREIGN KEY (patient_id) REFERENCES kenyaemr_datatools.patient_demographics(patient_id);
+ALTER TABLE kenyaemr_datatools.covid_19_assessment ADD INDEX(visit_date);
+SELECT "Successfully created covid_19_assessment table";
 
 UPDATE kenyaemr_etl.etl_script_status SET stop_time=NOW() where id= script_id;
 
@@ -10792,16 +8211,16 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `create_etl_tables`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_etl_tables`()
 BEGIN
 DECLARE script_id INT(11);
 drop database if exists kenyaemr_etl;
-create database kenyaemr_etl;
+create database kenyaemr_etl DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 drop database if exists kenyaemr_datatools;
-create database kenyaemr_datatools;
+create database kenyaemr_datatools DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 DROP TABLE IF EXISTS kenyaemr_etl.etl_script_status;
 CREATE TABLE kenyaemr_etl.etl_script_status(
@@ -10866,15 +8285,17 @@ DROP TABLE IF EXISTS kenyaemr_etl.etl_clinical_visit;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_peer_calendar;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_sti_treatment;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_peer_tracking;
-DROP TABLE IF EXISTS kenyaemr_etl.etl_gender_based_violence;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_treatment_verification;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_PrEP_verification;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_alcohol_drug_abuse_screening;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_gbv_screening;
+DROP TABLE IF EXISTS kenyaemr_etl.etl_gbv_screening_action;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_depression_screening;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_adverse_events;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_allergy_chronic_illness;
 DROP TABLE IF EXISTS kenyaemr_etl.etl_ipt_screening;
+DROP TABLE IF EXISTS kenyaemr_etl.etl_pre_hiv_enrollment_art;
+DROP TABLE IF EXISTS kenyaemr_etl.etl_covid19_assessment;
 create table kenyaemr_etl.etl_patient_demographics (
 patient_id INT(11) not null primary key,
 given_name VARCHAR(255),
@@ -10887,8 +8308,10 @@ unique_patient_no VARCHAR(50),
 patient_clinic_number VARCHAR(15) DEFAULT NULL,
 Tb_no VARCHAR(50),
 CPIMS_unique_identifier VARCHAR(50),
+openmrs_id VARCHAR(50),
 district_reg_no VARCHAR(50),
 hei_no VARCHAR(50),
+cwc_number VARCHAR(50),
 phone_number VARCHAR(50) DEFAULT NULL,
 birth_place VARCHAR(50) DEFAULT NULL,
 citizenship VARCHAR(50) DEFAULT NULL,
@@ -10995,6 +8418,13 @@ clinical_notes VARCHAR(600) DEFAULT NULL,
 on_anti_tb_drugs INT(11) DEFAULT NULL,
 on_ipt INT(11) DEFAULT NULL,
 ever_on_ipt INT(11) DEFAULT NULL,
+cough INT(11) DEFAULT -1,
+fever INT(11) DEFAULT -1,
+weight_loss_poor_gain INT(11) DEFAULT -1,
+night_sweats INT(11) DEFAULT -1,
+tb_case_contact INT(11) DEFAULT -1,
+lethargy INT(11) DEFAULT -1,
+screened_for_tb VARCHAR(50),
 spatum_smear_ordered INT(11) DEFAULT NULL,
 chest_xray_ordered INT(11) DEFAULT NULL,
 genexpert_ordered INT(11) DEFAULT NULL,
@@ -11033,6 +8463,16 @@ tb_status INT(11),
 started_anti_TB INT(11),
 tb_rx_date DATE,
 tb_treatment_no VARCHAR(50),
+general_examination VARCHAR(255),
+system_examination INT(11),
+skin_findings INT(11),
+eyes_findings INT(11),
+ent_findings INT(11),
+chest_findings INT(11),
+cvs_findings INT(11),
+abdomen_findings INT(11),
+cns_findings INT(11),
+genitourinary_findings INT(11),
 prophylaxis_given VARCHAR(50),
 ctx_adherence INT(11),
 ctx_dispensed INT(11),
@@ -11173,6 +8613,10 @@ trf_out_verification_date DATE,
 date_died DATE,
 transfer_facility VARCHAR(100),
 transfer_date DATE,
+death_reason INT(11),
+specific_death_cause INT(11),
+natural_causes VARCHAR(200) DEFAULT NULL,
+non_natural_cause VARCHAR(200) DEFAULT NULL,
 date_created DATETIME NOT NULL,
 date_last_modified DATETIME,
 CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
@@ -11194,6 +8638,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     visit_date DATE,
     location_id INT(11) DEFAULT NULL,
     encounter_id INT(11) NOT NULL PRIMARY KEY,
+    service_type int(11),
     anc_number VARCHAR(50),
     first_anc_visit_date DATE,
     gravida INT(11),
@@ -11268,6 +8713,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     fetal_movement INT(11),
     who_stage INT(11),
     cd4 INT(11),
+    vl_sample_taken INT(11),
     viral_load INT(11),
     ldl INT(11),
     arv_status INT(11),
@@ -11284,6 +8730,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     partner_hiv_tested INT(11),
     partner_hiv_status INT(11),
     prophylaxis_given INT(11),
+    date_given_haart DATE,
     baby_azt_dispensed INT(11),
     baby_nvp_dispensed INT(11),
     TTT VARCHAR(50) DEFAULT NULL,
@@ -11313,6 +8760,14 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     cacx_screening_method INT(11),
     has_other_illnes INT(11),
     counselled INT(11),
+    counselled_on_birth_plans INT(11),
+    counselled_on_danger_signs INT(11),
+    counselled_on_family_planning INT(11),
+    counselled_on_hiv INT(11),
+    counselled_on_supplimental_feeding INT(11),
+    counselled_on_breast_care INT(11),
+    counselled_on_infant_feeding INT(11),
+    counselled_on_treated_nets INT(11),
     referred_from INT(11),
     referred_to INT(11),
     next_appointment_date DATE,
@@ -11350,6 +8805,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     date_of_delivery DATETIME,
     blood_loss INT(11),
     condition_of_mother INT(11),
+    delivery_outcome VARCHAR(255),
     apgar_score_1min  DOUBLE,
     apgar_score_5min  DOUBLE,
     apgar_score_10min DOUBLE,
@@ -11443,6 +8899,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     delivery_date DATE,
     mode_of_delivery INT(11),
     place_of_delivery INT(11),
+    delivery_outcome INT(11),
     temperature DOUBLE,
     pulse_rate DOUBLE,
     systolic_bp DOUBLE,
@@ -11460,6 +8917,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     gravid_uterus INT(11),
     episiotomy INT(11),
     lochia INT(11),
+    counselled_on_infant_feeding INT(11),
     pallor INT(11),
     pph INT(11),
     mother_hiv_status INT(11),
@@ -11501,6 +8959,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     referred_from INT(11),
     referred_to INT(11),
     clinical_notes VARCHAR(200) DEFAULT NULL,
+    appointment_date DATE DEFAULT NULL,
     date_created DATETIME NOT NULL,
     date_last_modified DATETIME,
     CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
@@ -11529,6 +8988,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     spd_number VARCHAR(50),
     birth_weight DOUBLE,
     gestation_at_birth DOUBLE,
+    birth_type VARCHAR(50),
     date_first_seen DATE,
     birth_notification_number VARCHAR(50),
     birth_certificate_number VARCHAR(50),
@@ -11592,8 +9052,10 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     encounter_id INT(11) NOT NULL PRIMARY KEY,
     weight DOUBLE,
     height DOUBLE,
+    muac INT(11),
     primary_caregiver INT(11),
     infant_feeding INT(11),
+    stunted INT(11),
     tb_assessment_outcome INT(11),
     social_smile_milestone INT(11),
     head_control_milestone INT(11),
@@ -11604,6 +9066,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     standing_milestone INT(11),
     talking_milestone INT(11),
     review_of_systems_developmental INT(11),
+    weight_category INT(11),
     dna_pcr_sample_date DATE,
     dna_pcr_contextual_status INT(11),
     dna_pcr_result INT(11),
@@ -11612,6 +9075,7 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     azt_given INT(11),
     nvp_given INT(11),
     ctx_given INT(11),
+    multi_vitamin_given INT(11),
     first_antibody_sample_date DATE,
     first_antibody_result INT(11),
     first_antibody_dbs_sample_code VARCHAR(100),
@@ -11627,8 +9091,14 @@ SELECT "Successfully created etl_patient_program_discontinuation table";
     deworming_drug INT(11),
     dosage INT(11),
     unit VARCHAR(100),
+    vitaminA_given INT(11),
+    disability INT(11),
     next_appointment_date DATE,
     comments VARCHAR(100),
+    referred_from INT(11),
+    referred_to INT(11),
+    counselled_on INT(11),
+    MNPS_Supplementation INT(11),
     date_created DATETIME NOT NULL,
     date_last_modified DATETIME,
     CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
@@ -11777,9 +9247,23 @@ confirmed_tb_contact INT(11),
 fever_for_2wks_or_more INT(11),
 noticeable_weight_loss INT(11),
 night_sweat_for_2wks_or_more INT(11),
+lethargy INT(11),
+spatum_smear_ordered INT(11) DEFAULT NULL,
+chest_xray_ordered INT(11) DEFAULT NULL,
+genexpert_ordered INT(11) DEFAULT NULL,
+spatum_smear_result INT(11) DEFAULT NULL,
+chest_xray_result INT(11) DEFAULT NULL,
+genexpert_result INT(11) DEFAULT NULL,
+referral INT(11) DEFAULT NULL,
+clinical_tb_diagnosis INT(11) DEFAULT NULL,
 resulting_tb_status INT(11),
+contact_invitation INT(11) DEFAULT NULL,
+evaluated_for_ipt INT(11) DEFAULT NULL,
+started_anti_TB INT(11),
 tb_treatment_start_date DATE DEFAULT NULL,
+tb_prophylaxis VARCHAR(50),
 notes VARCHAR(100),
+person_present int(11) default 978,
 date_created DATETIME NOT NULL,
 date_last_modified DATETIME,
 CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
@@ -11861,9 +9345,11 @@ key_population_type VARCHAR(50),
 ever_tested_for_hiv VARCHAR(10),
 months_since_last_test INT(11),
 patient_disabled VARCHAR(50),
-disability_type VARCHAR(50),
+disability_type VARCHAR(255),
 patient_consented VARCHAR(50) DEFAULT NULL,
 client_tested_as VARCHAR(50),
+setting VARCHAR(50),
+approach VARCHAR(50),
 test_strategy VARCHAR(50),
 hts_entry_point VARCHAR(50),
 test_1_kit_name VARCHAR(50),
@@ -11877,6 +9363,9 @@ test_2_result VARCHAR(50) DEFAULT NULL,
 final_test_result VARCHAR(50) DEFAULT NULL,
 patient_given_result VARCHAR(50) DEFAULT NULL,
 couple_discordant VARCHAR(100) DEFAULT NULL,
+referral_for VARCHAR(100) DEFAULT NULL,
+referral_facility VARCHAR(200) DEFAULT NULL,
+other_referral_facility VARCHAR(200) DEFAULT NULL,
 tb_screening VARCHAR(20) DEFAULT NULL,
 patient_had_hiv_self_test VARCHAR(50) DEFAULT NULL,
 remarks VARCHAR(255) DEFAULT NULL,
@@ -11906,10 +9395,12 @@ visit_date DATE,
 tracing_type VARCHAR(50),
 tracing_status VARCHAR(100),
 ccc_number VARCHAR(100),
+referral_facility VARCHAR(200) DEFAULT NULL,
 facility_linked_to VARCHAR(100),
 enrollment_date DATE,
 art_start_date DATE,
 provider_handed_to VARCHAR(100),
+cadre VARCHAR(100),
 voided INT(11),
 index(patient_id),
 index(visit_date),
@@ -11944,12 +9435,12 @@ visit_date DATE,
 location_id INT(11) DEFAULT NULL,
 encounter_id INT(11),
 obs_id INT(11) NOT NULL PRIMARY KEY,
-cough INT(11),
-fever INT(11),
-weight_loss_poor_gain INT(11),
-night_sweats INT(11),
-contact_with_tb_case INT(11),
-lethargy INT(11),
+cough INT(11) DEFAULT NULL,
+fever INT(11) DEFAULT NULL,
+weight_loss_poor_gain INT(11) DEFAULT NULL,
+night_sweats INT(11) DEFAULT NULL,
+contact_with_tb_case INT(11) DEFAULT NULL,
+lethargy INT(11) DEFAULT NULL,
 yellow_urine INT(11),
 numbness_bs_hands_feet INT(11),
 eyes_yellowness INT(11),
@@ -12003,12 +9494,15 @@ visit_date DATE,
 location_id INT(11) DEFAULT NULL,
 encounter_id INT(11) NOT NULL PRIMARY KEY,
 tracing_type INT(11),
+reason_for_missed_appointment INT(11),
+non_coded_missed_appointment_reason VARCHAR(100),
 tracing_outcome INT(11),
 attempt_number INT(11),
-is_final_trace INT(11) ,
+is_final_trace INT(11),
 true_status INT(11),
 cause_of_death INT(11),
 comments VARCHAR(100),
+booking_date DATE,
 date_created DATETIME NOT NULL,
 date_last_modified DATETIME,
 CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
@@ -12569,12 +10063,22 @@ CREATE TABLE kenyaemr_etl.etl_patient_program (
     location_id INT(11) DEFAULT NULL,
     date_created DATETIME NOT NULL,
     date_last_modified DATETIME,
+    visit_type VARCHAR(255) DEFAULT NULL,
+    screening_type VARCHAR(255) DEFAULT NULL,
+    post_treatment_complication_cause VARCHAR(255) DEFAULT NULL,
+    post_treatment_complication_other VARCHAR(255) DEFAULT NULL,
     screening_number INT(11),
     screening_method VARCHAR(255) DEFAULT NULL,
     screening_result VARCHAR(255) DEFAULT NULL,
     previous_screening_method VARCHAR(255) DEFAULT NULL,
     previous_screening_date DATE,
     previous_screening_result VARCHAR(255) DEFAULT NULL,
+    treatment_method VARCHAR(255) DEFAULT NULL,
+    treatment_method_other VARCHAR(255) DEFAULT NULL,
+    referred_out VARCHAR(100) DEFAULT NULL,
+    referral_facility VARCHAR(100) DEFAULT NULL,
+    referral_reason VARCHAR(255) DEFAULT NULL,
+    next_appointment_date DATETIME,
     encounter_type VARCHAR(255),
     voided INT(11),
     CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
@@ -13024,45 +10528,7 @@ CREATE TABLE kenyaemr_etl.etl_patient_program (
       INDEX(client_id)
     );
 
-CREATE TABLE kenyaemr_etl.etl_gender_based_violence (
-  uuid char(38),
-  provider INT(11),
-  client_id INT(11) NOT NULL ,
-  visit_id INT(11),
-  visit_date DATE,
-  location_id INT(11) DEFAULT NULL,
-  encounter_id INT(11) NOT NULL PRIMARY KEY,
-  is_physically_abused VARCHAR(10),
-  physical_abuse_perpetrator VARCHAR(100),
-  other_physical_abuse_perpetrator VARCHAR(100),
-  in_physically_abusive_relationship VARCHAR(10),
-  in_physically_abusive_relationship_with VARCHAR(100),
-  other_physically_abusive_relationship_perpetrator VARCHAR(100),
-  in_emotionally_abusive_relationship VARCHAR(10),
-  emotional_abuse_perpetrator VARCHAR(100),
-  other_emotional_abuse_perpetrator VARCHAR(100),
-  in_sexually_abusive_relationship VARCHAR(10),
-  sexual_abuse_perpetrator VARCHAR(100),
-  other_sexual_abuse_perpetrator VARCHAR(100),
-  ever_abused_by_unrelated_person VARCHAR(10),
-  unrelated_perpetrator VARCHAR(100),
-  other_unrelated_perpetrator VARCHAR(100),
-  sought_help VARCHAR(10),
-  help_provider VARCHAR(100),
-  date_helped DATE,
-  help_outcome VARCHAR(100),
-  other_outcome VARCHAR(100),
-  reason_for_not_reporting VARCHAR(100),
-  other_reason_for_not_reporting VARCHAR(100),
-  date_created DATETIME NOT NULL,
-  date_last_modified DATETIME,
-  voided INT(11),
-  CONSTRAINT FOREIGN KEY (client_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
-  CONSTRAINT unique_uuid UNIQUE(uuid),
-  INDEX(visit_date),
-  INDEX(encounter_id),
-  INDEX(client_id)
-);
+
 
 CREATE TABLE kenyaemr_etl.etl_PrEP_verification (
     uuid char(38),
@@ -13137,6 +10603,26 @@ CREATE TABLE kenyaemr_etl.etl_PrEP_verification (
     INDEX(patient_id)
     );
 
+    CREATE TABLE kenyaemr_etl.etl_gbv_screening_action (
+    uuid char(38),
+    provider INT(11),
+    patient_id INT(11) NOT NULL ,
+    visit_id INT(11),
+    visit_date DATE,
+    location_id INT(11) DEFAULT NULL,
+    obs_id INT(11) NOT NULL PRIMARY KEY,
+    help_provider VARCHAR(100),
+    action_taken VARCHAR(100),
+    reason_for_not_reporting VARCHAR(100),
+    date_created DATETIME NOT NULL,
+    date_last_modified DATETIME,
+    voided INT(11),
+    CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
+    INDEX(visit_date),
+    INDEX(obs_id),
+    INDEX(patient_id)
+    );
+
     CREATE TABLE kenyaemr_etl.etl_depression_screening (
     uuid char(38),
     provider INT(11),
@@ -13205,6 +10691,74 @@ INDEX(encounter_id),
 INDEX(obs_id)
 );
 
+CREATE TABLE kenyaemr_etl.etl_pre_hiv_enrollment_art (
+uuid char(38),
+provider INT(11),
+patient_id INT(11) NOT NULL,
+visit_id INT(11),
+visit_date DATE,
+location_id INT(11) DEFAULT NULL,
+encounter_id INT(11) NOT NULL,
+obs_id INT(11) NOT NULL PRIMARY KEY,
+PMTCT INT(11),
+PMTCT_regimen INT(11),
+PEP INT(11),
+PEP_regimen INT(11),
+PrEP INT(11),
+PrEP_regimen INT(11),
+HAART INT(11),
+HAART_regimen INT(11),
+voided int(11),
+date_created DATETIME NOT NULL,
+date_last_modified DATETIME,
+CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics(patient_id),
+INDEX(visit_date),
+INDEX(patient_id),
+INDEX(encounter_id),
+INDEX(obs_id)
+);
+
+CREATE TABLE kenyaemr_etl.etl_covid19_assessment (
+  uuid                                    char(38),
+  provider                                INT(11),
+  patient_id                              INT(11)  NOT NULL,
+  visit_id                                INT(11),
+  visit_date                              DATE,
+  location_id                             INT(11) DEFAULT NULL,
+  encounter_id                            INT(11)  NOT NULL,
+  obs_id                                  VARCHAR(10),
+  ever_vaccinated                         VARCHAR(10),
+  first_vaccine_type                      VARCHAR(10),
+  second_vaccine_type                     VARCHAR(10),
+  first_dose                              VARCHAR(10),
+  second_dose                             VARCHAR(10),
+  first_dose_date                         VARCHAR(10),
+  second_dose_date                        VARCHAR(10),
+  first_vaccination_verified              VARCHAR(10),
+  second_vaccination_verified             VARCHAR(10),
+  final_vaccination_status                VARCHAR(10),
+  ever_received_booster                   VARCHAR(10),
+  booster_vaccine_taken                   VARCHAR(10),
+  date_taken_booster_vaccine              VARCHAR(10),
+  booster_sequence                        VARCHAR(10),
+  booster_dose_verified                   VARCHAR(10),
+  ever_tested_covid_19_positive           VARCHAR(10),
+  symptomatic                             VARCHAR(10),
+  date_tested_positive                    VARCHAR(10),
+  hospital_admission                      VARCHAR(10),
+  admission_unit                          varchar(50),
+  on_ventillator                          VARCHAR(10),
+  on_oxygen_supplement                    VARCHAR(10),
+  date_created                            DATETIME NOT NULL,
+  date_last_modified                      DATETIME,
+  voided                                  int(11),
+  CONSTRAINT FOREIGN KEY (patient_id) REFERENCES kenyaemr_etl.etl_patient_demographics (patient_id),
+  CONSTRAINT unique_uuid UNIQUE(uuid),
+  INDEX (visit_date),
+  INDEX (patient_id),
+  INDEX (encounter_id)
+);
+
   UPDATE kenyaemr_etl.etl_script_status SET stop_time=NOW() where id= script_id;
 
 END ;;
@@ -13223,7 +10777,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_create_default_facility_table`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_create_default_facility_table`()
 BEGIN
 		SELECT "Processing default facility info ", CONCAT("Time: ", NOW());
 		CREATE TABLE kenyaemr_etl.etl_default_facility_info
@@ -13253,7 +10807,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_drug_event`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_drug_event`()
 BEGIN
 SELECT "Processing Drug Event Data", CONCAT("Time: ", NOW());
 	INSERT INTO kenyaemr_etl.etl_drug_event(
@@ -13436,9 +10990,9 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_first_time_setup`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_first_time_setup`()
 BEGIN
 DECLARE populate_script_id INT(11);
 SELECT "Beginning first time setup", CONCAT("Time: ", NOW());
@@ -13497,14 +11051,16 @@ CALL sp_populate_etl_sti_treatment();
 CALL sp_populate_etl_peer_calendar();
 CALL sp_populate_etl_peer_tracking();
 CALL sp_populate_etl_treatment_verification();
-CALL sp_populate_etl_gender_based_violence();
 CALL sp_populate_etl_PrEP_verification();
 CALL sp_populate_etl_alcohol_drug_abuse_screening();
 CALL sp_populate_etl_gbv_screening();
+CALL sp_populate_etl_gbv_screening_action();
 CALL sp_populate_etl_depression_screening();
 CALL sp_populate_etl_adverse_events();
 CALL sp_populate_etl_allergy_chronic_illness();
 CALL sp_populate_etl_ipt_screening();
+CALL sp_populate_etl_pre_hiv_enrollment_art();
+CALL sp_populate_etl_covid_19_assessment();
 
 UPDATE kenyaemr_etl.etl_script_status SET stop_time=NOW() where id= populate_script_id;
 
@@ -13525,7 +11081,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_adverse_events`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_adverse_events`()
 BEGIN
 SELECT "Processing adverse events", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_adverse_events(
@@ -13585,7 +11141,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_alcohol_drug_abuse_screening`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_alcohol_drug_abuse_screening`()
 BEGIN
 SELECT "Processing Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_alcohol_drug_abuse_screening(
@@ -13635,7 +11191,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_allergy_chronic_illness`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_allergy_chronic_illness`()
 BEGIN
 SELECT "Processing alergy and chronic illness", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_allergy_chronic_illness(
@@ -13670,7 +11226,7 @@ select
 from encounter e
    inner join person p on p.person_id=e.patient_id and p.voided=0
    inner join (
-              select encounter_type_id, uuid, name from encounter_type where uuid in('a0034eee-1940-4e35-847f-97537a35d05e')
+              select encounter_type_id, uuid, name from encounter_type where uuid in('a0034eee-1940-4e35-847f-97537a35d05e','c6d09e05-1f25-4164-8860-9f32c5a02df0')
               ) et on et.encounter_type_id=e.encounter_type
    inner join (select o.person_id,o1.encounter_id, o.obs_id,o.concept_id as obs_group,o1.concept_id as concept_id,o1.value_coded, o1.value_datetime,
                       o1.date_created,o1.voided from obs o join obs o1 on o.obs_id = o1.obs_group_id
@@ -13696,7 +11252,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ART_preparation`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ART_preparation`()
 BEGIN
     SELECT "Processing ART Preparation ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_ART_preparation(
@@ -13791,7 +11347,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ccc_defaulter_tracing`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ccc_defaulter_tracing`()
 BEGIN
 SELECT "Processing ccc defaulter tracing form", CONCAT("Time: ", NOW());
 
@@ -13804,30 +11360,36 @@ visit_date,
 location_id,
 encounter_id,
 tracing_type,
+reason_for_missed_appointment,
+non_coded_missed_appointment_reason,
 tracing_outcome,
 attempt_number,
 is_final_trace,
 true_status,
 cause_of_death,
 comments,
+booking_date,
 date_created,
 date_last_modified
 )
 select
 e.uuid, e.creator, e.patient_id, e.visit_id, e.encounter_datetime, e.location_id, e.encounter_id,
 max(if(o.concept_id = 164966, o.value_coded, null )) as tracing_type,
+max(if(o.concept_id = 1801, o.value_coded, null )) as reason_for_missed_appointment,
+max(if(o.concept_id = 163513, o.value_text, "" )) as non_coded_missed_appointment_reason,
 max(if(o.concept_id = 160721, o.value_coded, null )) as tracing_outcome,
 max(if(o.concept_id = 1639, value_numeric, "" )) as attempt_number,
 max(if(o.concept_id = 163725, o.value_coded, "" )) as is_final_trace,
 max(if(o.concept_id = 160433, o.value_coded, "" )) as true_status,
 max(if(o.concept_id = 1599, o.value_coded, "" )) as cause_of_death,
 max(if(o.concept_id = 160716, o.value_text, "" )) as comments,
+max(if(o.concept_id=163526,date(o.value_datetime),null)) as booking_date,
 e.date_created as date_created,
 if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
 from encounter e
 	inner join person p on p.person_id=e.patient_id and p.voided=0
 	inner join form f on f.form_id=e.form_id and f.uuid in ("a1a62d1e-2def-11e9-b210-d663bd873d93")
-inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 160721, 1639, 163725, 160433, 1599, 160716) and o.voided=0
+inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966,1801, 163513, 160721, 1639, 163725, 160433, 1599, 160716,163526) and o.voided=0
 where e.voided=0
 group by e.encounter_id;
 SELECT "Completed processing CCC defaulter tracing forms", CONCAT("Time: ", NOW());
@@ -13847,7 +11409,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_cervical_cancer_screening`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_cervical_cancer_screening`()
 BEGIN
 SELECT "Processing HIV Follow-up, MCH ANC and PNC forms for CAXC screening", CONCAT("Time: ", NOW());
 
@@ -13861,22 +11423,75 @@ insert into kenyaemr_etl.etl_cervical_cancer_screening(
     location_id,
     date_created,
     date_last_modified,
+    visit_type,
+    screening_type,
+    post_treatment_complication_cause,
+    post_treatment_complication_other,
     screening_method,
     screening_result,
+    treatment_method,
+    treatment_method_other,
+    referred_out,
+    referral_facility,
+    referral_reason,
+    next_appointment_date,
     encounter_type,
     voided
     )
 select
        e.uuid,  e.encounter_id,e.creator as provider,e.patient_id, e.visit_id, e.encounter_datetime as visit_date, e.location_id,e.date_created,
        if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified,
-       max(if(o.concept_id = 163589, (case o.value_coded when 885 then 'Pap Smear' when 162816 then 'VIA' when 164977 then 'VILI' when 5622 then 'Other' else "" end), "" )) as screening_method,
-       max(if(o.concept_id = 164934, (case o.value_coded when 703 then 'Positive' when 159393 then 'Presumed' when 664  then 'Negative' else NULL end), '' )) as screening_result,
+       max(if(o.concept_id = 160288, (case o.value_coded when 162080 then 'Initial visit'
+                                                         when 161236 then 'Routine visit'
+                                                         when 165381 then 'Post treatment visit'
+                                                         when 1185 then 'Treatment visit'
+                                                         when 165382 then 'Post treatment complication' else "" end), "" )) as visit_type,
+       max(if(o.concept_id = 164181, (case o.value_coded when 164180 then 'First time screening'
+                                 when 160530 then 'Rescreening'
+                                 when 165389 then 'Post treatment followup' else "" end), "" )) as screening_type,
+       max(if(o.concept_id = 165383, (case o.value_coded when 162816 then 'Cryotherapy'
+                                 when 162810 then 'LEEP'
+                                 when 5622 then 'Others' else "" end), "" )) as post_treatment_complication_cause,
+        max(if(o.concept_id=163042,o.value_text,null)) as post_treatment_complication_other,
+        max(if(o.concept_id = 163589, (case o.value_coded when 885 then 'Pap Smear'
+                                                          when 162816 then 'VIA'
+                                                          when 164805 then 'VIA'
+                                                          when 164977 then 'VILI'
+                                                          when 160705 then 'Colposcopy'
+                                                          when 159859 then 'HPV Test'
+                                                          when 5622 then 'Other' else "" end), "" )) as screening_method,
+       max(if(o.concept_id = 164934, (case o.value_coded when 703 then 'Positive'
+                                                         when 1116 then 'Positive'
+                                                         when 145805 then 'Positive'
+                                                         when 155424 then 'Positive'
+                                                         when 145808  then 'Presumed'
+                                                         when 159393 then 'Presumed'
+                                                         when 159008 then 'Presumed'
+                                                         when 5622 then 'Other'
+                                                         when 1115  then 'Negative'
+                                                         when 664  then 'Negative' else NULL end), '' )) as screening_result,
+       max(if(o.concept_id = 165266, (case o.value_coded when 165381 then 'Cryotherapy postponed'
+                                                       when 165386 then 'Cryotherapy performed'
+                                                       when 162810 then 'LEEP'
+                                                       when 165396 then 'Cold knife cone'
+                                                       when 165395 then 'Thermocoagulation'
+                                                       when 165385 then 'Cryotherapy performed (single Visit)'
+                                                       when 159837 then 'Hysterectomy'
+                                                       when 165391 then 'Referred for cancer treatment'
+                                                       when 5622 then 'Other' else "" end), "" )) as treatment_method,
+      max(if(o.concept_id=160632,o.value_text,null)) as treatment_method_other,
+      max(if(o.concept_id=165267,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as referred_out,
+      max(if(o.concept_id=165268,o.value_text,null)) as referral_facility,
+      max(if(o.concept_id = 1887, (case o.value_coded when 165388 then 'Site does not have cryotherapy machine'
+                                                      when 159008 then 'Large lesion, Suspect cancer'
+                                                      when 5622 then 'Other' else "" end), "" )) as referral_reason,
+      max(if(o.concept_id=5096,o.value_datetime,null)) as next_appointment_date,
       f.name as encounter_type,
        e.voided as voided
 from encounter e
 	inner join person p on p.person_id=e.patient_id and p.voided=0
-	inner join form f on f.form_id=e.form_id and f.uuid in ('e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','22c68f86-bbf0-49ba-b2d1-23fa7ccf0259')
-  inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164934,163589) and o.voided=0
+	inner join form f on f.form_id=e.form_id and f.uuid in ('e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','22c68f86-bbf0-49ba-b2d1-23fa7ccf0259','0c93b93c-bfef-4d2a-9fbe-16b59ee366e7')
+  inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164934,163589,160288,164181,165383,163042,165266,160632,165267,165268,1887,5096) and o.voided=0
 where e.voided=0
 group by e.encounter_id
 having screening_result is not null;
@@ -13950,7 +11565,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_client_enrollment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_client_enrollment`()
 BEGIN
     SELECT "Processing client enrollment data ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_client_enrollment (
@@ -14047,7 +11662,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_client_trace`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_client_trace`()
 BEGIN
 		SELECT "Processing client trace ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_client_trace(
@@ -14102,7 +11717,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_clinical_visit`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_clinical_visit`()
 BEGIN
         SELECT "Processing Clinical Visit ", CONCAT("Time: ", NOW());
         INSERT INTO kenyaemr_etl.etl_clinical_visit(
@@ -14383,7 +11998,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_contact`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_contact`()
 BEGIN
         SELECT "Processing client contact data ", CONCAT("Time: ", NOW());
         insert into kenyaemr_etl.etl_contact (
@@ -14487,6 +12102,202 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_populate_etl_covid_19_assessment` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_covid_19_assessment`()
+BEGIN
+SELECT "Processing covid_19_assessment", CONCAT("Time: ", NOW());
+insert into kenyaemr_etl.etl_covid19_assessment (uuid,
+                                                 provider,
+                                                 patient_id,
+                                                 visit_id,
+                                                 visit_date,
+                                                 location_id,
+                                                 encounter_id,
+                                                 obs_id,
+                                                 ever_vaccinated,
+                                                 first_vaccine_type,
+                                                 second_vaccine_type,
+                                                 first_dose,
+                                                 second_dose,
+                                                 first_dose_date,
+                                                 second_dose_date,
+                                                 first_vaccination_verified,
+                                                 second_vaccination_verified,
+                                                 final_vaccination_status,
+                                                 ever_received_booster,
+                                                 booster_vaccine_taken,
+                                                 date_taken_booster_vaccine,
+                                                 booster_sequence,
+                                                 booster_dose_verified,
+                                                 ever_tested_covid_19_positive,
+                                                 symptomatic,
+                                                 date_tested_positive,
+                                                 hospital_admission,
+                                                 admission_unit,
+                                                 on_ventillator,
+                                                 on_oxygen_supplement,
+                                                 date_created,
+                                                 date_last_modified,
+                                                 voided)
+select o3.uuid                                                                             as uuid,
+       o3.creator                                                                          as provider,
+       o3.person_id                                                                        as patient_id,
+       o3.visit_id                                                                         as visit_id,
+       o3.visit_date                                                                       as visit_date,
+       o3.location_id                                                                      as location_id,
+       o3.encounter_id                                                                     as encounter_id,
+       o1.obs_group                                                                        as obs_id,
+       max(if(o3.concept_id = 163100, o3.value_coded, null))                               as ever_vaccinated,
+       max(if(dose = 1 and o1.concept_id = 984 and o1.obs_group = 1421, vaccine_type,
+              ""))                                                                         as first_vaccine_type,
+       max(if(dose = 2 and o1.concept_id = 984 and o1.obs_group = 1421, vaccine_type,
+              ""))                                                                         as second_vaccine_type,
+       max(if(dose = 1 and o1.concept_id = 1418 and o1.obs_group = 1421, dose, ""))        as first_dose,
+       max(if(dose = 2 and o1.concept_id = 1418 and o1.obs_group = 1421, dose, ""))        as second_dose,
+       max(if(y.dose = 1 and o1.concept_id = 1410 and y.obs_group = 1421, date(y.date_given),
+              ""))                                                                         as first_dose_date,
+       max(if(y.dose = 2 and o1.concept_id = 1410 and y.obs_group = 1421, date(y.date_given),
+              ""))                                                                         as second_dose_date,
+       max(if(dose = 1 and o1.concept_id = 164464 and o1.obs_group = 1421, verified,
+              ""))                                                                         as first_vaccination_verified,
+       max(if(dose = 2 and o1.concept_id = 164464 and o1.obs_group = 1421, verified,
+              ""))                                                                         as second_vaccination_verified,
+       max(if(o3.concept_id = 164134, o3.value_coded, null))                               as final_vaccination_status,
+       max(if(o3.concept_id = 166063, o3.value_coded, null))                               as ever_received_booster,
+       max(if(o1.concept_id = 984 and o1.obs_group = 1184, o1.value_coded, ""))            as booster_vaccine_taken,
+       max(
+         if(o1.concept_id = 1410 and o1.obs_group = 1184, date(o1.value_datetime),
+            ""))                                                                           as date_taken_booster_vaccine,
+       max(if(o1.concept_id = 1418 and o1.obs_group = 1184, o1.value_numeric, ""))         as booster_sequence,
+       max(
+         if(o1.concept_id = 164464 and o1.obs_group = 1184, o1.value_coded, ""))           as booster_dose_verified,
+       max(if(o3.concept_id = 166638, o3.value_coded, null))                               as ever_tested_covid_19_positive,
+       max(if(o3.concept_id = 159640, o3.value_coded, null))                               as symptomatic,
+       max(if(o3.concept_id = 159948, date(o3.value_datetime), null))                      as date_tested_positive,
+       max(if(o3.concept_id = 162477, o3.value_coded, null))                               as hospital_admission,
+       concat_ws(',', max(if(o3.concept_id = 161010 and o3.value_coded = 165994, 'Isolation', null)),
+                 max(if(o3.concept_id = 161010 and o3.value_coded = 165995, 'HDU', null)),
+                 max(if(o3.concept_id = 161010 and o3.value_coded = 161936, 'ICU', null))) as admission_unit,
+       max(if(o3.concept_id = 165932, o3.value_coded, null))                               as on_ventillator,
+       max(if(o3.concept_id = 165864, o3.value_coded, null))                               as on_oxygen_supplement,
+       o3.date_created                                                                     as date_created,
+       o3.date_last_modified                                                               as date_last_modified,
+       o3.voided                                                                           as voided
+from (select e.uuid,
+             e.creator,
+             o.person_id,
+             o.encounter_id,
+             date(e.encounter_datetime) as visit_date,
+             e.visit_id,
+             e.location_id,
+             o.obs_id,
+             o.concept_id               as obs_group,
+             o.concept_id               as concept_id,
+             o.value_coded,
+             o.value_datetime,
+             o.value_numeric,
+             o.date_created,
+             if(max(o.date_created) != min(o.date_created), max(o.date_created),
+                NULL)                   as date_last_modified,
+             o.voided
+      from obs o
+             inner join encounter e on e.encounter_id = o.encounter_id
+             inner join (select encounter_type_id, uuid, name
+                         from encounter_type
+                         where uuid = '86709cfc-1490-11ec-82a8-0242ac130003') et
+               on et.encounter_type_id = e.encounter_type
+      where o.concept_id in
+            (163100, 984, 1418, 1410, 164464, 164134, 166063, 166638, 159948, 162477, 161010, 165864, 165932, 159640)
+        and o.voided = 0
+      group by obs_id)o3
+       left join (select person_id                                       as patient_id,
+                         date(encounter_datetime)                        as visit_date,
+                         creator,
+                         obs_id,
+                         date(t.date_created)                            as date_created,
+                         t.date_last_modified                            as date_last_modified,
+                         encounter_id,
+                         name                                            as encounter_type,
+                         t.uuid,
+                         max(if(t.concept_id = 984, t.value_coded, ""))  as vaccine_type,
+                         max(if(t.concept_id = 1418, value_numeric, "")) as dose,
+                         max(if(t.concept_id = 164464, value_coded, "")) as verified,
+                         max(if(t.concept_id = 1410, date_given, ""))    as date_given,
+                         t.concept_id                                    as concept_id,
+                         t.obs_group                                     as obs_group,
+                         obs_group_id,
+                         t.visit_id,
+                         t.location_id,
+                         t.voided
+                  from (select e.uuid,
+                               o2.person_id,
+                               o2.obs_id,
+                               o.concept_id as         obs_group,
+                               e.encounter_datetime,
+                               e.creator,
+                               e.date_created,
+                               if(max(o2.date_created) != min(o2.date_created), max(o2.date_created),
+                                  NULL)     as         date_last_modified,
+                               o2.voided    as         voided,
+                               o2.concept_id,
+                               o2.value_coded,
+                               o2.value_numeric,
+                               date(o2.value_datetime) date_given,
+                               o2.obs_group_id,
+                               o2.encounter_id,
+                               et.name,
+                               e.visit_id,
+                               e.location_id
+                        from obs o
+                               inner join encounter e on e.encounter_id = o.encounter_id
+                               inner join person p on p.person_id = o.person_id and p.voided = 0
+                               inner join (select encounter_type_id, uuid, name
+                                           from encounter_type
+                                           where uuid = '86709cfc-1490-11ec-82a8-0242ac130003') et
+                                 on et.encounter_type_id = e.encounter_type
+                               inner join obs o2 on o.obs_id = o2.obs_group_id
+                        where o2.concept_id in (984, 1418, 1410, 164464)
+                          and o2.voided = 0
+                        group by o2.obs_id) t
+                  group by obs_group_id
+                  having vaccine_type != "") y on o3.encounter_id = y.encounter_id
+       left join (select o.person_id,
+                         o1.encounter_id,
+                         o.obs_id,
+                         o.concept_id  as obs_group,
+                         o1.concept_id as concept_id,
+                         o1.value_coded,
+                         o1.value_datetime,
+                         o1.value_numeric,
+                         o1.date_created,
+                         o1.voided
+                  from obs o
+                         join obs o1 on o.obs_id = o1.obs_group_id
+                                          and o1.concept_id in
+                                              (163100, 984, 1418, 1410, 164464, 164134, 166063, 166638, 159948, 162477, 161010, 165864, 165932) and
+                                        o1.voided = 0
+                                          and o.concept_id in (1421, 1184)
+                  order by o1.obs_id) o1 on o1.encounter_id = y.encounter_id
+
+where o3.voided = 0
+group by o3.visit_id;
+
+SELECT "Completed processing covid_19 assessment data ", CONCAT("Time: ", NOW());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_populate_etl_depression_screening` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -14497,7 +12308,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_depression_screening`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_depression_screening`()
 BEGIN
 SELECT "Processing depression screening", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_depression_screening(
@@ -14543,7 +12354,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_enhanced_adherence`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_enhanced_adherence`()
 BEGIN
 		SELECT "Processing Enhanced Adherence ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_enhanced_adherence(
@@ -14675,7 +12486,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_gbv_screening`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_gbv_screening`()
 BEGIN
 SELECT "Processing gbv screening", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_gbv_screening(
@@ -14707,7 +12518,7 @@ select
        e.voided as voided
 from encounter e
        inner join person p on p.person_id=e.patient_id and p.voided=0
-       inner join form f on f.form_id=e.form_id and f.uuid in ('03767614-1384-4ce3-aea9-27e2f4e67d01')
+       inner join form f on f.form_id=e.form_id and f.uuid in ('03767614-1384-4ce3-aea9-27e2f4e67d01','94eec122-83a1-11ea-bc55-0242ac130003')
 inner join (select o.encounter_id as encounter_id,o.person_id, o.obs_id,o.concept_id as obs_group,o1.concept_id as concept_id, o1.value_coded as value_coded,o1.date_created,o1.voided
             from obs o join obs o1 on o.obs_id = o1.obs_group_id and o1.concept_id =160658 and o.concept_id =141814)o on o.encounter_id = e.encounter_id
 and o.voided=0
@@ -14715,6 +12526,57 @@ where e.voided=0
 group by e.encounter_id;
 
 SELECT "Completed processing gbv screening data ", CONCAT("Time: ", NOW());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_populate_etl_gbv_screening_action` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_gbv_screening_action`()
+BEGIN
+SELECT "Processing gbv screening action", CONCAT("Time: ", NOW());
+insert into kenyaemr_etl.etl_gbv_screening_action(
+    uuid,
+    provider,
+    patient_id,
+    visit_id,
+    visit_date,
+    location_id,
+    obs_id,
+    help_provider,
+    action_taken,
+    reason_for_not_reporting,
+    date_created,
+    date_last_modified,
+    voided
+    )
+select
+       e.uuid,e.creator,e.patient_id,e.visit_id, date(e.encounter_datetime) as visit_date, e.location_id, o.id as obs_id,
+       max(if(o.obs_group = 1562 and o.concept_id = 162886,o.value_coded, NULL)) as help_provider,
+       max(if(o.obs_group = 159639 and o.concept_id = 162875,o.value_coded, NULL)) as action_taken,
+       max(if(o.obs_group = 1743 and o.concept_id = 6098,o.value_coded,NULL)) as reason_for_not_reporting,
+       e.date_created as date_created,
+       if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified,
+       e.voided as voided
+from encounter e
+       inner join person p on p.person_id=e.patient_id and p.voided=0
+       inner join form f on f.form_id=e.form_id and f.uuid in ('03767614-1384-4ce3-aea9-27e2f4e67d01','94eec122-83a1-11ea-bc55-0242ac130003')
+       inner join (select o.encounter_id as encounter_id,o.person_id, o.obs_id,o1.obs_id as id,o.concept_id as obs_group,o1.concept_id as concept_id, o1.value_coded as value_coded,o1.date_created,o1.voided
+                   from obs o join obs o1 on o.obs_id = o1.obs_group_id and o1.concept_id in (162871,162886,162875,6098) and o.concept_id in(1562,159639,1743))o on o.encounter_id = e.encounter_id and o.voided=0
+where e.voided=0
+group by o.id order by o.concept_id;
+
+SELECT "Completed processing gbv screening action data ", CONCAT("Time: ", NOW());
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -14731,7 +12593,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_gender_based_violence`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_gender_based_violence`()
 BEGIN
 SELECT "Processing kp gender based violence form", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_gender_based_violence(
@@ -14811,7 +12673,7 @@ max(if(o.concept_id=162875,(case o.value_coded when 1066 then "No action taken"
         else "" end),null)) as help_outcome,
 max(if(o.concept_id = 165230, o.value_text, "" )) as other_outcome,
 max(if(o.concept_id=6098,(case o.value_coded
-       when 162951 then "Did not know where to report"
+       when 1067 then "Did not know where to report"
        when 1811 then "Distance"
        when 140923 then "Exhaustion/Lack of energy"
        when 163473 then "Fear shame"
@@ -14850,7 +12712,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_hei_enrolment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_hei_enrolment`()
 BEGIN
 		SELECT "Processing HEI Enrollments", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_hei_enrollment(
@@ -14865,6 +12727,7 @@ BEGIN
 			spd_number,
 			birth_weight,
 			gestation_at_birth,
+			birth_type,
 			date_first_seen,
 			birth_notification_number,
 			birth_certificate_number,
@@ -14913,6 +12776,7 @@ BEGIN
 				max(if(o.concept_id=162054,o.value_text,null)) as spd_number,
 				max(if(o.concept_id=5916,o.value_numeric,null)) as birth_weight,
 				max(if(o.concept_id=1409,o.value_numeric,null)) as gestation_at_birth,
+				max(if(o.concept_id=159949,o.value_coded,null)) as birth_type,
 				max(if(o.concept_id=162140,o.value_datetime,null)) as date_first_seen,
 				max(if(o.concept_id=162051,o.value_text,null)) as birth_notification_number,
 				max(if(o.concept_id=162052,o.value_text,null)) as birth_certificate_number,
@@ -14951,7 +12815,7 @@ BEGIN
 			from encounter e
 				inner join person p on p.person_id=e.patient_id and p.voided=0
 				inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-														and o.concept_id in(5303,162054,5916,1409,162140,162051,162052,161630,161601,160540,160563,160534,160535,161551,160555,1282,159941,1282,152460,160429,1148,1086,162055,1088,1282,162053,5630,1572,161555,159427,1503,163460,162724,164130,164129,164140,1646,160753,161555,159427)
+														and o.concept_id in(5303,162054,5916,1409,162140,162051,162052,161630,161601,160540,160563,160534,160535,161551,160555,1282,159941,1282,152460,160429,1148,1086,162055,1088,1282,162053,5630,1572,161555,159427,1503,163460,162724,164130,164129,164140,1646,160753,161555,159427,159949)
 
 				inner join
 				(
@@ -14977,7 +12841,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_hei_follow_up`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_hei_follow_up`()
 BEGIN
 		SELECT "Processing HEI Followup visits", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_hei_follow_up_visit(
@@ -14990,8 +12854,10 @@ BEGIN
 			encounter_id,
 			weight,
 			height,
+			muac,
 			primary_caregiver,
 			infant_feeding,
+			stunted,
 			tb_assessment_outcome,
 			social_smile_milestone,
 			head_control_milestone,
@@ -15002,12 +12868,14 @@ BEGIN
 			standing_milestone,
 			talking_milestone,
 			review_of_systems_developmental,
+			weight_category,
 			dna_pcr_sample_date,
 			dna_pcr_contextual_status,
 			dna_pcr_result,
 			azt_given,
 			nvp_given,
 			ctx_given,
+			multi_vitamin_given,
 
 
 			first_antibody_result,
@@ -15022,6 +12890,12 @@ BEGIN
 			deworming_drug,
 			dosage,
 			unit,
+			vitaminA_given,
+			disability,
+			referred_from,
+			referred_to,
+			counselled_on,
+			MNPS_Supplementation,
 			comments,
 			next_appointment_date,
 			date_created,
@@ -15037,8 +12911,10 @@ BEGIN
 				e.encounter_id,
 				max(if(o.concept_id=5089,o.value_numeric,null)) as weight,
 				max(if(o.concept_id=5090,o.value_numeric,null)) as height,
+				max(if(o.concept_id=160908,o.value_coded,null)) as muac,
 				max(if(o.concept_id=160640,o.value_coded,null)) as primary_caregiver,
 				max(if(o.concept_id=1151,o.value_coded,null)) as infant_feeding,
+				max(if(o.concept_id=164088,o.value_coded,null)) as stunted,
 				max(if(o.concept_id=1659,o.value_coded,null)) as tb_assessment_outcome,
 				max(if(o.concept_id=162069 and o.value_coded=162056,o.value_coded,null)) as social_smile_milestone,
 				max(if(o.concept_id=162069 and o.value_coded=162057,o.value_coded,null)) as head_control_milestone,
@@ -15049,12 +12925,14 @@ BEGIN
 				max(if(o.concept_id=162069 and o.value_coded=162062,o.value_coded,null)) as standing_milestone,
 				max(if(o.concept_id=162069 and o.value_coded=162060,o.value_coded,null)) as talking_milestone,
 				max(if(o.concept_id=1189,o.value_coded,null)) as review_of_systems_developmental,
+				max(if(o.concept_id=1854,o.value_coded,null)) as weight_category,
 				max(if(o.concept_id=159951,o.value_datetime,null)) as dna_pcr_sample_date,
 				max(if(o.concept_id=162084,o.value_coded,null)) as dna_pcr_contextual_status,
 				max(if(o.concept_id=1030,o.value_coded,null)) as dna_pcr_result,
 				max(if(o.concept_id=966 and o.value_coded=86663,o.value_coded,null)) as azt_given,
 				max(if(o.concept_id=966 and o.value_coded=80586,o.value_coded,null)) as nvp_given,
 				max(if(o.concept_id=1109,o.value_coded,null)) as ctx_given,
+				max(if(o.concept_id=1193,o.value_coded,null)) as multi_vitamin_given,
 
 
 				max(if(o.concept_id=1040,o.value_coded,null)) as first_antibody_result,
@@ -15069,6 +12947,12 @@ BEGIN
 				max(if(o.concept_id=1282,o.value_coded,null)) as deworming_drug,
 				max(if(o.concept_id=1443,o.value_numeric,null)) as dosage,
 				max(if(o.concept_id=1621,o.value_text,null)) as unit,
+				max(if(o.concept_id=161534,o.value_coded,null)) as vitaminA_given,
+				max(if(o.concept_id=162558,o.value_coded,null)) as disablity,
+				max(if(o.concept_id=163145,o.value_coded,null)) as referred_from,
+				max(if(o.concept_id=160481,o.value_coded,null)) as referred_to,
+				max(if(o.concept_id=1379,o.value_coded,null)) as counselled_on,
+				max(if(o.concept_id=5484,o.value_coded,null)) as MNPS_Supplementation,
 				max(if(o.concept_id=159395,o.value_text,null)) as comments,
 				max(if(o.concept_id=5096,o.value_datetime,null)) as next_appointment_date,
 				e.date_created as date_created,
@@ -15076,7 +12960,7 @@ BEGIN
 			from encounter e
 				inner join person p on p.person_id=e.patient_id and p.voided=0
 				inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-														and o.concept_id in(844,5089,5090,160640,1151,1659,5096,162069,162069,162069,162069,162069,162069,162069,162069,1189,159951,966,1109,162084,1030,162086,160082,159951,1040,162086,160082,159951,1326,162086,160082,162077,162064,162067,162066,1282,1443,1621,159395,5096)
+														and o.concept_id in(844,5089,5090,160640,1151,1659,5096,162069,162069,162069,162069,162069,162069,162069,162069,1189,159951,966,1109,162084,1030,162086,160082,159951,1040,162086,160082,159951,1326,162086,160082,162077,162064,162067,162066,1282,1443,1621,159395,5096,160908,1854,164088,161534,162558,160481,163145,1379,5484)
 				inner join
 				(
 					select encounter_type_id, uuid, name from encounter_type where
@@ -15102,7 +12986,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_hei_immunization`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_hei_immunization`()
 BEGIN
   SELECT "Processing hei_immunization data ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_hei_immunization(
@@ -15249,7 +13133,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_hiv_enrollment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_hiv_enrollment`()
 BEGIN
 
 SELECT "Processing HIV Enrollment data ", CONCAT("Time: ", NOW());
@@ -15304,7 +13188,7 @@ select
        max(if(o.concept_id=159599,o.value_datetime,null)) as date_started_art_at_transferring_facility,
        max(if(o.concept_id=160554,o.value_datetime,null)) as date_confirmed_hiv_positive,
        max(if(o.concept_id=160632,left(trim(o.value_text),100),null)) as facility_confirmed_hiv_positive,
-       max(if(o.concept_id=160533,o.value_boolean,null)) as arv_status,
+       max(if(o.concept_id=160533,o.value_coded,null)) as arv_status,
        max(if(o.concept_id=160638,left(trim(o.value_text),100),null)) as name_of_treatment_supporter,
        max(if(o.concept_id=160640,o.value_coded,null)) as relationship_of_treatment_supporter,
        max(if(o.concept_id=160642,left(trim(o.value_text),100),null)) as treatment_supporter_telephone ,
@@ -15341,7 +13225,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_hiv_followup`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_hiv_followup`()
 BEGIN
 SELECT "Processing HIV Followup data ", CONCAT("Time: ", NOW());
 INSERT INTO kenyaemr_etl.etl_patient_hiv_followup(
@@ -15373,6 +13257,13 @@ clinical_notes,
 on_anti_tb_drugs,
 on_ipt,
 ever_on_ipt,
+cough,
+fever,
+weight_loss_poor_gain,
+night_sweats,
+tb_case_contact,
+lethargy,
+screened_for_tb,
 spatum_smear_ordered,
 chest_xray_ordered,
 genexpert_ordered,
@@ -15405,6 +13296,16 @@ tb_status,
 started_anti_TB,
 tb_rx_date,
 tb_treatment_no,
+general_examination,
+system_examination,
+skin_findings,
+eyes_findings,
+ent_findings,
+chest_findings,
+cvs_findings,
+abdomen_findings,
+cns_findings,
+genitourinary_findings,
 prophylaxis_given,
 ctx_adherence,
 ctx_dispensed,
@@ -15459,9 +13360,16 @@ null as clinical_notes,
 max(if(o.concept_id=164948,o.value_coded,null)) as on_anti_tb_drugs ,
 max(if(o.concept_id=164949,o.value_coded,null)) as on_ipt ,
 max(if(o.concept_id=164950,o.value_coded,null)) as ever_on_ipt ,
-max(if(o.concept_id=1271 and o.value_coded in (307,1065,1066),o.value_coded,null)) as spatum_smear_ordered ,
-max(if(o.concept_id=1271 and o.value_coded in (12 ,1065,1066),o.value_coded,null)) as chest_xray_ordered ,
-max(if(o.concept_id=1271 and o.value_coded in (162202,1065,1066),o.value_coded,null)) as genexpert_ordered ,
+max(if(o.concept_id=1729 and o.value_coded =159799,o.value_coded,null)) as cough,
+max(if(o.concept_id=1729 and o.value_coded =1494,o.value_coded,null)) as fever,
+max(if(o.concept_id=1729 and o.value_coded =832,o.value_coded,null)) as weight_loss_poor_gain,
+max(if(o.concept_id=1729 and o.value_coded =133027,o.value_coded,null)) as night_sweats,
+max(if(o.concept_id=1729 and o.value_coded =124068,o.value_coded,null)) as tb_case_contact,
+max(if(o.concept_id=1729 and o.value_coded =116334,o.value_coded,null)) as lethargy,
+max(if(o.concept_id=1729 and o.value_coded in(159799,1494,832,133027,124068,116334,1066),'Yes','No'))as screened_for_tb,
+max(if(o.concept_id=1271 and o.value_coded =307,o.value_coded,null)) as spatum_smear_ordered ,
+max(if(o.concept_id=1271 and o.value_coded =12,o.value_coded,null)) as chest_xray_ordered ,
+max(if(o.concept_id=1271 and o.value_coded = 162202,o.value_coded,null)) as genexpert_ordered ,
 max(if(o.concept_id=307,o.value_coded,null)) as spatum_smear_result ,
 max(if(o.concept_id=12,o.value_coded,null)) as chest_xray_result ,
 max(if(o.concept_id=162202,o.value_coded,null)) as genexpert_result ,
@@ -15491,6 +13399,27 @@ max(if(o.concept_id=1659,o.value_coded,null)) as tb_status,
 max(if(o.concept_id=162309,o.value_coded,null)) as started_anti_TB,
 max(if(o.concept_id=1113,o.value_datetime,null)) as tb_rx_date,
 max(if(o.concept_id=161654,trim(o.value_text),null)) as tb_treatment_no,
+concat_ws(',',nullif(max(if(o.concept_id=162737 and o.value_coded =1107 ,'None','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded =136443,'Jaundice','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded =460,'Oedema','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 5334,'Oral Thrush','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 5245,'Pallor','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 140125,'Finger Clubbing','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 126952,'Lymph Node Axillary','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 143050,'Cyanosis','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 126939,'Lymph Nodes Inguinal','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 823,'Wasting','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 142630,'Dehydration','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 116334,'Lethargic','')),'')) as general_examination,
+max(if(o.concept_id=159615,o.value_coded,null)) as system_examination,
+max(if(o.concept_id=1120,o.value_coded,null)) as skin_findings,
+max(if(o.concept_id=163309,o.value_coded,null)) as eyes_findings,
+max(if(o.concept_id=164936,o.value_coded,null)) as ent_findings,
+max(if(o.concept_id=1123,o.value_coded,null)) as chest_findings,
+max(if(o.concept_id=1124,o.value_coded,null)) as cvs_findings,
+max(if(o.concept_id=1125,o.value_coded,null)) as abdomen_findings,
+max(if(o.concept_id=164937,o.value_coded,null)) as cns_findings,
+max(if(o.concept_id=1126,o.value_coded,null)) as genitourinary_findings,
 max(if(o.concept_id=1109,o.value_coded,null)) as prophylaxis_given,
 max(if(o.concept_id=161652,o.value_coded,null)) as ctx_adherence,
 max(if(o.concept_id=162229 or (o.concept_id=1282 and o.value_coded = 105281),o.value_coded,null)) as ctx_dispensed,
@@ -15523,7 +13452,7 @@ inner join
 ) et on et.encounter_type_id=e.encounter_type
 left outer join obs o on o.encounter_id=e.encounter_id and o.voided=0
 	and o.concept_id in (1282,1246,161643,5089,5085,5086,5090,5088,5087,5242,5092,1343,5356,5272,161033,163530,5596,1427,5624,1053,160653,374,160575,1659,161654,161652,162229,162230,1658,160582,160632,159423,161557,159777,112603,161558,160581,5096,163300, 164930, 160581, 1154, 160430,162877, 164948, 164949, 164950, 1271, 307, 12, 162202, 1272, 163752, 163414, 162275, 160557, 162747,
-121764, 164933, 160080, 1823, 164940, 164934, 164935, 159615, 160288, 1855, 164947,162549,162877,160596,1109,1113,162309)
+121764, 164933, 160080, 1823, 164940, 164934, 164935, 159615, 160288, 1855, 164947,162549,162877,160596,1109,1113,162309,1729,162737,159615,1120,163309,164936,1123,1124,1125,164937,1126)
 where e.voided=0
 group by e.patient_id,visit_date;
 SELECT "Completed processing HIV Followup data ", CONCAT("Time: ", NOW());
@@ -15543,7 +13472,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_hts_linkage_tracing`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_hts_linkage_tracing`()
 BEGIN
 		SELECT "Processing HTS Linkage tracing ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_hts_linkage_tracing(
@@ -15602,7 +13531,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ipt_followup`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ipt_followup`()
 BEGIN
 		SELECT "Processing IPT followup ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_ipt_follow_up(
@@ -15670,7 +13599,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ipt_follow_up`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ipt_follow_up`()
 BEGIN
 SELECT "Processing IPT followup forms", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_ipt_follow_up(
@@ -15732,7 +13661,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ipt_initiation`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ipt_initiation`()
 BEGIN
 		SELECT "Processing IPT initiations ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_ipt_initiation(
@@ -15796,7 +13725,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ipt_outcome`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ipt_outcome`()
 BEGIN
 		SELECT "Processing IPT outcome ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_ipt_outcome(
@@ -15849,7 +13778,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ipt_screening`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ipt_screening`()
 BEGIN
 SELECT "Processing IPT screening", CONCAT("Time: ", NOW());
 
@@ -15919,7 +13848,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_laboratory_extract`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_laboratory_extract`()
 BEGIN
 SELECT "Processing Laboratory data ", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_laboratory_extract(
@@ -15945,7 +13874,7 @@ o.uuid,
 e.encounter_id,
 e.patient_id,
 e.location_id,
-coalesce(od.date_activated,e.encounter_datetime) as visit_date,
+coalesce(od.date_activated,o.obs_datetime) as visit_date,
 e.visit_id,
 o.order_id,
 o.concept_id,
@@ -15963,7 +13892,7 @@ from encounter e
 	inner join person p on p.person_id=e.patient_id and p.voided=0
 	inner join
 (
-	select encounter_type_id, uuid, name from encounter_type where uuid in('17a381d1-7e29-406a-b782-aa903b963c28', 'a0034eee-1940-4e35-847f-97537a35d05e','e1406e88-e9a9-11e8-9f32-f2801f1b9fd1', 'de78a6be-bfc5-4634-adc3-5f1a280455cc')
+	select encounter_type_id, uuid, name from encounter_type where uuid in('17a381d1-7e29-406a-b782-aa903b963c28', 'a0034eee-1940-4e35-847f-97537a35d05e','e1406e88-e9a9-11e8-9f32-f2801f1b9fd1', 'de78a6be-bfc5-4634-adc3-5f1a280455cc','bcc6da85-72f2-4291-b206-789b8186a021')
 ) et on et.encounter_type_id=e.encounter_type
 inner join obs o on e.encounter_id=o.encounter_id and o.voided=0 and o.concept_id in (5497,730,654,790,856,1030,1305)
 left join orders od on od.order_id = o.order_id and od.voided=0
@@ -15988,7 +13917,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_mch_antenatal_visit`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_mch_antenatal_visit`()
 BEGIN
 		SELECT "Processing MCH antenatal visits ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_mch_antenatal_visit(
@@ -16020,6 +13949,7 @@ BEGIN
 			fetal_movement,
 			who_stage,
 			cd4,
+			vl_sample_taken,
 			viral_load,
 			ldl,
 			arv_status,
@@ -16036,6 +13966,7 @@ BEGIN
 			partner_hiv_tested,
 			partner_hiv_status,
 			prophylaxis_given,
+			date_given_haart,
 			baby_azt_dispensed,
 			baby_nvp_dispensed,
 			TTT,
@@ -16065,6 +13996,14 @@ BEGIN
 			cacx_screening_method,
 			has_other_illnes,
 			counselled,
+			counselled_on_birth_plans,
+      counselled_on_danger_signs,
+      counselled_on_family_planning,
+      counselled_on_hiv,
+      counselled_on_supplimental_feeding,
+      counselled_on_breast_care,
+      counselled_on_infant_feeding,
+      counselled_on_treated_nets,
 			referred_from,
 			referred_to,
 			next_appointment_date,
@@ -16101,6 +14040,7 @@ BEGIN
 				max(if(o.concept_id=162107,o.value_coded,null)) as fetal_movement,
 				max(if(o.concept_id=5356,o.value_coded,null)) as who_stage,
 				max(if(o.concept_id=5497,o.value_numeric,null)) as cd4,
+				max(if(o.concept_id=1271,o.value_coded,null)) as vl_sample_taken,
 				max(if(o.concept_id=856,o.value_numeric,null)) as viral_load,
 				max(if(o.concept_id=1305,o.value_coded,null)) as ldl,
 				max(if(o.concept_id=1147,o.value_coded,null)) as arv_status,
@@ -16117,6 +14057,7 @@ BEGIN
 				max(if(o.concept_id=161557,o.value_coded,null)) as partner_hiv_tested,
 				max(if(o.concept_id=1436,o.value_coded,null)) as partner_hiv_status,
 				max(if(o.concept_id=1109,o.value_coded,null)) as prophylaxis_given,
+				max(if(o.concept_id=163784,o.value_datetime,null)) as date_given_haart,
 				max(if(o.concept_id=1282,o.value_coded,null)) as baby_azt_dispensed,
 				max(if(o.concept_id=1282,o.value_coded,null)) as baby_nvp_dispensed,
 				max(if(o.concept_id=984,(case o.value_coded when 84879 then "Yes" else "" end),null)) as TTT,
@@ -16146,6 +14087,14 @@ BEGIN
 				max(if(o.concept_id=163589,o.value_coded,null)) as cacx_screening_method,
 				max(if(o.concept_id=162747,o.value_coded,null)) as has_other_illnes,
 				max(if(o.concept_id=1912,o.value_coded,null)) as counselled,
+				max(if(o.concept_id=159853 and o.value_coded=159758,o.value_coded,null)) counselled_on_birth_plans,
+        max(if(o.concept_id=159853 and o.value_coded=159857,o.value_coded,null)) counselled_on_danger_signs,
+        max(if(o.concept_id=159853 and o.value_coded=156277,o.value_coded,null)) counselled_on_family_planning,
+        max(if(o.concept_id=159853 and o.value_coded=1914,o.value_coded,null)) counselled_on_hiv,
+        max(if(o.concept_id=159853 and o.value_coded=159854,o.value_coded,null)) counselled_on_supplimental_feeding,
+        max(if(o.concept_id=159853 and o.value_coded=159856,o.value_coded,null)) counselled_on_breast_care,
+        max(if(o.concept_id=159853 and o.value_coded=161651,o.value_coded,null)) counselled_on_infant_feeding,
+        max(if(o.concept_id=159853 and o.value_coded=1381,o.value_coded,null)) counselled_on_treated_nets,
 				max(if(o.concept_id=160481,o.value_coded,null)) as referred_from,
 				max(if(o.concept_id=163145,o.value_coded,null)) as referred_to,
 				max(if(o.concept_id=5096,o.value_datetime,null)) as next_appointment_date,
@@ -16155,7 +14104,7 @@ BEGIN
 			from encounter e
 				inner join person p on p.person_id=e.patient_id and p.voided=0
 				inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-														and o.concept_id in(1282,984,1425,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,163590,5245,1438,1439,160090,162089,1440,162107,5356,5497,856,1305,1147,159427,164848,161557,1436,1109,128256,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,299,159918,32,161074,1659,164934,163589,162747,1912,160481,163145,5096,159395)
+														and o.concept_id in(1282,984,1425,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,163590,5245,1438,1439,160090,162089,1440,162107,5356,5497,856,1305,1147,159427,164848,161557,1436,1109,128256,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,299,159918,32,161074,1659,164934,163589,162747,1912,160481,163145,5096,159395,163784,1271,159853)
 				inner join
 				(
 					select form_id, uuid,name from form where
@@ -16168,7 +14117,7 @@ BEGIN
 											 o.obs_group_id,
 											 max(if(o.concept_id=1040, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 163611 then "Invalid"  else "" end),null)) as test_1_result ,
 											 max(if(o.concept_id=1326, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1175 then "N/A"  else "" end),null)) as test_2_result ,
-											 max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" else "" end),null)) as kit_name ,
+											 max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" when 165351 then "Dual Kit" else "" end),null)) as kit_name ,
 											 max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,
 											 max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date
 										 from obs o
@@ -16196,7 +14145,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_mch_delivery`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_mch_delivery`()
 BEGIN
 		SELECT "Processing MCH Delivery visits", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_mchs_delivery(
@@ -16215,6 +14164,7 @@ BEGIN
 			date_of_delivery,
 			blood_loss,
 			condition_of_mother,
+			delivery_outcome,
 			apgar_score_1min,
 			apgar_score_5min,
 			apgar_score_10min,
@@ -16271,6 +14221,7 @@ BEGIN
 				max(if(o.concept_id=5599,o.value_datetime,null)) as date_of_delivery,
 				max(if(o.concept_id=162092,o.value_coded,null)) as blood_loss,
 				max(if(o.concept_id=1856,o.value_coded,null)) as condition_of_mother,
+				max(if(o.concept_id=159949,o.value_coded,null)) as delivery_outcome,
 				max(if(o.concept_id=159603,o.value_numeric,null)) as apgar_score_1min,
 				max(if(o.concept_id=159604,o.value_numeric,null)) as apgar_score_5min,
 				max(if(o.concept_id=159605,o.value_numeric,null)) as apgar_score_10min,
@@ -16314,7 +14265,7 @@ BEGIN
 			from encounter e
 				inner join person p on p.person_id=e.patient_id and p.voided=0
 				inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-														and o.concept_id in(162054,1789,5630,5599,162092,1856,162093,159603,159604,159605,162131,1572,1473,1379,1151,163454,1602,1573,162093,1576,120216,159616,1587,159917,1282,5916,161543,164122,159427,164848,161557,1436,1109,5576,159595,163784,159395)
+														and o.concept_id in(162054,1789,5630,5599,162092,1856,162093,159603,159604,159605,162131,1572,1473,1379,1151,163454,1602,1573,162093,1576,120216,159616,1587,159917,1282,5916,161543,164122,159427,164848,161557,1436,1109,5576,159595,163784,159395,159949)
 				inner join
 				(
 					select form_id, uuid,name from form where
@@ -16327,7 +14278,7 @@ BEGIN
 											o.obs_group_id,
 											max(if(o.concept_id=1040, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 163611 then "Invalid"  else "" end),null)) as test_1_result ,
 											max(if(o.concept_id=1326, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1175 then "N/A"  else "" end),null)) as test_2_result ,
-											max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" else "" end),null)) as kit_name ,
+											max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" when 165351 then "Dual Kit" else "" end),null)) as kit_name ,
 											max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,
 											max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date
 										from obs o
@@ -16355,7 +14306,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_mch_discharge`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_mch_discharge`()
 BEGIN
 		SELECT "Processing MCH Discharge ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_mchs_discharge(
@@ -16425,7 +14376,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_mch_enrollment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_mch_enrollment`()
 BEGIN
 		SELECT "Processing MCH Enrollments ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_mch_enrollment(
@@ -16435,6 +14386,7 @@ BEGIN
 			visit_date,
 			location_id,
 			encounter_id,
+			service_type,
 			anc_number,
 			first_anc_visit_date,
 			gravida,
@@ -16476,6 +14428,7 @@ BEGIN
 				e.encounter_datetime,
 				e.location_id,
 				e.encounter_id,
+				max(if(o.concept_id=160478,o.value_coded,null)) as service_type,
 				max(if(o.concept_id=163530,o.value_text,null)) as anc_number,
 				max(if(o.concept_id=163547,o.value_datetime,null)) as first_anc_visit_date,
 				max(if(o.concept_id=5624,o.value_numeric,null)) as gravida,
@@ -16512,7 +14465,7 @@ BEGIN
 			from encounter e
 				inner join person p on p.person_id=e.patient_id and p.voided=0
 				inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-														and o.concept_id in(163530,163547,5624,160080,1823,160598,1427,162095,5596,300,299,160108,32,159427,160554,1436,160082,56,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,161555)
+														and o.concept_id in(163530,163547,5624,160080,1823,160598,1427,162095,5596,300,299,160108,32,159427,160554,1436,160082,56,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,161555,160478)
 				inner join
 				(
 					select encounter_type_id, uuid, name from encounter_type where
@@ -16537,7 +14490,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_mch_postnatal_visit`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_mch_postnatal_visit`()
 BEGIN
 		SELECT "Processing MCH postnatal visits ", CONCAT("Time: ", NOW());
 		insert into kenyaemr_etl.etl_mch_postnatal_visit(
@@ -16553,6 +14506,7 @@ BEGIN
 			delivery_date,
 			mode_of_delivery,
 			place_of_delivery,
+			delivery_outcome,
 			temperature,
 			pulse_rate,
 			systolic_bp,
@@ -16570,6 +14524,7 @@ BEGIN
 			gravid_uterus,
 			episiotomy,
 			lochia,
+			counselled_on_infant_feeding,
 			pallor,
 			pph,
 			mother_hiv_status,
@@ -16611,6 +14566,7 @@ BEGIN
 			referred_from,
 			referred_to,
 			clinical_notes,
+			appointment_date,
 			date_created,
       date_last_modified
 		)
@@ -16627,6 +14583,7 @@ BEGIN
 				max(if(o.concept_id=5599,o.value_datetime,null)) as delivery_date,
 				max(if(o.concept_id=5630,o.value_coded,null)) as mode_of_delivery,
 				max(if(o.concept_id=1572,o.value_coded,null)) as place_of_delivery,
+				max(if(o.concept_id=159949,o.value_coded,null)) as delivery_outcome,
 				max(if(o.concept_id=5088,o.value_numeric,null)) as temperature,
 				max(if(o.concept_id=5087,o.value_numeric,null)) as pulse_rate,
 				max(if(o.concept_id=5085,o.value_numeric,null)) as systolic_bp,
@@ -16644,6 +14601,7 @@ BEGIN
 				max(if(o.concept_id=162110,o.value_coded,null)) as gravid_uterus,
 				max(if(o.concept_id=159840,o.value_coded,null)) as episiotomy,
 				max(if(o.concept_id=159844,o.value_coded,null)) as lochia,
+				max(if(o.concept_id=161651,o.value_coded,null)) as counselled_on_infant_feeding,
 				max(if(o.concept_id=5245,o.value_coded,null)) as pallor,
 				max(if(o.concept_id=230,o.value_coded,null)) as pph,
 				max(if(o.concept_id=1396,o.value_coded,null)) as mother_hiv_status,
@@ -16672,8 +14630,8 @@ BEGIN
 				max(if(o.concept_id=161557,o.value_coded,null)) as partner_hiv_tested,
 				max(if(o.concept_id=1436,o.value_coded,null)) as partner_hiv_status,
 				max(if(o.concept_id=1109,o.value_coded,null)) as prophylaxis_given,
-				max(if(o.concept_id=1282,o.value_coded,null)) as baby_azt_dispensed,
-				max(if(o.concept_id=1282,o.value_coded,null)) as baby_nvp_dispensed,
+				max(if(o.concept_id=1282 and o.value_coded = 160123,o.value_coded,null)) as baby_azt_dispensed,
+				max(if(o.concept_id=1282 and o.value_coded = 80586,o.value_coded,null)) as baby_nvp_dispensed,
 				max(if(o.concept_id=161074,o.value_coded,null)) as pnc_exercises,
 				max(if(o.concept_id=160085,o.value_coded,null)) as maternal_condition,
 				max(if(o.concept_id=161004,o.value_coded,null)) as iron_supplementation,
@@ -16685,13 +14643,14 @@ BEGIN
 				max(if(o.concept_id=160481,o.value_coded,null)) as referred_from,
 				max(if(o.concept_id=163145,o.value_coded,null)) as referred_to,
 				max(if(o.concept_id=159395,o.value_text,null)) as clinical_notes,
+				max(if(o.concept_id=5096,o.value_datetime,null)) as appointment_date,
 				e.date_created as date_created,
         if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
 
 			from encounter e
 				inner join person p on p.person_id=e.patient_id and p.voided=0
 				inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-														and o.concept_id in(1646,159893,5599,5630,1572,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,1147,1856,159780,162128,162110,159840,159844,5245,230,1396,162134,1151,162121,162127,1382,160967,160968,160969,160970,160971,160975,160972,159427,164848,161557,1436,1109,5576,159595,163784,1282,161074,160085,161004,159921,164934,163589,160653,374,160481,163145,159395)
+														and o.concept_id in(1646,159893,5599,5630,1572,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,1147,1856,159780,162128,162110,159840,159844,5245,230,1396,162134,1151,162121,162127,1382,160967,160968,160969,160970,160971,160975,160972,159427,164848,161557,1436,1109,5576,159595,163784,1282,161074,160085,161004,159921,164934,163589,160653,374,160481,163145,159395,159949,5096,161651)
 				inner join
 				(
 					select form_id, uuid,name from form where
@@ -16704,7 +14663,7 @@ BEGIN
 											 o.obs_group_id,
 											 max(if(o.concept_id=1040, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 163611 then "Invalid"  else "" end),null)) as test_1_result ,
 											 max(if(o.concept_id=1326, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1175 then "N/A"  else "" end),null)) as test_2_result ,
-											 max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" else "" end),null)) as kit_name ,
+											 max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" when 165351 then "Dual Kit" else "" end),null)) as kit_name ,
 											 max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,
 											 max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date
 										 from obs o
@@ -16732,7 +14691,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_otz_activity`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_otz_activity`()
 BEGIN
 		SELECT "Processing OTZ Activity ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_otz_activity(
@@ -16808,7 +14767,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_otz_enrollment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_otz_enrollment`()
 BEGIN
 		SELECT "Processing OTZ Enrollment ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_otz_enrollment(
@@ -16879,7 +14838,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_ovc_enrolment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_ovc_enrolment`()
 BEGIN
 		SELECT "Processing OVC Enrolment ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_ovc_enrolment(
@@ -16954,7 +14913,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_patient_contact`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_patient_contact`()
 BEGIN
 		SELECT "Processing patient contact ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_patient_contact(
@@ -17027,7 +14986,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_patient_demographics`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_patient_demographics`()
 BEGIN
 SELECT "Processing patient demographics data ", CONCAT("Time: ", NOW());
 
@@ -17145,8 +15104,10 @@ join (select pi.patient_id,
              max(if(pit.uuid='b4d66522-11fc-45c7-83e3-39a1af21ae0d',pi.identifier,null)) Patient_clinic_number,
              max(if(pit.uuid='49af6cdc-7968-4abb-bf46-de10d7f4859f',pi.identifier,null)) National_id,
              max(if(pit.uuid='0691f522-dd67-4eeb-92c8-af5083baf338',pi.identifier,null)) Hei_id,
+             max(if(pit.uuid='1dc8b419-35f2-4316-8d68-135f0689859b',pi.identifier,null)) cwc_number,
              max(if(pit.uuid='f2b0c94f-7b2b-4ab0-aded-0d970f88c063',pi.identifier,null)) kdod_service_number,
              max(if(pit.uuid='5065ae70-0b61-11ea-8d71-362b9e155667',pi.identifier,null)) CPIMS_unique_identifier,
+             max(if(pit.uuid='dfacd928-0370-4315-99d7-6ec1c9f7ae76',pi.identifier,null)) openmrs_id,
              greatest(ifnull(max(pi.date_changed),'0000-00-00'),max(pi.date_created)) as latest_date
       from patient_identifier pi
              join patient_identifier_type pit on pi.identifier_type=pit.patient_identifier_type_id
@@ -17156,10 +15117,12 @@ set d.unique_patient_no=pid.UPN,
     d.national_id_no=pid.National_id,
     d.patient_clinic_number=pid.Patient_clinic_number,
     d.hei_no=pid.Hei_id,
+    d.cwc_number=pid.cwc_number,
     d.Tb_no=pid.Tb_treatment_number,
     d.district_reg_no=pid.district_reg_number,
     d.kdod_service_number=pid.kdod_service_number,
     d.CPIMS_unique_identifier=pid.CPIMS_unique_identifier,
+    d.openmrs_id=pid.openmrs_id,
     d.date_last_modified=if(pid.latest_date > ifnull(d.date_last_modified,'0000-00-00'),pid.latest_date,d.date_last_modified)
 ;
 
@@ -17196,7 +15159,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_patient_program`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_patient_program`()
 BEGIN
 		SELECT "Processing patient program ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_patient_program(
@@ -17253,7 +15216,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_patient_triage`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_patient_triage`()
 BEGIN
 		SELECT "Processing Patient Triage ", CONCAT("Time: ", NOW());
 		INSERT INTO kenyaemr_etl.etl_patient_triage(
@@ -17331,7 +15294,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_peer_calendar`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_peer_calendar`()
 BEGIN
             SELECT "Processing Peer calendar ", CONCAT("Time: ", NOW());
             INSERT INTO  kenyaemr_etl.etl_peer_calendar(
@@ -17383,7 +15346,7 @@ BEGIN
                                                                   when  165014 then" Park" when  1536 then" Homes" when  165015 then" Beach" when  165016 then" Casino"
                                                                   when  165017 then "Bar with lodging" when  165018 then "Bar without lodging"
                                                                   when  165019 then "Sex den" when  165020 then "Strip club" when  165021 then "Highways" when  165022 then "Brothel"
-                                                                  when  165023 then "Guest house/Hotels/Lodgings" when 165024 then "Massage parlor" when 165025 then "Chang���aa den" when 165026 then "Barbershop/Salon"
+                                                                  when  165023 then "Guest house/Hotels/Lodgings" when 165024 then "Massage parlor" when 165025 then "Chang’aa den" when 165026 then "Barbershop/Salon"
                                                                   when  165297 then "Virtual Space" when  5622 then "Other (Specify)" else "" end),null)) as typology,
                    max(if(o.concept_id=165298,o.value_text,null)) as other_hotspots,
                    max(if(o.concept_id=165007,o.value_numeric,null)) as weekly_sex_acts,
@@ -17433,7 +15396,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_peer_tracking`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_peer_tracking`()
 BEGIN
 SELECT "Processing kp peer tracking form", CONCAT("Time: ", NOW());
 
@@ -17503,7 +15466,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_person_address`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_person_address`()
 BEGIN
     SELECT "Processing person addresses ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_person_address(
@@ -17552,7 +15515,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_pharmacy_extract`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_pharmacy_extract`()
 BEGIN
 SELECT "Processing Pharmacy data ", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_pharmacy_extract(
@@ -17631,7 +15594,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_prep_behaviour_risk_assessment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_prep_behaviour_risk_assessment`()
 BEGIN
     SELECT "Processing Behaviour risk assessment form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_behaviour_risk_assessment(
@@ -17731,7 +15694,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_prep_discontinuation`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_prep_discontinuation`()
 BEGIN
     SELECT "Processing PrEP discontinuation form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_discontinuation(
@@ -17778,7 +15741,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_prep_enrolment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_prep_enrolment`()
 BEGIN
     SELECT "Processing PrEP enrolment form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_enrolment(
@@ -17855,7 +15818,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_prep_followup`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_prep_followup`()
 BEGIN
     SELECT "Processing PrEP follow-up form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_followup(
@@ -17962,7 +15925,7 @@ BEGIN
            max(if(o.concept_id = 160855, (case o.value_coded when 160862 then "Once daily" when 160863 then "Once daily at bedtime" when 160864 then "Once daily in the evening" when 160865 then "Once daily in the morning" when 160858 then "Twice daily" when 160866 then "Thrice daily" when 160870 then "Four times daily" else "" end), "" )) as chronic_illness_frequency,
            max(if(o.concept_id = 159368, o.value_numeric, null )) as chronic_illness_duration,
            max(if(o.concept_id = 1732, (case o.value_coded when 1822 then "Hours" when 1072 then "Days" when 1073 then "Weeks" when 1074 then "Months" else "" end), "" )) as chronic_illness_duration_units,
-           max(if(o.concept_id = 121764, o.value_boolean, null )) as adverse_reactions,
+           max(if(o.concept_id = 121764, o.value_numeric, null )) as adverse_reactions,
            max(if(o.concept_id = 1193, (case o.value_coded when 70056 then "Abicavir" when 162298 then "ACE inhibitors" when 70878 then "Allopurinol" when 155060 then "Aminoglycosides"
                                                            when 162299 then "ARBs (angiotensin II receptor blockers)" when  103727 then "Aspirin" when 71647 then "Atazanavir" when 72822 then "Carbamazepine"  when 162301 then "Cephalosporins" when 73300 then "Chloroquine" when 73667 then "Codeine"
                                                            when 74807 then "Didanosine" when 75523 then "Efavirenz" when 162302 then "Erythromycins" when 75948 then "Ethambutol" when 77164 then "Griseofulvin" when 162305 then "Heparins" when 77675 then "Hydralazine" when 78280 then "Isoniazid"
@@ -17975,7 +15938,7 @@ BEGIN
                                                              when 879 then "Itching" when 121677 then "Mental status change" when 159347 then "Musculoskeletal pain" when 121 then "Myalgia" when 512 then "Rash" when 5622 then "Other" else "" end), "" )) as reaction,
            max(if(o.concept_id = 162760, (case o.value_coded when 1498 then "Mild" when 1499 then "Moderate" when 1500 then "Severe" when 162819 then "Fatal" when 1067 then  "Unknown" else "" end), "" )) as severity,
            max(if(o.concept_id = 1255, (case o.value_coded when 1257 then "Continue Regimen" when 1259 then "Switched Regimen" when 981 then "Changed Dose" when 1258 then "Substituted Drug" when 1107 then "None" when 1260 then "Stop" when 5622 then "Other" else "" end), "" )) as action_taken,
-           max(if(o.concept_id = 160557, o.value_boolean, null )) as known_allergies,
+           max(if(o.concept_id = 160557, o.value_numeric, null )) as known_allergies,
            max(if(o.concept_id = 160643, (case o.value_coded when 162543 then "Beef" when 72609 then "Caffeine" when 162544 then "Chocolate" when 162545 then "Dairy Food" when 162171 then "Eggs" when 162546 then "Fish" when 162547  then "Milk Protein" when 162172 then "Peanuts" when 162175  then "Shellfish"
                                                              when 162176 then "Soy" when 162548 then "Strawberries" when 162177 then "Wheat" when 162542 then "Adhesive Tape" when 162536 then "Bee Stings" when 162537 then "Dust" when 162538 then "Latex" when 162539 then "Mold" when 162540 then "Pollen"
                                                              when 162541 then "Ragweed" when 5622 then "Other" else "" end), "" )) as allergen,
@@ -18020,7 +15983,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_prep_monthly_refill`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_prep_monthly_refill`()
 BEGIN
     SELECT "Processing monthly refill form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_monthly_refill(
@@ -18100,7 +16063,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_PrEP_verification`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_PrEP_verification`()
 BEGIN
 SELECT "Processing kp PrEP verification form", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_PrEP_verification(
@@ -18156,6 +16119,71 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_populate_etl_pre_hiv_enrollment_art` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_pre_hiv_enrollment_art`()
+BEGIN
+SELECT "Processing pre_hiv enrollment ART", CONCAT("Time: ", NOW());
+insert into kenyaemr_etl.etl_pre_hiv_enrollment_art(
+    uuid,
+    provider,
+    patient_id,
+    visit_id,
+    visit_date,
+    location_id,
+    encounter_id,
+    obs_id,
+    PMTCT,
+    PMTCT_regimen,
+    PEP,
+    PEP_regimen,
+    PrEP,
+    PrEP_regimen,
+    HAART,
+    HAART_regimen,
+    date_created,
+    date_last_modified,
+    voided
+    )
+select
+       e.uuid,e.creator,e.patient_id,e.visit_id, date(e.encounter_datetime) as visit_date, e.location_id,e.encounter_id,o1.obs_id,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1148,o1.value_coded,null)) as PMTCT,
+       max(if(o1.obs_group =160741 and o1.concept_id = 966,o1.value_coded,null)) as PMTCT_regimen,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1691,o1.value_coded,null)) as PEP,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1088,o1.value_coded,null)) as PEP_regimen,
+       max(if(o1.obs_group =160741 and o1.concept_id = 165269,o1.value_coded,null)) as PrEP,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1087,o1.value_coded,null)) as PrEP_regimen,
+       max(if(o1.obs_group =1085 and o1.concept_id = 1181,o1.value_coded,null)) as HAART,
+       max(if(o1.obs_group =1085 and o1.concept_id = 1088,o1.value_coded,null)) as HAART_regimen,
+       e.date_created as date_created,  if(max(o1.date_created)!=min(o1.date_created),max(o1.date_created),NULL) as date_last_modified,
+       e.voided as voided
+from encounter e
+       inner join person p on p.person_id=e.patient_id and p.voided=0
+       inner join (
+                  select encounter_type_id, uuid, name from encounter_type where uuid ='de78a6be-bfc5-4634-adc3-5f1a280455cc'
+                  ) et on et.encounter_type_id=e.encounter_type
+       inner join (select o.person_id,o1.encounter_id, o.obs_id,o.concept_id as obs_group,o1.concept_id as concept_id,o1.value_coded, o1.value_datetime,
+                          o1.date_created,o1.voided from obs o join obs o1 on o.obs_id = o1.obs_group_id
+                                                                                and o1.concept_id in (1148,966,1691,1088,1087,1181,165269) and o1.voided=0
+                                                                                and o.concept_id in(160741,1085)) o1 on o1.encounter_id = e.encounter_id
+where e.voided=0
+group by o1.obs_id;
+
+SELECT "Completed processing pre hiv enrollment ART data ", CONCAT("Time: ", NOW());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_populate_etl_program_discontinuation` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -18166,7 +16194,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_program_discontinuation`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_program_discontinuation`()
 BEGIN
 SELECT "Processing Program (HIV, TB, MCH,IPT,OTZ,OVC ...) discontinuations ", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_patient_program_discontinuation(
@@ -18184,6 +16212,10 @@ trf_out_verification_date,
 date_died,
 transfer_facility,
 transfer_date,
+death_reason,
+specific_death_cause,
+natural_causes,
+non_natural_cause,
 date_created,
 date_last_modified
 )
@@ -18212,11 +16244,15 @@ max(if(o.concept_id=164133, o.value_datetime, null)) as trf_out_verification_dat
 max(if(o.concept_id=1543, o.value_datetime, null)) as date_died,
 max(if(o.concept_id=159495, left(trim(o.value_text),100), null)) as to_facility,
 max(if(o.concept_id=160649, o.value_datetime, null)) as to_date,
+max(if(o.concept_id=1599, o.value_coded, null)) as death_reason,
+max(if(o.concept_id=1748, o.value_coded, null)) as specific_death_cause,
+max(if(o.concept_id=162580, left(trim(o.value_text),200), null)) as natural_causes,
+max(if(o.concept_id=160218, left(trim(o.value_text),200), null)) as non_natural_cause,
 e.date_created as date_created,
 if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
 from encounter e
 	inner join person p on p.person_id=e.patient_id and p.voided=0
-	inner join obs o on o.encounter_id=e.encounter_id and o.voided=0 and o.concept_id in (161555,164384,1543,159495,160649,1285,164133)
+	inner join obs o on o.encounter_id=e.encounter_id and o.voided=0 and o.concept_id in (161555,164384,1543,159495,160649,1285,164133,1599,1748,162580,160218)
 inner join
 (
 	select encounter_type_id, uuid, name from encounter_type where
@@ -18242,7 +16278,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_progress_note`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_progress_note`()
 BEGIN
     SELECT "Processing progress form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_progress_note(
@@ -18287,7 +16323,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_sti_treatment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_sti_treatment`()
 BEGIN
             SELECT "Processing STI Treatment ", CONCAT("Time: ", NOW());
             INSERT INTO kenyaemr_etl.etl_sti_treatment(
@@ -18378,7 +16414,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_tb_enrollment`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_tb_enrollment`()
 BEGIN
 SELECT "Processing TB Enrollments ", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_tb_enrollment(
@@ -18481,7 +16517,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_tb_follow_up_visit`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_tb_follow_up_visit`()
 BEGIN
 SELECT "Processing TB Followup visits ", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_tb_follow_up_visit(
@@ -18569,35 +16605,73 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_tb_screening`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_tb_screening`()
 BEGIN
 SELECT "Processing TB Screening data ", CONCAT("Time: ", NOW());
 
 insert into kenyaemr_etl.etl_tb_screening(
-patient_id,
-uuid,
-provider,
-visit_id,
-visit_date,
-encounter_id,
-location_id,
-resulting_tb_status ,
-tb_treatment_start_date,
-notes,
-date_created,
-date_last_modified
-)
+    patient_id,
+    uuid,
+    provider,
+    visit_id,
+    visit_date,
+    encounter_id,
+    location_id,
+    cough_for_2wks_or_more,
+    confirmed_tb_contact,
+    fever_for_2wks_or_more,
+    noticeable_weight_loss,
+    night_sweat_for_2wks_or_more,
+    lethargy,
+    spatum_smear_ordered,
+    chest_xray_ordered,
+    genexpert_ordered,
+    spatum_smear_result,
+    chest_xray_result,
+    genexpert_result,
+    referral,
+    clinical_tb_diagnosis,
+    resulting_tb_status ,
+    contact_invitation,
+    evaluated_for_ipt,
+    started_anti_TB,
+    tb_treatment_start_date,
+    tb_prophylaxis,
+    notes,
+    person_present,
+    date_created,
+    date_last_modified
+    )
 select
-e.patient_id, e.uuid, e.creator, e.visit_id, date(e.encounter_datetime) as visit_date, e.encounter_id, e.location_id,
-max(case o.concept_id when 1659 then o.value_coded else null end) as resulting_tb_status,
-max(case o.concept_id when 1113 then date(o.value_datetime)  else NULL end) as tb_treatment_start_date,
-"" as notes,
-e.date_created as date_created,
-if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
+       e.patient_id, e.uuid, e.creator, e.visit_id, date(e.encounter_datetime) as visit_date, e.encounter_id, e.location_id,
+       max(if(o.concept_id=1729 and o.value_coded =159799,o.value_coded,null)) as cough_for_2wks_or_more,
+       max(if(o.concept_id=1729 and o.value_coded =124068,o.value_coded,null)) confirmed_tb_contact,
+       max(if(o.concept_id=1729 and o.value_coded =1494,o.value_coded,null)) fever_for_2wks_or_more,
+       max(if(o.concept_id=1729 and o.value_coded =832,o.value_coded,null)) as noticeable_weight_loss,
+       max(if(o.concept_id=1729 and o.value_coded =133027,o.value_coded,null)) as night_sweat_for_2wks_or_more,
+       max(if(o.concept_id=1729 and o.value_coded =116334,o.value_coded,null)) as lethargy,
+       max(if(o.concept_id=1271 and o.value_coded =307,o.value_coded,null)) as spatum_smear_ordered,
+       max(if(o.concept_id=1271 and o.value_coded =12,o.value_coded,null)) as chest_xray_ordered,
+       max(if(o.concept_id=1271 and o.value_coded = 162202,o.value_coded,null)) as genexpert_ordered,
+       max(if(o.concept_id=307,o.value_coded,null)) as spatum_smear_result,
+       max(if(o.concept_id=12,o.value_coded,null)) as chest_xray_result,
+       max(if(o.concept_id=162202,o.value_coded,null)) as genexpert_result,
+       max(if(o.concept_id=1272,o.value_coded,null)) as referral,
+       max(if(o.concept_id=163752,o.value_coded,null)) as clinical_tb_diagnosis,
+       max(if(o.concept_id=1659,o.value_coded, null)) as resulting_tb_status,
+       max(if(o.concept_id=163414,o.value_coded,null)) as contact_invitation,
+       max(if(o.concept_id=162275,o.value_coded,null)) as evaluated_for_ipt,
+       max(if(o.concept_id=162309,o.value_coded,null)) as started_anti_TB,
+       max(if(o.concept_id=1113, date(o.value_datetime),null)) as tb_treatment_start_date,
+       max(if(o.concept_id=1109,o.value_coded,null)) as tb_prophylaxis,
+       "" as notes,
+       max(if(o.concept_id=161643,o.value_coded,null)) as person_present,
+       e.date_created as date_created,
+       if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
 from encounter e
-	inner join person p on p.person_id=e.patient_id and p.voided=0
-	inner join form f on f.form_id=e.form_id and f.uuid in ("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259", "59ed8e62-7f1f-40ae-a2e3-eabe350277ce")
-inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (1659, 1113, 160632) and o.voided=0
+       inner join person p on p.person_id=e.patient_id and p.voided=0
+       inner join form f on f.form_id=e.form_id and f.uuid in ("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259", "59ed8e62-7f1f-40ae-a2e3-eabe350277ce","23b4ebbd-29ad-455e-be0e-04aa6bc30798")
+       inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (1659, 1113, 160632,161643,1729,1271,307,12,162202,1272,163752,163414,162275,162309,1109) and o.voided=0
 where e.voided=0
 group by e.patient_id,visit_date;
 
@@ -18618,7 +16692,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_etl_treatment_verification`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_etl_treatment_verification`()
 BEGIN
 SELECT "Processing kp treatment verification form", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_treatment_verification(
@@ -18743,7 +16817,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_hts_linkage_and_referral`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_hts_linkage_and_referral`()
 BEGIN
 SELECT "Processing hts linkages, referrals and tracing";
 INSERT INTO kenyaemr_etl.etl_hts_referral_and_linkage (
@@ -18758,11 +16832,13 @@ INSERT INTO kenyaemr_etl.etl_hts_referral_and_linkage (
   visit_date,
   tracing_type,
   tracing_status,
+  referral_facility,
   facility_linked_to,
 	enrollment_date,
 	art_start_date,
   ccc_number,
   provider_handed_to,
+  cadre,
   voided
 )
   select
@@ -18777,18 +16853,25 @@ INSERT INTO kenyaemr_etl.etl_hts_referral_and_linkage (
     e.encounter_datetime as visit_date,
     max(if(o.concept_id=164966,(case o.value_coded when 1650 then "Phone" when 164965 then "Physical" else "" end),null)) as tracing_type ,
     max(if(o.concept_id=159811,(case o.value_coded when 1065 then "Contacted and linked" when 1066 then "Contacted but not linked" else "" end),null)) as tracing_status,
+    max(if(o.concept_id=160481,(case o.value_coded when 163266 then "This health facility" when 164407 then "Other health facility" else "" end),null)) as referral_facility,
     max(if(o.concept_id=162724,trim(o.value_text),null)) as facility_linked_to,
 		max(if(o.concept_id=160555,o.value_datetime,null)) as enrollment_date,
 		max(if(o.concept_id=159599,o.value_datetime,null)) as art_start_date,
     max(if(o.concept_id=162053,o.value_numeric,null)) as ccc_number,
     max(if(o.concept_id=1473,trim(o.value_text),null)) as provider_handed_to,
+    max(if(o.concept_id=162577,(case o.value_coded when 1577 then "Nurse"
+                                when 1574 then "Clinical Officer/Doctor"
+                                when 1555 then "Community Health Worker"
+                                when 1540 then "Employee"
+                                when 5488 then "Adherence counsellor"
+                                when 5622 then "Other" else "" end),null)) as cadre,
     e.voided
   from encounter e
 		inner join person p on p.person_id=e.patient_id and p.voided=0
-		inner join form f on f.form_id = e.form_id and f.uuid in ("050a7f12-5c52-4cad-8834-863695af335d","63917c60-3fea-11e9-b210-d663bd873d93")
-  left outer join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 159811, 162724, 160555, 159599, 162053, 1473) and o.voided=0
+		inner join form f on f.form_id = e.form_id and f.uuid in ("050a7f12-5c52-4cad-8834-863695af335d","15ed03d2-c972-11e9-a32f-2a2ae2dbcce4")
+  left outer join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 159811, 162724, 160555, 159599, 162053, 1473,162577,160481) and o.voided=0
   where e.voided=0
-  group by e.encounter_id;
+  group by e.patient_id,e.visit_id;
   SELECT "Completed processing hts linkages";
 
 END ;;
@@ -18807,7 +16890,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_hts_referral`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_hts_referral`()
 BEGIN
     SELECT "Processing hts referrals";
     INSERT INTO kenyaemr_etl.etl_hts_referral (
@@ -18863,7 +16946,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_populate_hts_test`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_populate_hts_test`()
 BEGIN
 SELECT "Processing hts tests";
 INSERT INTO kenyaemr_etl.etl_hts_test (
@@ -18885,6 +16968,8 @@ patient_disabled,
 disability_type,
 patient_consented,
 client_tested_as,
+setting,
+approach,
 test_strategy,
 hts_entry_point,
 test_1_kit_name,
@@ -18898,6 +16983,9 @@ test_2_result,
 final_test_result,
 patient_given_result,
 couple_discordant,
+referral_for,
+referral_facility,
+other_referral_facility,
 tb_screening,
 patient_had_hiv_self_test ,
 remarks,
@@ -18919,17 +17007,25 @@ max(if(o.concept_id=160581,(case o.value_coded when 105 then "People who inject 
 max(if(o.concept_id=164401,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as ever_tested_for_hiv,
 max(if(o.concept_id=159813,o.value_numeric,null)) as months_since_last_test,
 max(if(o.concept_id=164951,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as patient_disabled,
-max(if(o.concept_id=162558,(case o.value_coded when 120291 then "Deaf" when 147215 then "Blind" when 151342 then "Mentally Challenged" when 164538 then "Physically Challenged" when 5622 then "Other" else "" end),null)) as disability_type,
+concat_ws(',',nullif(max(if(o.concept_id=162558 and o.value_coded = 120291,"Hearing impairment",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded =147215,"Visual impairment",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded =151342,"Mentally Challenged",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded = 164538,"Physically Challenged",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded = 5622,"Other",'')),''),
+                 nullif(max(if(o.concept_id=160632,o.value_text,'')),'')) as disability_type,
 max(if(o.concept_id=1710,(case o.value_coded when 1 then "Yes" when 0 then "No" else "" end),null)) as patient_consented,
 max(if(o.concept_id=164959,(case o.value_coded when 164957 then "Individual" when 164958 then "Couple" else "" end),null)) as client_tested_as,
+max(if(o.concept_id=165215,(case o.value_coded when 1537 then "Facility" when 163488 then "Community" else "" end ),null)) as setting,
+max(if(o.concept_id=163556,(case o.value_coded when 164163 then "Provider Initiated Testing(PITC)" when 164953 then "Client Initiated Testing (CITC)" else "" end ),null)) as approach,
 max(if(o.concept_id=164956,(
   case o.value_coded
-  when 164163 then "Provider Initiated Testing(PITC)"
-  when 164953 then "Non Provider Initiated Testing"
-  when 164954 then "Integrated VCT Center"
+  when 164163 then "HP:Provider Initiated Testing(PITC)"
+  when 164953 then "NP: HTS for non-patients"
+  when 164954 then "VI:Integrated VCT Center"
   when 164955 then "Stand Alone VCT Center"
   when 159938 then "Home Based Testing"
-  when 159939 then "Mobile Outreach HTS"
+  when 159939 then "MO: Mobile Outreach HTS"
+  when 161557 then "Index testing"
   when 5622 then "Other"
   else ""
   end ),null)) as test_strategy,
@@ -18939,12 +17035,18 @@ max(if(o.concept_id=164956,(
              when 160542 then "Out Patient Department(OPD)"
              when 162181 then "Peadiatric Clinic"
              when 160552 then "Nutrition Clinic"
-             when 160538 then "PMTCT"
+             when 160538 then "PMTCT ANC"
+             when 160456 then "PMTCT MAT"
+             when 1623 then "PMTCT PNC"
              when 160541 then "TB"
              when 162050 then "CCC"
              when 159940 then "VCT"
              when 159938 then "Home Based Testing"
              when 159939 then "Mobile Outreach"
+             when 162223 then "VMMC"
+             when 160546 then "STI Clinic"
+             when 160522 then "Emergency"
+             when 163096 then "Community Testing"
              when 5622 then "Other"
              else ""
              end ),null)) as hts_entry_point,
@@ -18956,9 +17058,12 @@ max(if(t.test_2_result is not null, t.kit_name, null)) as test_2_kit_name,
 max(if(t.test_2_result is not null, t.lot_no, null)) as test_2_kit_lot_no,
 max(if(t.test_2_result is not null, t.expiry_date, null)) as test_2_kit_expiry,
 max(if(t.test_2_result is not null, t.test_2_result, null)) as test_2_result,
-max(if(o.concept_id=159427,(case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1138 then "Inconclusive" else "" end),null)) as final_test_result,
+max(if(o.concept_id=159427,(case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1138 then "Inconclusive" when 163611 then "Invalid" else "" end),null)) as final_test_result,
 max(if(o.concept_id=164848,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as patient_given_result,
 max(if(o.concept_id=6096,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as couple_discordant,
+max(if(o.concept_id=1887,(case o.value_coded when 162082 then "Confirmatory test" when 162050 then "Comprehensive care center" when 164461 then "DBS for PCR" else "" end),null)) as referral_for,
+max(if(o.concept_id=160481,(case o.value_coded when 163266 then "This health facility" when 164407 then "Other health facility" else "" end),null)) as referral_facility,
+max(if(o.concept_id=161550,trim(o.value_text),null)) as other_referral_facility,
 max(if(o.concept_id=1659,(case o.value_coded when 1660 then "No TB signs" when 142177 then "Presumed TB" when 1662 then "TB Confirmed" when 160737 then "Not done" when 1111 then "On TB Treatment"  else "" end),null)) as tb_screening,
 max(if(o.concept_id=164952,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as patient_had_hiv_self_test,
 max(if(o.concept_id=163042,trim(o.value_text),null)) as remarks,
@@ -18966,8 +17071,8 @@ e.voided
 from encounter e
 	inner join person p on p.person_id=e.patient_id and p.voided=0
 	inner join form f on f.form_id=e.form_id and f.uuid in ("402dc5d7-46da-42d4-b2be-f43ea4ad87b0","b08471f6-0892-4bf7-ab2b-bf79797b8ea4")
-inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (162084, 164930, 160581, 164401, 164951, 162558, 1710, 164959, 164956,
-                                                                                 160540,159427, 164848, 6096, 1659, 164952, 163042, 159813)
+inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (162084, 164930, 160581, 164401, 164951, 162558,160632, 1710, 164959, 164956,
+                                                                                 160540,159427, 164848, 6096, 1659, 164952, 163042, 159813,165215,163556,161550,1887,160481)
 inner join (
              select
                o.person_id,
@@ -18975,7 +17080,7 @@ inner join (
                o.obs_group_id,
                max(if(o.concept_id=1040, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 163611 then "Invalid"  else "" end),null)) as test_1_result ,
                max(if(o.concept_id=1326, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1175 then "N/A"  else "" end),null)) as test_2_result ,
-               max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" else "" end),null)) as kit_name ,
+               max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" when 165351 then "Dual Kit" else "" end),null)) as kit_name ,
                max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,
                max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date
              from obs o
@@ -19001,9 +17106,9 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8 */ ;
 /*!50003 SET collation_connection  = utf8_general_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_scheduled_updates`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_scheduled_updates`()
 BEGIN
     DECLARE update_script_id INT(11);
     DECLARE last_update_time DATETIME;
@@ -19028,6 +17133,7 @@ BEGIN
     CALL sp_update_etl_mch_delivery(last_update_time);
     CALL sp_update_drug_event(last_update_time);
     CALL sp_update_etl_pharmacy_extract(last_update_time);
+    CALL sp_update_hts_test(last_update_time);
     CALL sp_update_hts_linkage_and_referral(last_update_time);
     CALL sp_update_hts_referral(last_update_time);
     CALL sp_update_etl_ipt_initiation(last_update_time);
@@ -19057,7 +17163,6 @@ BEGIN
     CALL sp_update_etl_peer_calendar(last_update_time);
     CALL sp_update_etl_peer_tracking(last_update_time);
     CALL sp_update_etl_treatment_verification(last_update_time);
-    CALL sp_update_etl_gender_based_violence(last_update_time);
     CALL sp_update_etl_PrEP_verification(last_update_time);
     CALL sp_update_etl_alcohol_drug_abuse_screening(last_update_time);
     CALL sp_update_etl_gbv_screening(last_update_time);
@@ -19065,6 +17170,8 @@ BEGIN
     CALL sp_update_etl_adverse_events(last_update_time);
     CALL sp_update_etl_allergy_chronic_illness(last_update_time);
     CALL sp_update_etl_ipt_screening(last_update_time);
+    CALL sp_update_etl_pre_hiv_enrollment_art(last_update_time);
+    CALL sp_update_etl_covid_19_assessment(last_update_time);
 
     CALL sp_update_dashboard_table();
 
@@ -19088,7 +17195,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_dashboard_table`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_dashboard_table`()
 BEGIN
 
 DECLARE startDate DATE;
@@ -19185,6 +17292,76 @@ SELECT patient_id, max(visit_date)
 FROM kenyaemr_etl.etl_patient_hiv_followup
 WHERE date(next_appointment_date) = CURDATE()
 GROUP BY patient_id;
+DROP TABLE IF EXISTS kenyaemr_etl.etl_viral_load_tracker;
+
+CREATE TABLE kenyaemr_etl.etl_viral_load_tracker (
+  patient_id INT(11) not null,
+  vl_date DATE,
+  vl_result VARCHAR(50),
+  urgency VARCHAR(100),
+  index(patient_id),
+  index(vl_date)
+);
+
+insert into kenyaemr_etl.etl_viral_load_tracker
+select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency from (select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,
+greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,
+greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,
+greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,
+d.patient_id as disc_patient,
+d.effective_disc_date as effective_disc_date,
+max(d.visit_date) as date_discontinued,
+de.patient_id as started_on_drugs,
+de.date_started
+from kenyaemr_etl.etl_patient_hiv_followup fup
+join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id
+join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id
+left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(curdate())
+left outer JOIN
+(select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation
+where date(visit_date) <= date(curdate()) and program_name='HIV'
+group by patient_id
+) d on d.patient_id = fup.patient_id
+where fup.visit_date <= date(curdate())
+group by patient_id
+having (started_on_drugs is not null and started_on_drugs <> '') and (
+(
+((timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30 or timestampdiff(DAY,date(latest_tca),date(curdate())) <= 30) and ((date(d.effective_disc_date) > date(curdate()) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))
+and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)
+)
+) order by date_started desc
+) t
+inner join (
+select
+patient_id,encounter_id,
+max(visit_date) as vl_date,
+date_sub(curdate() , interval 12 MONTH),
+if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302,"LDL","")) as vl_result,
+mid(max(concat(visit_date,urgency)),11) as urgency
+from kenyaemr_etl.etl_laboratory_extract
+group by patient_id
+having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between
+date_sub(curdate() , interval 12 MONTH) and date(curdate())
+)vl
+on t.patient_id = vl.patient_id;
+DROP TABLE IF EXISTS kenyaemr_etl.etl_hts_contacts;
+
+CREATE TABLE kenyaemr_etl.etl_hts_contacts AS
+select c.id,c.patient_id,c.relationship_type,c.baseline_hiv_status,t.visit_date,t.test_type,t.test_1_result,t.test_2_result,t.final_test_result from
+kenyaemr_etl.etl_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id group by c.patient_id;
+
+ALTER TABLE kenyaemr_etl.etl_hts_contacts ADD INDEX(id);
+ALTER TABLE kenyaemr_etl.etl_hts_contacts ADD INDEX(patient_id);
+ALTER TABLE kenyaemr_etl.etl_hts_contacts ADD INDEX(visit_date);
+DROP TABLE IF EXISTS kenyaemr_etl.etl_contacts_linked;
+
+CREATE TABLE kenyaemr_etl.etl_contacts_linked AS
+select c.id,c.patient_id,c.relationship_type,c.baseline_hiv_status,l.visit_date,t.final_test_result from kenyaemr_etl.etl_patient_contact c inner join kenyaemr_etl.etl_hts_test t on c.patient_id = t.patient_id
+inner join kenyaemr_etl.etl_hts_referral_and_linkage l on c.patient_id=l.patient_id
+group by c.id;
+
+ALTER TABLE kenyaemr_etl.etl_contacts_linked ADD INDEX(id);
+ALTER TABLE kenyaemr_etl.etl_contacts_linked ADD INDEX(visit_date);
 
 SELECT "Completed processing dashboard indicators", CONCAT("Time: ", NOW());
 
@@ -19204,7 +17381,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_drug_event`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_drug_event`(IN last_update_time DATETIME)
 BEGIN
 
     INSERT INTO kenyaemr_etl.etl_drug_event(
@@ -19391,7 +17568,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_adverse_events`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_adverse_events`(IN last_update_time DATETIME)
 BEGIN
 SELECT "Processing adverse events", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_adverse_events(
@@ -19464,7 +17641,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_alcohol_drug_abuse_screening`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_alcohol_drug_abuse_screening`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_alcohol_drug_abuse_screening(
@@ -19523,7 +17700,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_allergy_chronic_illness`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_allergy_chronic_illness`(IN last_update_time DATETIME)
 BEGIN
 SELECT "Processing allergy and chronic illness", CONCAT("Time: ", NOW());
 insert into kenyaemr_etl.etl_allergy_chronic_illness(
@@ -19558,7 +17735,7 @@ select
 from encounter e
    inner join person p on p.person_id=e.patient_id and p.voided=0
    inner join (
-              select encounter_type_id, uuid, name from encounter_type where uuid in('a0034eee-1940-4e35-847f-97537a35d05e')
+              select encounter_type_id, uuid, name from encounter_type where uuid in('a0034eee-1940-4e35-847f-97537a35d05e','c6d09e05-1f25-4164-8860-9f32c5a02df0')
               ) et on et.encounter_type_id=e.encounter_type
                           inner join (select o.person_id,o1.encounter_id, o.obs_id,o.concept_id as obs_group,o1.concept_id as concept_id,o1.value_coded, o1.value_datetime,o1.date_voided as date_voided,
                           o1.date_created as date_created,o1.voided from obs o join obs o1 on o.obs_id = o1.obs_group_id
@@ -19578,6 +17755,7 @@ order by e.patient_id
         allergy_causative_agent=VALUES(allergy_causative_agent),
         allergy_reaction=VALUES(allergy_reaction),
         allergy_severity=VALUES(allergy_severity),
+        allergy_onset_date=VALUES(allergy_onset_date),
         voided=VALUES(voided);
 SELECT "Completed processing allergy and chronic illness data ", CONCAT("Time: ", NOW());
 END ;;
@@ -19596,7 +17774,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ART_preparation`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ART_preparation`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_ART_preparation(
       uuid,
@@ -19690,7 +17868,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ccc_defaulter_tracing`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ccc_defaulter_tracing`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing ccc defaulter tracing form", CONCAT("Time: ", NOW());
 
@@ -19703,30 +17881,36 @@ BEGIN
       location_id,
       encounter_id,
       tracing_type,
+      reason_for_missed_appointment,
+      non_coded_missed_appointment_reason,
       tracing_outcome,
       attempt_number,
       is_final_trace,
       true_status,
       cause_of_death,
       comments,
+      booking_date,
       date_created,
       date_last_modified
     )
       select
         e.uuid, e.creator, e.patient_id, e.visit_id, e.encounter_datetime, e.location_id, e.encounter_id,
         max(if(o.concept_id = 164966, o.value_coded, null )) as tracing_type,
+        max(if(o.concept_id = 1801, o.value_coded, null )) as reason_for_missed_appointment,
+        max(if(o.concept_id = 163513, o.value_text, "" )) as non_coded_missed_appointment_reason,
         max(if(o.concept_id = 160721, o.value_coded, null )) as tracing_outcome,
         max(if(o.concept_id = 1639, value_numeric, "" )) as attempt_number,
         max(if(o.concept_id = 163725, o.value_coded, "" )) as is_final_trace,
         max(if(o.concept_id = 160433, o.value_coded, "" )) as true_status,
         max(if(o.concept_id = 1599, o.value_coded, "" )) as cause_of_death,
         max(if(o.concept_id = 160716, o.value_text, "" )) as comments,
+        max(if(o.concept_id=163526,date(o.value_datetime),null)) as booking_date,
         e.date_created as date_created,
         if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join form f on f.form_id=e.form_id and f.uuid in ("a1a62d1e-2def-11e9-b210-d663bd873d93")
-        inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 160721, 1639, 163725, 160433, 1599, 160716) and o.voided=0
+        inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 1801, 163513, 160721, 1639, 163725, 160433, 1599, 160716,163526) and o.voided=0
       where e.date_created >= last_update_time
             or e.date_changed >= last_update_time
             or e.date_voided >= last_update_time
@@ -19734,12 +17918,14 @@ BEGIN
     ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),
       provider=VALUES(provider),
       tracing_type=VALUES(tracing_type),
+      reason_for_missed_appointment=VALUES(reason_for_missed_appointment),
       tracing_outcome=VALUES(tracing_outcome),
       attempt_number=VALUES(attempt_number),
       is_final_trace=VALUES(is_final_trace),
       true_status=VALUES(true_status),
       cause_of_death=VALUES(cause_of_death),
-      comments=VALUES(comments);
+      comments=VALUES(comments),
+      booking_date=VALUES(booking_date);
 
     END ;;
 DELIMITER ;
@@ -19757,7 +17943,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_cervical_cancer_screening`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_cervical_cancer_screening`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing HIV Follow-up, MCH ANC and PNC forms for CAXC screening", CONCAT("Time: ", NOW());
 
@@ -19771,22 +17957,75 @@ BEGIN
       location_id,
       date_created,
       date_last_modified,
+      visit_type,
+      screening_type,
+      post_treatment_complication_cause,
+      post_treatment_complication_other,
       screening_method,
       screening_result,
+      treatment_method,
+      treatment_method_other,
+      referred_out,
+      referral_facility,
+      referral_reason,
+      next_appointment_date,
       encounter_type,
       voided
     )
       select
         e.uuid,  e.encounter_id,e.creator as provider,e.patient_id, e.visit_id, e.encounter_datetime as visit_date, e.location_id,e.date_created,
                                 if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified,
-                                max(if(o.concept_id = 163589, (case o.value_coded when 885 then 'Pap Smear' when 162816 then 'VIA' when 164977 then 'VILI' when 5622 then 'Other' else "" end), "" )) as screening_method,
-                                max(if(o.concept_id = 164934, (case o.value_coded when 703 then 'Positive' when 159393 then 'Presumed' when 664  then 'Negative'  else null end), '' )) as screening_result,
+                                max(if(o.concept_id = 160288, (case o.value_coded when 162080 then 'Initial visit'
+                                                               when 161236 then 'Routine visit'
+                                                               when 165381 then 'Post treatment visit'
+                                                               when 1185 then 'Treatment visit'
+                                                               when 165382 then 'Post treatment complication' else "" end), "" )) as visit_type,
+                                max(if(o.concept_id = 164181, (case o.value_coded when 164180 then 'First time screening'
+                                                               when 160530 then 'Rescreening'
+                                                               when 165389 then 'Post treatment followup' else "" end), "" )) as screening_type,
+                                max(if(o.concept_id = 165383, (case o.value_coded when 162816 then 'Cryotherapy'
+                                                               when 162810 then 'LEEP'
+                                                               when 5622 then 'Others' else "" end), "" )) as post_treatment_complication_cause,
+                                max(if(o.concept_id=163042,o.value_text,null)) as post_treatment_complication_other,
+                                max(if(o.concept_id = 163589, (case o.value_coded when 885 then 'Pap Smear'
+                                                               when 162816 then 'VIA'
+                                                               when 164805 then 'VIA'
+                                                               when 164977 then 'VILI'
+                                                               when 160705 then 'Colposcopy'
+                                                               when 159859 then 'HPV Test'
+                                                               when 5622 then 'Other' else "" end), "" )) as screening_method,
+                                max(if(o.concept_id = 164934, (case o.value_coded when 703 then 'Positive'
+                                                               when 1116 then 'Positive'
+                                                               when 145805 then 'Positive'
+                                                               when 155424 then 'Positive'
+                                                               when 145808  then 'Presumed'
+                                                               when 159393 then 'Presumed'
+                                                               when 159008 then 'Presumed'
+                                                               when 5622 then 'Other'
+                                                               when 1115  then 'Negative'
+                                                               when 664  then 'Negative' else NULL end), '' )) as screening_result,
+                                max(if(o.concept_id = 165266, (case o.value_coded when 165381 then 'Cryotherapy postponed'
+                                                               when 165386 then 'Cryotherapy performed'
+                                                               when 162810 then 'LEEP'
+                                                               when 165396 then 'Cold knife cone'
+                                                               when 165395 then 'Thermocoagulation'
+                                                               when 165385 then 'Cryotherapy performed (single Visit)'
+                                                               when 159837 then 'Hysterectomy'
+                                                               when 165391 then 'Referred for cancer treatment'
+                                                               when 5622 then 'Other' else "" end), "" )) as treatment_method,
+                                max(if(o.concept_id=160632,o.value_text,null)) as treatment_method_other,
+                                max(if(o.concept_id=165267,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else "" end),null)) as referred_out,
+                                max(if(o.concept_id=165268,o.value_text,null)) as referral_facility,
+                                max(if(o.concept_id = 1887, (case o.value_coded when 165388 then 'Site does not have cryotherapy machine'
+                                                             when 159008 then 'Large lesion, Suspect cancer'
+                                                             when 5622 then 'Other' else "" end), "" )) as referral_reason,
+                                max(if(o.concept_id=5096,o.value_datetime,null)) as next_appointment_date,
                                 f.name as encounter_type,
                                 e.voided as voided
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
-        inner join form f on f.form_id=e.form_id and f.uuid in ('e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','22c68f86-bbf0-49ba-b2d1-23fa7ccf0259')
-        inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164934,163589) and o.voided=0
+        inner join form f on f.form_id=e.form_id and f.uuid in ('e8f98494-af35-4bb8-9fc7-c409c8fed843','72aa78e0-ee4b-47c3-9073-26f3b9ecc4a7','22c68f86-bbf0-49ba-b2d1-23fa7ccf0259','0c93b93c-bfef-4d2a-9fbe-16b59ee366e7')
+        inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164934,163589,160288,164181,165383,163042,165266,160632,165267,165268,1887,5096) and o.voided=0
       where
         e.date_created >= last_update_time
         or e.date_changed >= last_update_time
@@ -19867,7 +18106,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_client_enrollment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_client_enrollment`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing client enrollment data ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_client_enrollment (
@@ -19988,7 +18227,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_clinical_visit`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_clinical_visit`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing Clinical Visit ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_clinical_visit(
@@ -20388,7 +18627,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_contact`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_contact`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing client contact data ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_contact (
@@ -20501,6 +18740,217 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_update_etl_covid_19_assessment` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_covid_19_assessment`(IN last_update_time DATETIME)
+BEGIN
+  SELECT "Processing covid_19 assessment", CONCAT("Time: ", NOW());
+insert into kenyaemr_etl.etl_covid19_assessment (uuid,
+                                                 provider,
+                                                 patient_id,
+                                                 visit_id,
+                                                 visit_date,
+                                                 location_id,
+                                                 encounter_id,
+                                                 obs_id,
+                                                 ever_vaccinated,
+                                                 first_vaccine_type,
+                                                 second_vaccine_type,
+                                                 first_dose,
+                                                 second_dose,
+                                                 first_dose_date,
+                                                 second_dose_date,
+                                                 first_vaccination_verified,
+                                                 second_vaccination_verified,
+                                                 final_vaccination_status,
+                                                 ever_received_booster,
+                                                 booster_vaccine_taken,
+                                                 date_taken_booster_vaccine,
+                                                 booster_sequence,
+                                                 booster_dose_verified,
+                                                 ever_tested_covid_19_positive,
+                                                 symptomatic,
+                                                 date_tested_positive,
+                                                 hospital_admission,
+                                                 admission_unit,
+                                                 on_ventillator,
+                                                 on_oxygen_supplement,
+                                                 date_created,
+                                                 date_last_modified,
+                                                 voided)
+select o3.uuid                                                                             as uuid,
+       o3.creator                                                                          as provider,
+       o3.person_id                                                                        as patient_id,
+       o3.visit_id                                                                         as visit_id,
+       o3.visit_date                                                                       as visit_date,
+       o3.location_id                                                                      as location_id,
+       o3.encounter_id                                                                     as encounter_id,
+       o1.obs_group                                                                        as obs_id,
+       max(if(o3.concept_id = 163100, o3.value_coded, null))                               as ever_vaccinated,
+       max(if(dose = 1 and o1.concept_id = 984 and o1.obs_group = 1421, vaccine_type,
+              ""))                                                                         as first_vaccine_type,
+       max(if(dose = 2 and o1.concept_id = 984 and o1.obs_group = 1421, vaccine_type,
+              ""))                                                                         as second_vaccine_type,
+       max(if(dose = 1 and o1.concept_id = 1418 and o1.obs_group = 1421, dose, ""))        as first_dose,
+       max(if(dose = 2 and o1.concept_id = 1418 and o1.obs_group = 1421, dose, ""))        as second_dose,
+       max(if(y.dose = 1 and o1.concept_id = 1410 and y.obs_group = 1421, date(y.date_given),
+              ""))                                                                         as first_dose_date,
+       max(if(y.dose = 2 and o1.concept_id = 1410 and y.obs_group = 1421, date(y.date_given),
+              ""))                                                                         as second_dose_date,
+       max(if(dose = 1 and o1.concept_id = 164464 and o1.obs_group = 1421, verified,
+              ""))                                                                         as first_vaccination_verified,
+       max(if(dose = 2 and o1.concept_id = 164464 and o1.obs_group = 1421, verified,
+              ""))                                                                         as second_vaccination_verified,
+       max(if(o3.concept_id = 164134, o3.value_coded, null))                               as final_vaccination_status,
+       max(if(o3.concept_id = 166063, o3.value_coded, null))                               as ever_received_booster,
+       max(if(o1.concept_id = 984 and o1.obs_group = 1184, o1.value_coded, ""))            as booster_vaccine_taken,
+       max(
+         if(o1.concept_id = 1410 and o1.obs_group = 1184, date(o1.value_datetime),
+            ""))                                                                           as date_taken_booster_vaccine,
+       max(if(o1.concept_id = 1418 and o1.obs_group = 1184, o1.value_numeric, ""))         as booster_sequence,
+       max(
+         if(o1.concept_id = 164464 and o1.obs_group = 1184, o1.value_coded, ""))           as booster_dose_verified,
+       max(if(o3.concept_id = 166638, o3.value_coded, null))                               as ever_tested_covid_19_positive,
+       max(if(o3.concept_id = 159640, o3.value_coded, null))                               as symptomatic,
+       max(if(o3.concept_id = 159948, date(o3.value_datetime), null))                      as date_tested_positive,
+       max(if(o3.concept_id = 162477, o3.value_coded, null))                               as hospital_admission,
+       concat_ws(',', max(if(o3.concept_id = 161010 and o3.value_coded = 165994, 'Isolation', null)),
+                 max(if(o3.concept_id = 161010 and o3.value_coded = 165995, 'HDU', null)),
+                 max(if(o3.concept_id = 161010 and o3.value_coded = 161936, 'ICU', null))) as admission_unit,
+       max(if(o3.concept_id = 165932, o3.value_coded, null))                               as on_ventillator,
+       max(if(o3.concept_id = 165864, o3.value_coded, null))                               as on_oxygen_supplement,
+       o3.date_created                                                                     as date_created,
+       o3.date_last_modified                                                               as date_last_modified,
+       o3.enc_voided                                                                           as voided
+from (select e.uuid,
+             e.creator,
+             o.person_id,
+             o.encounter_id,
+             date(e.encounter_datetime) as visit_date,
+             e.visit_id,
+             e.location_id,
+             o.obs_id,
+             o.concept_id               as obs_group,
+             o.concept_id               as concept_id,
+             o.value_coded,
+             o.value_datetime,
+             o.value_numeric,
+             o.date_created,
+             if(max(o.date_created) != min(o.date_created), max(o.date_created),
+                NULL)                   as date_last_modified,
+             o.voided,
+             o.date_voided,
+             e.date_voided as enc_voided,
+             e.date_voided as enc_voided_date,
+             e.date_changed as enc_changed_date,
+             e.date_created as enc_created_date
+      from obs o
+             inner join encounter e on e.encounter_id = o.encounter_id
+             inner join (select encounter_type_id, uuid, name
+                         from encounter_type
+                         where uuid = '86709cfc-1490-11ec-82a8-0242ac130003') et
+               on et.encounter_type_id = e.encounter_type
+      where o.concept_id in
+            (163100, 984, 1418, 1410, 164464, 164134, 166063, 166638, 159948, 162477, 161010, 165864, 165932, 159640)
+        and o.voided = 0
+      group by o.obs_id)o3
+       left join (select person_id                                       as patient_id,
+                         date(encounter_datetime)                        as visit_date,
+                         creator,
+                         obs_id,
+                         date(t.date_created)                            as date_created,
+                         t.date_last_modified                            as date_last_modified,
+                         encounter_id,
+                         name                                            as encounter_type,
+                         t.uuid,
+                         max(if(t.concept_id = 984, t.value_coded, ""))  as vaccine_type,
+                         max(if(t.concept_id = 1418, value_numeric, "")) as dose,
+                         max(if(t.concept_id = 164464, value_coded, "")) as verified,
+                         max(if(t.concept_id = 1410, date_given, ""))    as date_given,
+                         t.concept_id                                    as concept_id,
+                         t.obs_group                                     as obs_group,
+                         obs_group_id,
+                         t.visit_id,
+                         t.location_id,
+                         t.voided
+                  from (select e.uuid,
+                               o2.person_id,
+                               o2.obs_id,
+                               o.concept_id as         obs_group,
+                               e.encounter_datetime,
+                               e.creator,
+                               e.date_created,
+                               if(max(o2.date_created) != min(o2.date_created), max(o2.date_created),
+                                  NULL)     as         date_last_modified,
+                               o2.voided    as         voided,
+                               o2.concept_id,
+                               o2.value_coded,
+                               o2.value_numeric,
+                               date(o2.value_datetime) date_given,
+                               o2.obs_group_id,
+                               o2.encounter_id,
+                               et.name,
+                               e.visit_id,
+                               e.location_id
+                        from obs o
+                               inner join encounter e on e.encounter_id = o.encounter_id
+                               inner join person p on p.person_id = o.person_id and p.voided = 0
+                               inner join (select encounter_type_id, uuid, name
+                                           from encounter_type
+                                           where uuid = '86709cfc-1490-11ec-82a8-0242ac130003') et
+                                 on et.encounter_type_id = e.encounter_type
+                               inner join obs o2 on o.obs_id = o2.obs_group_id
+                        where o2.concept_id in (984, 1418, 1410, 164464)
+                          and o2.voided = 0
+                        group by o2.obs_id) t
+                  group by obs_group_id
+                  having vaccine_type != "") y on o3.encounter_id = y.encounter_id
+       left join (select o.person_id,
+                         o1.encounter_id,
+                         o.obs_id,
+                         o.concept_id  as obs_group,
+                         o1.concept_id as concept_id,
+                         o1.value_coded,
+                         o1.value_datetime,
+                         o1.value_numeric,
+                         o1.date_created,
+                         o1.voided
+                  from obs o
+                         join obs o1 on o.obs_id = o1.obs_group_id
+                                          and o1.concept_id in
+                                              (163100, 984, 1418, 1410, 164464, 164134, 166063, 166638, 159948, 162477, 161010, 165864, 165932) and
+                                        o1.voided = 0
+                                          and o.concept_id in (1421, 1184)
+                  order by o1.obs_id) o1 on o1.encounter_id = y.encounter_id
+
+where o3.enc_voided = 0 and o3.enc_created_date >= last_update_time
+or o3.enc_changed_date >=  last_update_time
+or o3.enc_voided_date >=  last_update_time
+or o3.date_created >=  last_update_time
+or o3.date_voided >=  last_update_time
+group by o3.visit_id
+ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),provider=VALUES(provider),ever_vaccinated=VALUES(ever_vaccinated),first_vaccine_type=VALUES(first_vaccine_type),second_vaccine_type=VALUES(second_vaccine_type),
+                        first_dose=VALUES(first_dose),second_dose=VALUES(second_dose),first_dose_date=VALUES(first_dose_date),second_dose_date=VALUES(second_dose_date),first_vaccination_verified=VALUES(first_vaccination_verified),
+                        second_vaccination_verified=VALUES(second_vaccination_verified),final_vaccination_status=VALUES(final_vaccination_status),ever_received_booster=VALUES(ever_received_booster),
+                        booster_vaccine_taken=VALUES(booster_vaccine_taken),date_taken_booster_vaccine=VALUES(date_taken_booster_vaccine),booster_sequence=VALUES(booster_sequence),booster_dose_verified=VALUES(booster_dose_verified),
+                        ever_tested_covid_19_positive=VALUES(ever_tested_covid_19_positive),symptomatic=VALUES(symptomatic),
+                        date_tested_positive=VALUES(date_tested_positive),hospital_admission=VALUES(hospital_admission),admission_unit=VALUES(admission_unit),
+                        on_ventillator=VALUES(on_ventillator),on_oxygen_supplement=VALUES(on_oxygen_supplement),voided=VALUES(voided);
+SELECT "Completed processing covid assessment data", CONCAT("Time: ", NOW());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_update_etl_depression_screening` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -20511,7 +18961,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_depression_screening`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_depression_screening`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing depression Screening", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_depression_screening(
@@ -20564,7 +19014,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_enhanced_adherence`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_enhanced_adherence`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing Enhanced Adherence ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_enhanced_adherence(
@@ -20700,7 +19150,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_gbv_screening`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_gbv_screening`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing GBV Screening", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_gbv_screening(
@@ -20757,6 +19207,67 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_update_etl_gbv_screening_action` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_gbv_screening_action`(IN last_update_time DATETIME)
+BEGIN
+    SELECT "Processing GBV Screening", CONCAT("Time: ", NOW());
+insert into kenyaemr_etl.etl_gbv_screening_action(
+    uuid,
+    provider,
+    patient_id,
+    visit_id,
+    visit_date,
+    location_id,
+    obs_id,
+    help_provider,
+    action_taken,
+    reason_for_not_reporting,
+    date_created,
+    date_last_modified,
+    voided
+    )
+select
+       e.uuid,e.creator,e.patient_id,e.visit_id, date(e.encounter_datetime) as visit_date, e.location_id, o.id as obs_id,
+       max(if(o.obs_group = 1562 and o.concept_id = 162886,o.value_coded, NULL)) as help_provider,
+       max(if(o.obs_group = 159639 and o.concept_id = 162875,o.value_coded, NULL)) as action_taken,
+       max(if(o.obs_group = 1743 and o.concept_id = 6098,o.value_coded,NULL)) as reason_for_not_reporting,
+       e.date_created as date_created,
+       if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified,
+       e.voided as voided
+from encounter e
+       inner join person p on p.person_id=e.patient_id and p.voided=0
+       inner join form f on f.form_id=e.form_id and f.uuid in ('03767614-1384-4ce3-aea9-27e2f4e67d01','94eec122-83a1-11ea-bc55-0242ac130003')
+       inner join (select o.encounter_id as encounter_id,o.person_id, o.obs_id,o1.obs_id as id,o.concept_id as obs_group,o1.concept_id as concept_id, o1.value_coded as value_coded,o1.date_created,o1.voided
+                   from obs o join obs o1 on o.obs_id = o1.obs_group_id and o1.concept_id in (162871,162886,162875,6098) and o.concept_id in(1562,159639,1743))o on o.encounter_id = e.encounter_id and o.voided=0
+where e.voided=0 and e.date_created >= last_update_time
+                or e.date_changed >= last_update_time
+                or e.date_voided >= last_update_time
+                or o1.date_created >= last_update_time
+                or o1.date_voided >= last_update_time
+group by o.id
+order by e.patient_id
+ ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),
+        provider=VALUES(provider),
+        help_provider=VALUES(help_provider),
+        action_taken=VALUES(action_taken),
+        reason_for_not_reporting=VALUES(reason_for_not_reporting),
+        voided=VALUES(voided);
+SELECT "Completed processing gbv screening action data ", CONCAT("Time: ", NOW());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_update_etl_gender_based_violence` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -20767,7 +19278,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_gender_based_violence`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_gender_based_violence`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing kp gender based violence form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_gender_based_violence(
@@ -20915,7 +19426,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_hei_enrolment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_hei_enrolment`(IN last_update_time DATETIME)
 BEGIN
 
     insert into kenyaemr_etl.etl_hei_enrollment(
@@ -20930,6 +19441,7 @@ BEGIN
       spd_number,
       birth_weight,
       gestation_at_birth,
+      birth_type,
       date_first_seen,
       birth_notification_number,
       birth_certificate_number,
@@ -20978,6 +19490,7 @@ BEGIN
         max(if(o.concept_id=162054,o.value_text,null)) as spd_number,
         max(if(o.concept_id=5916,o.value_numeric,null)) as birth_weight,
         max(if(o.concept_id=1409,o.value_numeric,null)) as gestation_at_birth,
+        max(if(o.concept_id=159949,o.value_coded,null)) as birth_type,
         max(if(o.concept_id=162140,o.value_datetime,null)) as date_first_seen,
         max(if(o.concept_id=162051,o.value_text,null)) as birth_notification_number,
         max(if(o.concept_id=162052,o.value_text,null)) as birth_certificate_number,
@@ -21016,7 +19529,7 @@ BEGIN
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-                            and o.concept_id in(5303,162054,5916,1409,162140,162051,162052,161630,161601,160540,160563,160534,160535,161551,160555,1282,159941,1282,152460,160429,1148,1086,162055,1088,1282,162053,5630,1572,161555,159427,1503,163460,162724,164130,164129,164140,1646,160753,161555,159427)
+                            and o.concept_id in(5303,162054,5916,1409,162140,162051,162052,161630,161601,160540,160563,160534,160535,161551,160555,1282,159941,1282,152460,160429,1148,1086,162055,1088,1282,162053,5630,1572,161555,159427,1503,163460,162724,164130,164129,164140,1646,160753,161555,159427,159949)
         inner join
         (
           select encounter_type_id, uuid, name from encounter_type where
@@ -21032,7 +19545,7 @@ BEGIN
       birth_notification_number=VALUES(birth_notification_number),birth_certificate_number=VALUES(birth_certificate_number),need_for_special_care=VALUES(need_for_special_care),reason_for_special_care=VALUES(reason_for_special_care),referral_source=VALUES(referral_source),transfer_in=VALUES(transfer_in),transfer_in_date=VALUES(transfer_in_date),facility_transferred_from=VALUES(facility_transferred_from),
       district_transferred_from=VALUES(district_transferred_from),date_first_enrolled_in_hei_care=VALUES(date_first_enrolled_in_hei_care),mother_breastfeeding=VALUES(mother_breastfeeding),TB_contact_history_in_household=VALUES(TB_contact_history_in_household),mother_alive=VALUES(mother_alive),mother_on_pmtct_drugs=VALUES(mother_on_pmtct_drugs),
       mother_on_drug=VALUES(mother_on_drug),mother_on_art_at_infant_enrollment=VALUES(mother_on_art_at_infant_enrollment),mother_drug_regimen=VALUES(mother_drug_regimen),infant_prophylaxis=VALUES(infant_prophylaxis),parent_ccc_number=VALUES(parent_ccc_number),mode_of_delivery=VALUES(mode_of_delivery),place_of_delivery=VALUES(place_of_delivery),birth_length=VALUES(birth_length),birth_order=VALUES(birth_order),health_facility_name=VALUES(health_facility_name),
-      date_of_birth_notification=VALUES(date_of_birth_notification),date_of_birth_registration=VALUES(date_of_birth_registration),birth_registration_place=VALUES(birth_registration_place),permanent_registration_serial=VALUES(permanent_registration_serial),mother_facility_registered=VALUES(mother_facility_registered),exit_date=VALUES(exit_date),exit_reason=VALUES(exit_reason),hiv_status_at_exit=VALUES(hiv_status_at_exit)
+      date_of_birth_notification=VALUES(date_of_birth_notification),date_of_birth_registration=VALUES(date_of_birth_registration),birth_registration_place=VALUES(birth_registration_place),permanent_registration_serial=VALUES(permanent_registration_serial),mother_facility_registered=VALUES(mother_facility_registered),exit_date=VALUES(exit_date),exit_reason=VALUES(exit_reason),hiv_status_at_exit=VALUES(hiv_status_at_exit),birth_type=VALUES(birth_type)
     ;
 
     END ;;
@@ -21051,7 +19564,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_hei_follow_up`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_hei_follow_up`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_hei_follow_up_visit(
       patient_id,
@@ -21063,8 +19576,10 @@ BEGIN
       encounter_id,
       weight,
       height,
+      muac,
       primary_caregiver,
       infant_feeding,
+      stunted,
       tb_assessment_outcome,
       social_smile_milestone,
       head_control_milestone,
@@ -21075,12 +19590,14 @@ BEGIN
       standing_milestone,
       talking_milestone,
       review_of_systems_developmental,
+      weight_category,
       dna_pcr_sample_date,
       dna_pcr_contextual_status,
       dna_pcr_result,
       azt_given,
       nvp_given,
       ctx_given,
+      multi_vitamin_given,
 
 
       first_antibody_result,
@@ -21095,6 +19612,12 @@ BEGIN
       deworming_drug,
       dosage,
       unit,
+      vitaminA_given,
+      disability,
+      referred_from,
+      referred_to,
+      counselled_on,
+      MNPS_Supplementation,
       comments,
       next_appointment_date,
       date_created,
@@ -21110,8 +19633,10 @@ BEGIN
         e.encounter_id,
         max(if(o.concept_id=5089,o.value_numeric,null)) as weight,
         max(if(o.concept_id=5090,o.value_numeric,null)) as height,
+        max(if(o.concept_id=160908,o.value_coded,null)) as muac,
         max(if(o.concept_id=160640,o.value_coded,null)) as primary_caregiver,
         max(if(o.concept_id=1151,o.value_coded,null)) as infant_feeding,
+        max(if(o.concept_id=164088,o.value_coded,null)) as stunted,
         max(if(o.concept_id=1659,o.value_coded,null)) as tb_assessment_outcome,
         max(if(o.concept_id=162069 and o.value_coded=162056,o.value_coded,null)) as social_smile_milestone,
         max(if(o.concept_id=162069 and o.value_coded=162057,o.value_coded,null)) as head_control_milestone,
@@ -21122,12 +19647,14 @@ BEGIN
         max(if(o.concept_id=162069 and o.value_coded=162062,o.value_coded,null)) as standing_milestone,
         max(if(o.concept_id=162069 and o.value_coded=162060,o.value_coded,null)) as talking_milestone,
         max(if(o.concept_id=1189,o.value_coded,null)) as review_of_systems_developmental,
+        max(if(o.concept_id=1854,o.value_coded,null)) as weight_category,
         max(if(o.concept_id=159951,o.value_datetime,null)) as dna_pcr_sample_date,
         max(if(o.concept_id=162084,o.value_coded,null)) as dna_pcr_contextual_status,
         max(if(o.concept_id=1030,o.value_coded,null)) as dna_pcr_result,
         max(if(o.concept_id=966 and o.value_coded=86663,o.value_coded,null)) as azt_given,
         max(if(o.concept_id=966 and o.value_coded=80586,o.value_coded,null)) as nvp_given,
         max(if(o.concept_id=1109,o.value_coded,null)) as ctx_given,
+        max(if(o.concept_id=1193,o.value_coded,null)) as multi_vitamin_given,
 
 
         max(if(o.concept_id=1040,o.value_coded,null)) as first_antibody_result,
@@ -21142,6 +19669,12 @@ BEGIN
         max(if(o.concept_id=1282,o.value_coded,null)) as deworming_drug,
         max(if(o.concept_id=1443,o.value_numeric,null)) as dosage,
         max(if(o.concept_id=1621,o.value_text,null)) as unit,
+        max(if(o.concept_id=161534,o.value_coded,null)) as vitaminA_given,
+        max(if(o.concept_id=162558,o.value_coded,null)) as disablity,
+        max(if(o.concept_id=163145,o.value_coded,null)) as referred_from,
+				max(if(o.concept_id=160481,o.value_coded,null)) as referred_to,
+				max(if(o.concept_id=1379,o.value_coded,null)) as counselled_on,
+				max(if(o.concept_id=5484,o.value_coded,null)) as MNPS_Supplementation,
         max(if(o.concept_id=159395,o.value_text,null)) as comments,
         max(if(o.concept_id=5096,o.value_datetime,null)) as next_appointment_date,
         e.date_created as date_created,
@@ -21149,7 +19682,7 @@ BEGIN
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-                            and o.concept_id in(844,5089,5090,160640,1151,1659,5096,162069,162069,162069,162069,162069,162069,162069,162069,1189,159951,966,1109,162084,1030,162086,160082,159951,1040,162086,160082,159951,1326,162086,160082,162077,162064,162067,162066,1282,1443,1621,159395,5096)
+                            and o.concept_id in(844,5089,5090,160640,1151,1659,5096,162069,162069,162069,162069,162069,162069,162069,162069,1189,159951,966,1109,162084,1030,162086,160082,159951,1040,162086,160082,159951,1326,162086,160082,162077,162064,162067,162066,1282,1443,1621,159395,5096,160908,1854,164088,1193,161534,162558,160481,163145,1379,5484)
         inner join
         (
           select encounter_type_id, uuid, name from encounter_type where
@@ -21165,7 +19698,8 @@ BEGIN
       response_to_sound_milestone=VALUES(response_to_sound_milestone),hand_extension_milestone=VALUES(hand_extension_milestone),sitting_milestone=VALUES(sitting_milestone),walking_milestone=VALUES(walking_milestone),standing_milestone=VALUES(standing_milestone),talking_milestone=VALUES(talking_milestone),review_of_systems_developmental=VALUES(review_of_systems_developmental),
       dna_pcr_result=VALUES(dna_pcr_result),first_antibody_result=VALUES(first_antibody_result),final_antibody_result=VALUES(final_antibody_result),
       tetracycline_ointment_given=VALUES(tetracycline_ointment_given),pupil_examination=VALUES(pupil_examination),sight_examination=VALUES(sight_examination),squint=VALUES(squint),deworming_drug=VALUES(deworming_drug),dosage=VALUES(dosage),unit=VALUES(unit),comments=VALUES(comments),next_appointment_date=VALUES(next_appointment_date)
-      ,nvp_given=VALUES(nvp_given),ctx_given=VALUES(ctx_given)
+      ,nvp_given=VALUES(nvp_given),ctx_given=VALUES(ctx_given),muac=VALUES(muac),weight_category=VALUES(weight_category),stunted=VALUES(stunted),multi_vitamin_given=VALUES(multi_vitamin_given),vitaminA_given=VALUES(vitaminA_given),disability=VALUES(disability),referred_from=VALUES(referred_from),
+      referred_to=VALUES(referred_to),counselled_on=VALUES(counselled_on),MNPS_Supplementation=VALUES(MNPS_Supplementation)
     ;
 
     END ;;
@@ -21184,7 +19718,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_hei_immunization`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_hei_immunization`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing hei_immunization data ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_hei_immunization(
@@ -21342,7 +19876,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_hiv_enrollment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_hiv_enrollment`(IN last_update_time DATETIME)
 BEGIN
 
 
@@ -21397,7 +19931,7 @@ BEGIN
         max(if(o.concept_id=159599,o.value_datetime,null)) as date_started_art_at_transferring_facility,
         max(if(o.concept_id=160554,o.value_datetime,null)) as date_confirmed_hiv_positive,
         max(if(o.concept_id=160632,left(trim(o.value_text),100),null)) as facility_confirmed_hiv_positive,
-        max(if(o.concept_id=160533,o.value_boolean,null)) as arv_status,
+        max(if(o.concept_id=160533,o.value_coded,null)) as arv_status,
         max(if(o.concept_id=160638,left(trim(o.value_text),100),null)) as name_of_treatment_supporter,
         max(if(o.concept_id=160640,o.value_coded,null)) as relationship_of_treatment_supporter,
         max(if(o.concept_id=160642,left(trim(o.value_text),100),null)) as treatment_supporter_telephone ,
@@ -21442,7 +19976,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_hiv_followup`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_hiv_followup`(IN last_update_time DATETIME)
 BEGIN
 
     INSERT INTO kenyaemr_etl.etl_patient_hiv_followup(
@@ -21474,6 +20008,13 @@ BEGIN
       on_anti_tb_drugs,
       on_ipt,
       ever_on_ipt,
+      cough,
+      fever,
+      weight_loss_poor_gain,
+      night_sweats,
+      tb_case_contact,
+      lethargy,
+      screened_for_tb,
       spatum_smear_ordered,
       chest_xray_ordered,
       genexpert_ordered,
@@ -21506,6 +20047,16 @@ BEGIN
       started_anti_TB,
       tb_rx_date,
       tb_treatment_no,
+      general_examination,
+      system_examination,
+      skin_findings,
+      eyes_findings,
+      ent_findings,
+      chest_findings,
+      cvs_findings,
+      abdomen_findings,
+      cns_findings,
+      genitourinary_findings,
       prophylaxis_given,
       ctx_adherence,
       ctx_dispensed,
@@ -21560,9 +20111,16 @@ BEGIN
         max(if(o.concept_id=164948,o.value_coded,null)) as on_anti_tb_drugs ,
         max(if(o.concept_id=164949,o.value_coded,null)) as on_ipt ,
         max(if(o.concept_id=164950,o.value_coded,null)) as ever_on_ipt ,
-        max(if(o.concept_id=1271 and o.value_coded = 307,1065,1066)) as spatum_smear_ordered ,
-        max(if(o.concept_id=1271 and o.value_coded = 12 ,1065,1066)) as chest_xray_ordered ,
-        max(if(o.concept_id=1271 and o.value_coded = 162202,1065,1066)) as genexpert_ordered ,
+        max(if(o.concept_id=1729 and o.value_coded =159799,o.value_coded,null)) as cough,
+        max(if(o.concept_id=1729 and o.value_coded =1494,o.value_coded,null)) as fever,
+        max(if(o.concept_id=1729 and o.value_coded =832,o.value_coded,null)) as weight_loss_poor_gain,
+        max(if(o.concept_id=1729 and o.value_coded =133027,o.value_coded,null)) as night_sweats,
+        max(if(o.concept_id=1729 and o.value_coded =124068,o.value_coded,null)) as tb_case_contact,
+        max(if(o.concept_id=1729 and o.value_coded =116334,o.value_coded,null)) as lethargy,
+        max(if(o.concept_id=1729 and o.value_coded in(159799,1494,832,133027,124068,116334,1066),'Yes','No'))as screened_for_tb,
+        max(if(o.concept_id=1271 and o.value_coded= 307,o.value_coded,null)) as spatum_smear_ordered ,
+        max(if(o.concept_id=1271 and o.value_coded= 12,o.value_coded,null)) as chest_xray_ordered ,
+        max(if(o.concept_id=1271 and o.value_coded= 162202,o.value_coded,null)) as genexpert_ordered ,
         max(if(o.concept_id=307,o.value_coded,null)) as spatum_smear_result ,
         max(if(o.concept_id=12,o.value_coded,null)) as chest_xray_result ,
         max(if(o.concept_id=162202,o.value_coded,null)) as genexpert_result ,
@@ -21592,6 +20150,27 @@ BEGIN
         max(if(o.concept_id=162309,o.value_coded,null)) as started_anti_TB,
         max(if(o.concept_id=1113,o.value_datetime,null)) as tb_rx_date,
         max(if(o.concept_id=161654,trim(o.value_text),null)) as tb_treatment_no,
+        concat_ws(',',nullif(max(if(o.concept_id=162737 and o.value_coded =1107 ,'None','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded =136443,'Jaundice','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded =460,'Oedema','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 5334,'Oral Thrush','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 5245,'Pallor','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 140125,'Finger Clubbing','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 126952,'Lymph Node Axillary','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 143050,'Cyanosis','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 126939,'Lymph Nodes Inguinal','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 823,'Wasting','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 142630,'Dehydration','')),''),
+                 nullif(max(if(o.concept_id=162737 and o.value_coded = 116334,'Lethargic','')),'')) as general_examination,
+        max(if(o.concept_id=159615,o.value_coded,null)) as system_examination,
+        max(if(o.concept_id=1120,o.value_coded,null)) as skin_findings,
+        max(if(o.concept_id=163309,o.value_coded,null)) as eyes_findings,
+        max(if(o.concept_id=164936,o.value_coded,null)) as ent_findings,
+        max(if(o.concept_id=1123,o.value_coded,null)) as chest_findings,
+        max(if(o.concept_id=1124,o.value_coded,null)) as cvs_findings,
+        max(if(o.concept_id=1125,o.value_coded,null)) as abdomen_findings,
+        max(if(o.concept_id=164937,o.value_coded,null)) as cns_findings,
+        max(if(o.concept_id=1126,o.value_coded,null)) as genitourinary_findings,
         max(if(o.concept_id=1109,o.value_coded,null)) as prophylaxis_given,
         max(if(o.concept_id=161652,o.value_coded,null)) as ctx_adherence,
         max(if(o.concept_id=162229 or (o.concept_id=1282 and o.value_coded = 105281),o.value_coded,null)) as ctx_dispensed,
@@ -21626,7 +20205,7 @@ BEGIN
                                  and o.concept_id in (1282,1246,161643,5089,5085,5086,5090,5088,5087,5242,5092,1343,5356,5272,161033,163530,5596,1427,5624,1053,160653,374,160575,
                                  1659,161654,161652,162229,162230,1658,160582,160632,159423,161557,159777,112603,161558,160581,5096,163300, 164930, 160581, 1154, 160430, 164948,
                                  164949, 164950, 1271, 307, 12, 162202, 1272, 163752, 163414, 162275, 160557, 162747,
-                                 121764, 164933, 160080, 1823, 164940, 164934, 164935, 159615, 160288,1855, 164947, 162549,162877,160596,1109,162309,1113)
+                                 121764, 164933, 160080, 1823, 164940, 164934, 164935, 159615, 160288,1855, 164947, 162549,162877,160596,1109,162309,1113,1729,162737,159615,1120,163309,164936,1123,1124,1125,164937,1126)
       where e.voided=0 and e.date_created >= last_update_time
             or e.date_changed >= last_update_time
             or e.date_voided >= last_update_time
@@ -21636,12 +20215,14 @@ BEGIN
     ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),encounter_provider=VALUES(encounter_provider),visit_scheduled=VALUES(visit_scheduled),
       person_present=VALUES(person_present),weight=VALUES(weight),systolic_pressure=VALUES(systolic_pressure),diastolic_pressure=VALUES(diastolic_pressure),height=VALUES(height),temperature=VALUES(temperature),pulse_rate=VALUES(pulse_rate),respiratory_rate=VALUES(respiratory_rate),
       oxygen_saturation=VALUES(oxygen_saturation),muac=VALUES(muac), nutritional_status=VALUES(nutritional_status), population_type=VALUES(population_type), key_population_type=VALUES(key_population_type), who_stage=VALUES(who_stage),presenting_complaints = VALUES(presenting_complaints),
-      clinical_notes = VALUES(clinical_notes),on_anti_tb_drugs=VALUES(on_anti_tb_drugs),on_ipt=VALUES(on_ipt),ever_on_ipt=VALUES(ever_on_ipt),spatum_smear_ordered=VALUES(spatum_smear_ordered),chest_xray_ordered=VALUES(chest_xray_ordered),genexpert_ordered=VALUES(genexpert_ordered),
+      clinical_notes = VALUES(clinical_notes),on_anti_tb_drugs=VALUES(on_anti_tb_drugs),on_ipt=VALUES(on_ipt),ever_on_ipt=VALUES(ever_on_ipt),cough=VALUES(cough),fever=VALUES(fever),weight_loss_poor_gain=VALUES(weight_loss_poor_gain),night_sweats=VALUES(night_sweats),tb_case_contact=VALUES(tb_case_contact),lethargy=VALUES(lethargy),screened_for_tb=VALUES(screened_for_tb),
+      spatum_smear_ordered=VALUES(spatum_smear_ordered),chest_xray_ordered=VALUES(chest_xray_ordered),genexpert_ordered=VALUES(genexpert_ordered),
       spatum_smear_result=VALUES(spatum_smear_result), chest_xray_result=VALUES(chest_xray_result),genexpert_result=VALUES(genexpert_result),referral=VALUES(referral),clinical_tb_diagnosis=VALUES(clinical_tb_diagnosis),contact_invitation=VALUES(contact_invitation),
       evaluated_for_ipt=VALUES(evaluated_for_ipt),has_known_allergies=VALUES(has_known_allergies),has_chronic_illnesses_cormobidities=VALUES(has_chronic_illnesses_cormobidities),
       has_adverse_drug_reaction=VALUES(has_adverse_drug_reaction),pregnancy_status=VALUES(pregnancy_status), wants_pregnancy=VALUES(wants_pregnancy), pregnancy_outcome=VALUES(pregnancy_outcome),anc_number=VALUES(anc_number),expected_delivery_date=VALUES(expected_delivery_date),
       last_menstrual_period=VALUES(last_menstrual_period),gravida=VALUES(gravida),parity=VALUES(parity),full_term_pregnancies=VALUES(full_term_pregnancies), abortion_miscarriages=VALUES(abortion_miscarriages),family_planning_status=VALUES(family_planning_status),family_planning_method=VALUES(family_planning_method),reason_not_using_family_planning=VALUES(reason_not_using_family_planning),
-      tb_status=VALUES(tb_status),tb_treatment_no=VALUES(tb_treatment_no),ctx_adherence=VALUES(ctx_adherence),ctx_dispensed=VALUES(ctx_dispensed),dapsone_adherence=VALUES(dapsone_adherence),dapsone_dispensed=VALUES(dapsone_dispensed),inh_dispensed=VALUES(inh_dispensed),arv_adherence=VALUES(arv_adherence),poor_arv_adherence_reason=VALUES(poor_arv_adherence_reason),
+      tb_status=VALUES(tb_status),tb_treatment_no=VALUES(tb_treatment_no),general_examination=VALUES(general_examination),system_examination=VALUES(system_examination),skin_findings=VALUES(skin_findings),eyes_findings=VALUES(eyes_findings),ent_findings=VALUES(ent_findings),chest_findings=VALUES(chest_findings),
+      cvs_findings=VALUES(cvs_findings),abdomen_findings=VALUES(abdomen_findings),cns_findings=VALUES(cns_findings),genitourinary_findings=VALUES(genitourinary_findings),ctx_adherence=VALUES(ctx_adherence),ctx_dispensed=VALUES(ctx_dispensed),dapsone_adherence=VALUES(dapsone_adherence),dapsone_dispensed=VALUES(dapsone_dispensed),inh_dispensed=VALUES(inh_dispensed),arv_adherence=VALUES(arv_adherence),poor_arv_adherence_reason=VALUES(poor_arv_adherence_reason),
       poor_arv_adherence_reason_other=VALUES(poor_arv_adherence_reason_other),pwp_disclosure=VALUES(pwp_disclosure),pwp_partner_tested=VALUES(pwp_partner_tested),condom_provided=VALUES(condom_provided),substance_abuse_screening=VALUES(substance_abuse_screening),screened_for_sti=VALUES(screened_for_sti),cacx_screening=VALUES(cacx_screening), sti_partner_notification=VALUES(sti_partner_notification),at_risk_population=VALUES(at_risk_population),
       system_review_finding=VALUES(system_review_finding), next_appointment_date=VALUES(next_appointment_date), refill_date=VALUES(refill_date), next_appointment_reason=VALUES(next_appointment_reason), differentiated_care=VALUES(differentiated_care),ever_had_menses=VALUES(ever_had_menses),menopausal=VALUES(menopausal),prophylaxis_given=VALUES(prophylaxis_given),started_anti_TB=VALUES(started_anti_TB),tb_rx_date=VALUES(tb_rx_date), voided=VALUES(voided)
     ;
@@ -21662,7 +20243,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_hts_linkage_tracing`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_hts_linkage_tracing`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating HTS Linkage tracing ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_hts_linkage_tracing(
@@ -21728,7 +20309,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ipt_follow_up`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ipt_follow_up`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing IPT followup forms", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_ipt_follow_up(
@@ -21800,7 +20381,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ipt_initiation`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ipt_initiation`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating IPT initiations ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_ipt_initiation(
@@ -21859,7 +20440,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ipt_outcome`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ipt_outcome`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating IPT outcome ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_ipt_outcome(
@@ -21919,7 +20500,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ipt_screening`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ipt_screening`(IN last_update_time DATETIME)
 BEGIN
 SELECT "Processing IPT screening", CONCAT("Time: ", NOW());
 
@@ -22006,7 +20587,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_laboratory_extract`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_laboratory_extract`(IN last_update_time DATETIME)
 BEGIN
 
     insert into kenyaemr_etl.etl_laboratory_extract(
@@ -22032,7 +20613,7 @@ BEGIN
         e.encounter_id,
         e.patient_id,
         e.location_id,
-        coalesce(od.date_activated,e.encounter_datetime) as visit_date,
+        coalesce(od.date_activated,o.obs_datetime) as visit_date,
         e.visit_id,
         o.order_id,
         o.concept_id,
@@ -22078,7 +20659,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_mch_antenatal_visit`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_mch_antenatal_visit`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_mch_antenatal_visit(
       patient_id,
@@ -22109,6 +20690,7 @@ BEGIN
       fetal_movement,
       who_stage,
       cd4,
+      vl_sample_taken,
       viral_load,
       ldl,
       arv_status,
@@ -22117,6 +20699,7 @@ BEGIN
       partner_hiv_tested,
       partner_hiv_status,
       prophylaxis_given,
+      date_given_haart,
       baby_azt_dispensed,
       baby_nvp_dispensed,
       TTT,
@@ -22146,6 +20729,14 @@ BEGIN
       cacx_screening_method,
       has_other_illnes,
       counselled,
+      counselled_on_birth_plans,
+      counselled_on_danger_signs,
+      counselled_on_family_planning,
+      counselled_on_hiv,
+      counselled_on_supplimental_feeding,
+      counselled_on_breast_care,
+      counselled_on_infant_feeding,
+      counselled_on_treated_nets,
       referred_from,
       referred_to,
       next_appointment_date,
@@ -22182,6 +20773,7 @@ BEGIN
         max(if(o.concept_id=162107,o.value_coded,null)) as fetal_movement,
         max(if(o.concept_id=5356,o.value_coded,null)) as who_stage,
         max(if(o.concept_id=5497,o.value_numeric,null)) as cd4,
+        max(if(o.concept_id=1271,o.value_coded,null)) as vl_sample_taken,
         max(if(o.concept_id=856,o.value_numeric,null)) as viral_load,
         max(if(o.concept_id=1305,o.value_coded,null)) as ldl,
         max(if(o.concept_id=1147,o.value_coded,null)) as arv_status,
@@ -22190,6 +20782,7 @@ BEGIN
         max(if(o.concept_id=161557,o.value_coded,null)) as partner_hiv_tested,
         max(if(o.concept_id=1436,o.value_coded,null)) as partner_hiv_status,
         max(if(o.concept_id=1109,o.value_coded,null)) as prophylaxis_given,
+        max(if(o.concept_id=163784,o.value_datetime,null)) as date_given_haart,
         max(if(o.concept_id=1282,o.value_coded,null)) as baby_azt_dispensed,
         max(if(o.concept_id=1282,o.value_coded,null)) as baby_nvp_dispensed,
         max(if(o.concept_id=984,(case o.value_coded when 84879 then "Yes" else "" end),null)) as TTT,
@@ -22219,6 +20812,14 @@ BEGIN
         max(if(o.concept_id=163589,o.value_coded,null)) as cacx_screening_method,
         max(if(o.concept_id=162747,o.value_coded,null)) as has_other_illnes,
         max(if(o.concept_id=1912,o.value_coded,null)) as counselled,
+        max(if(o.concept_id=159853 and o.value_coded=159758,o.value_coded,null)) counselled_on_birth_plans,
+        max(if(o.concept_id=159853 and o.value_coded=159857,o.value_coded,null)) counselled_on_danger_signs,
+        max(if(o.concept_id=159853 and o.value_coded=156277,o.value_coded,null)) counselled_on_family_planning,
+        max(if(o.concept_id=159853 and o.value_coded=1914,o.value_coded,null)) counselled_on_hiv,
+        max(if(o.concept_id=159853 and o.value_coded=159854,o.value_coded,null)) counselled_on_supplimental_feeding,
+        max(if(o.concept_id=159853 and o.value_coded=159856,o.value_coded,null)) counselled_on_breast_care,
+        max(if(o.concept_id=159853 and o.value_coded=161651,o.value_coded,null)) counselled_on_infant_feeding,
+        max(if(o.concept_id=159853 and o.value_coded=1381,o.value_coded,null)) counselled_on_treated_nets,
         max(if(o.concept_id=160481,o.value_coded,null)) as referred_from,
         max(if(o.concept_id=163145,o.value_coded,null)) as referred_to,
         max(if(o.concept_id=5096,o.value_datetime,null)) as next_appointment_date,
@@ -22228,13 +20829,12 @@ BEGIN
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-                            and o.concept_id in(1282,984,1425,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,163590,5245,1438,1439,160090,162089,1440,162107,5356,5497,856,1305,1147,159427,164848,161557,1436,1109,128256,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,299,159918,32,161074,1659,164934,163589,162747,1912,160481,163145,5096,159395)
+                            and o.concept_id in(1282,984,1425,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,163590,5245,1438,1439,160090,162089,1440,162107,5356,5497,856,1305,1147,159427,164848,161557,1436,1109,128256,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,299,159918,32,161074,1659,164934,163589,162747,1912,160481,163145,5096,159395,163784,1271,159853)
         inner join
         (
           select form_id, uuid,name from form where
             uuid in('e8f98494-af35-4bb8-9fc7-c409c8fed843','d3ea25c7-a3e8-4f57-a6a9-e802c3565a30')
         ) f on f.form_id=e.form_id
-
       where e.date_created >= last_update_time
             or e.date_changed >= last_update_time
             or e.date_voided >= last_update_time
@@ -22246,14 +20846,16 @@ BEGIN
       oxygen_saturation=VALUES(oxygen_saturation),
       weight=VALUES(weight),height=VALUES(height),muac=VALUES(muac),hemoglobin=VALUES(hemoglobin),breast_exam_done=VALUES(breast_exam_done),pallor=VALUES(pallor),maturity=VALUES(maturity),fundal_height=VALUES(fundal_height),fetal_presentation=VALUES(fetal_presentation),lie=VALUES(lie),
       fetal_heart_rate=VALUES(fetal_heart_rate),fetal_movement=VALUES(fetal_movement),
-      who_stage=VALUES(who_stage),cd4=VALUES(cd4),viral_load=VALUES(viral_load),ldl=VALUES(ldl),arv_status=VALUES(arv_status),final_test_result=VALUES(final_test_result),
+      who_stage=VALUES(who_stage),cd4=VALUES(cd4),vl_sample_taken=VALUES(vl_sample_taken),viral_load=VALUES(viral_load),ldl=VALUES(ldl),arv_status=VALUES(arv_status),final_test_result=VALUES(final_test_result),
       patient_given_result=VALUES(patient_given_result),
-      partner_hiv_tested=VALUES(partner_hiv_tested),partner_hiv_status=VALUES(partner_hiv_status),prophylaxis_given=VALUES(prophylaxis_given),baby_azt_dispensed=VALUES(baby_azt_dispensed),baby_nvp_dispensed=VALUES(baby_nvp_dispensed),TTT=VALUES(TTT),IPT_malaria=VALUES(IPT_malaria),
+      partner_hiv_tested=VALUES(partner_hiv_tested),partner_hiv_status=VALUES(partner_hiv_status),prophylaxis_given=VALUES(prophylaxis_given),date_given_haart=VALUES(date_given_haart),baby_azt_dispensed=VALUES(baby_azt_dispensed),baby_nvp_dispensed=VALUES(baby_nvp_dispensed),TTT=VALUES(TTT),IPT_malaria=VALUES(IPT_malaria),
       iron_supplement=VALUES(iron_supplement),deworming=VALUES(deworming),bed_nets=VALUES(bed_nets),urine_microscopy=VALUES(urine_microscopy),urinary_albumin=VALUES(urinary_albumin),glucose_measurement=VALUES(glucose_measurement),urine_ph=VALUES(urine_ph),urine_gravity=VALUES(urine_gravity),
       urine_nitrite_test=VALUES(urine_nitrite_test),
       urine_leukocyte_esterace_test=VALUES(urine_leukocyte_esterace_test),urinary_ketone=VALUES(urinary_ketone),urine_bile_salt_test=VALUES(urine_bile_salt_test),
       urine_bile_pigment_test=VALUES(urine_bile_pigment_test),urine_colour=VALUES(urine_colour),urine_turbidity=VALUES(urine_turbidity),urine_dipstick_for_blood=VALUES(urine_dipstick_for_blood),syphilis_test_status=VALUES(syphilis_test_status),syphilis_treated_status=VALUES(syphilis_treated_status),
-      bs_mps=VALUES(bs_mps),anc_exercises=VALUES(anc_exercises),tb_screening=VALUES(tb_screening),cacx_screening=VALUES(cacx_screening),cacx_screening_method=VALUES(cacx_screening_method),has_other_illnes=VALUES(has_other_illnes),counselled=VALUES(counselled),referred_from=VALUES(referred_from),
+      bs_mps=VALUES(bs_mps),anc_exercises=VALUES(anc_exercises),tb_screening=VALUES(tb_screening),cacx_screening=VALUES(cacx_screening),cacx_screening_method=VALUES(cacx_screening_method),has_other_illnes=VALUES(has_other_illnes),counselled=VALUES(counselled),
+      counselled_on_birth_plans=VALUES(counselled_on_birth_plans),counselled_on_danger_signs=VALUES(counselled_on_danger_signs),counselled_on_family_planning=VALUES(counselled_on_family_planning),counselled_on_hiv=VALUES(counselled_on_hiv),counselled_on_supplimental_feeding=VALUES(counselled_on_supplimental_feeding),
+      counselled_on_breast_care=VALUES(counselled_on_breast_care),counselled_on_infant_feeding=VALUES(counselled_on_infant_feeding),counselled_on_treated_nets=VALUES(counselled_on_treated_nets),referred_from=VALUES(referred_from),
       referred_to=VALUES(referred_to),next_appointment_date=VALUES(next_appointment_date),clinical_notes=VALUES(clinical_notes)
     ;
 
@@ -22273,7 +20875,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_mch_delivery`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_mch_delivery`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_mchs_delivery(
       patient_id,
@@ -22291,6 +20893,7 @@ BEGIN
       date_of_delivery,
       blood_loss,
       condition_of_mother,
+      delivery_outcome,
       apgar_score_1min,
       apgar_score_5min,
       apgar_score_10min,
@@ -22339,6 +20942,7 @@ BEGIN
         max(if(o.concept_id=5599,o.value_datetime,null)) as date_of_delivery,
         max(if(o.concept_id=162092,o.value_coded,null)) as blood_loss,
         max(if(o.concept_id=1856,o.value_coded,null)) as condition_of_mother,
+        max(if(o.concept_id=159949,o.value_coded,null)) as delivery_outcome,
         max(if(o.concept_id=159603,o.value_numeric,null)) as apgar_score_1min,
         max(if(o.concept_id=159604,o.value_numeric,null)) as apgar_score_5min,
         max(if(o.concept_id=159605,o.value_numeric,null)) as apgar_score_10min,
@@ -22374,7 +20978,7 @@ BEGIN
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-                            and o.concept_id in(162054,1789,5630,5599,162092,1856,159603,159604,159605,162131,1572,1473,1379,1151,163454,1602,1573,162093,1576,120216,159616,1587,159917,1282,5916,161543,164122,159427,164848,161557,1436,1109,5576,159595,163784,159395)
+                            and o.concept_id in(162054,1789,5630,5599,162092,1856,159603,159604,159605,162131,1572,1473,1379,1151,163454,1602,1573,162093,1576,120216,159616,1587,159917,1282,5916,161543,164122,159427,164848,161557,1436,1109,5576,159595,163784,159395,159949)
         inner join
         (
           select form_id, uuid,name from form where
@@ -22392,7 +20996,7 @@ BEGIN
       counseling_on_infant_feeding_for_hiv_infected=VALUES(counseling_on_infant_feeding_for_hiv_infected),mother_decision=VALUES(mother_decision),placenta_complete=VALUES(placenta_complete),maternal_death_audited=VALUES(maternal_death_audited),cadre=VALUES(cadre),delivery_complications=VALUES(delivery_complications),coded_delivery_complications=VALUES(coded_delivery_complications),other_delivery_complications=VALUES(other_delivery_complications),duration_of_labor=VALUES(duration_of_labor),baby_sex=VALUES(baby_sex),
       baby_condition=VALUES(baby_condition),teo_given=VALUES(teo_given),birth_weight=VALUES(birth_weight),bf_within_one_hour=VALUES(bf_within_one_hour),birth_with_deformity=VALUES(birth_with_deformity),
       final_test_result=VALUES(final_test_result),patient_given_result=VALUES(patient_given_result),partner_hiv_tested=VALUES(partner_hiv_tested),partner_hiv_status=VALUES(partner_hiv_status),prophylaxis_given=VALUES(prophylaxis_given)
-      ,baby_azt_dispensed=VALUES(baby_azt_dispensed),baby_nvp_dispensed=VALUES(baby_nvp_dispensed),clinical_notes=VALUES(clinical_notes)
+      ,baby_azt_dispensed=VALUES(baby_azt_dispensed),baby_nvp_dispensed=VALUES(baby_nvp_dispensed),clinical_notes=VALUES(clinical_notes),delivery_outcome=VALUES(delivery_outcome)
 
     ;
 
@@ -22412,7 +21016,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_mch_discharge`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_mch_discharge`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing MCH Discharge ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_mchs_discharge(
@@ -22492,7 +21096,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_mch_enrollment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_mch_enrollment`(IN last_update_time DATETIME)
 BEGIN
 
     insert into kenyaemr_etl.etl_mch_enrollment(
@@ -22502,6 +21106,7 @@ BEGIN
       visit_date,
       location_id,
       encounter_id,
+      service_type,
       anc_number,
       first_anc_visit_date,
       gravida,
@@ -22543,6 +21148,7 @@ BEGIN
         e.encounter_datetime,
         e.location_id,
         e.encounter_id,
+        max(if(o.concept_id=160478,o.value_coded,null)) as service_type,
         max(if(o.concept_id=163530,o.value_text,null)) as anc_number,
         max(if(o.concept_id=163547,o.value_datetime,null)) as first_anc_visit_date,
         max(if(o.concept_id=5624,o.value_numeric,null)) as gravida,
@@ -22579,7 +21185,7 @@ BEGIN
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-                            and o.concept_id in(163530,163547,5624,160080,1823,160598,1427,162095,5596,300,299,160108,32,159427,160554,1436,160082,56,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,161555)
+                            and o.concept_id in(163530,163547,5624,160080,1823,160598,1427,162095,5596,300,299,160108,32,159427,160554,1436,160082,56,1875,159734,161438,161439,161440,161441,161442,161444,161443,162106,162101,162096,161555,160478)
         inner join
         (
           select encounter_type_id, uuid, name from encounter_type where
@@ -22591,7 +21197,7 @@ BEGIN
             or o.date_created >= last_update_time
             or o.date_voided >= last_update_time
       group by e.encounter_id
-    ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),anc_number=VALUES(anc_number),first_anc_visit_date=VALUES(first_anc_visit_date),gravida=VALUES(gravida),parity=VALUES(parity),parity_abortion=VALUES(parity_abortion),age_at_menarche=VALUES(age_at_menarche),lmp=VALUES(lmp),lmp_estimated=VALUES(lmp_estimated),
+    ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),service_type=VALUES(service_type),anc_number=VALUES(anc_number),first_anc_visit_date=VALUES(first_anc_visit_date),gravida=VALUES(gravida),parity=VALUES(parity),parity_abortion=VALUES(parity_abortion),age_at_menarche=VALUES(age_at_menarche),lmp=VALUES(lmp),lmp_estimated=VALUES(lmp_estimated),
       edd_ultrasound=VALUES(edd_ultrasound),blood_group=VALUES(blood_group),serology=VALUES(serology),tb_screening=VALUES(tb_screening),bs_for_mps=VALUES(bs_for_mps),hiv_status=VALUES(hiv_status),hiv_test_date=VALUES(hiv_status),partner_hiv_status=VALUES(partner_hiv_status),partner_hiv_test_date=VALUES(partner_hiv_test_date),
       urine_microscopy=VALUES(urine_microscopy),urinary_albumin=VALUES(urinary_albumin),glucose_measurement=VALUES(glucose_measurement),urine_ph=VALUES(urine_ph),urine_gravity=VALUES(urine_gravity),urine_nitrite_test=VALUES(urine_nitrite_test),urine_leukocyte_esterace_test=VALUES(urine_leukocyte_esterace_test),urinary_ketone=VALUES(urinary_ketone),
       urine_bile_salt_test=VALUES(urine_bile_salt_test),urine_bile_pigment_test=VALUES(urine_bile_pigment_test),urine_colour=VALUES(urine_colour),urine_turbidity=VALUES(urine_turbidity),urine_dipstick_for_blood=VALUES(urine_dipstick_for_blood),discontinuation_reason=VALUES(discontinuation_reason)
@@ -22613,7 +21219,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_mch_postnatal_visit`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_mch_postnatal_visit`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_mch_postnatal_visit(
       patient_id,
@@ -22628,6 +21234,7 @@ BEGIN
       delivery_date,
       mode_of_delivery,
       place_of_delivery,
+      delivery_outcome,
       temperature,
       pulse_rate,
       systolic_bp,
@@ -22645,6 +21252,7 @@ BEGIN
       gravid_uterus,
       episiotomy,
       lochia,
+      counselled_on_infant_feeding,
       pallor,
       pph,
       mother_hiv_status,
@@ -22678,6 +21286,7 @@ BEGIN
       referred_from,
       referred_to,
       clinical_notes,
+      appointment_date,
       date_created,
       date_last_modified
     )
@@ -22694,6 +21303,7 @@ BEGIN
         max(if(o.concept_id=5599,o.value_datetime,null)) as delivery_date,
         max(if(o.concept_id=5630,o.value_coded,null)) as mode_of_delivery,
         max(if(o.concept_id=1572,o.value_coded,null)) as place_of_delivery,
+        max(if(o.concept_id=159949,o.value_coded,null)) as delivery_outcome,
         max(if(o.concept_id=5088,o.value_numeric,null)) as temperature,
         max(if(o.concept_id=5087,o.value_numeric,null)) as pulse_rate,
         max(if(o.concept_id=5085,o.value_numeric,null)) as systolic_bp,
@@ -22711,6 +21321,7 @@ BEGIN
         max(if(o.concept_id=162110,o.value_coded,null)) as gravid_uterus,
         max(if(o.concept_id=159840,o.value_coded,null)) as episiotomy,
         max(if(o.concept_id=159844,o.value_coded,null)) as lochia,
+        max(if(o.concept_id=161651,o.value_coded,null)) as counselled_on_infant_feeding,
         max(if(o.concept_id=5245,o.value_coded,null)) as pallor,
         max(if(o.concept_id=230,o.value_coded,null)) as pph,
         max(if(o.concept_id=1396,o.value_coded,null)) as mother_hiv_status,
@@ -22744,12 +21355,13 @@ BEGIN
         max(if(o.concept_id=160481,o.value_coded,null)) as referred_from,
         max(if(o.concept_id=163145,o.value_coded,null)) as referred_to,
         max(if(o.concept_id=159395,o.value_text,null)) as clinical_notes,
+        max(if(o.concept_id=5096,o.value_datetime,null)) as appointment_date,
         e.date_created as date_created,
         if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join obs o on e.encounter_id = o.encounter_id and o.voided =0
-                            and o.concept_id in(1646,159893,5599,5630,1572,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,1147,1856,159780,162128,162110,159840,159844,5245,230,1396,162134,1151,162121,162127,1382,160967,160968,160969,160970,160971,160975,160972,159427,164848,161557,1436,1109,5576,159595,163784,1282,161074,160085,161004,159921,164934,163589,160653,374,160481,163145,159395)
+                            and o.concept_id in(1646,159893,5599,5630,1572,5088,5087,5085,5086,5242,5092,5089,5090,1343,21,1147,1856,159780,162128,162110,159840,159844,5245,230,1396,162134,1151,162121,162127,1382,160967,160968,160969,160970,160971,160975,160972,159427,164848,161557,1436,1109,5576,159595,163784,1282,161074,160085,161004,159921,164934,163589,160653,374,160481,163145,159395,159949,5096,161651)
         inner join
         (
           select form_id, uuid,name from form where
@@ -22762,14 +21374,14 @@ BEGIN
             or o.date_voided >= last_update_time
 
       group by e.encounter_id
-    ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),encounter_id=VALUES(encounter_id),provider=VALUES(provider),pnc_register_no=VALUES(pnc_register_no),pnc_visit_no=VALUES(pnc_visit_no),delivery_date=VALUES(delivery_date),mode_of_delivery=VALUES(mode_of_delivery),place_of_delivery=VALUES(place_of_delivery),temperature=VALUES(temperature),pulse_rate=VALUES(pulse_rate),systolic_bp=VALUES(systolic_bp),diastolic_bp=VALUES(diastolic_bp),respiratory_rate=VALUES(respiratory_rate),
+    ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),encounter_id=VALUES(encounter_id),provider=VALUES(provider),pnc_register_no=VALUES(pnc_register_no),pnc_visit_no=VALUES(pnc_visit_no),delivery_date=VALUES(delivery_date),mode_of_delivery=VALUES(mode_of_delivery),place_of_delivery=VALUES(place_of_delivery),delivery_outcome=VALUES(delivery_outcome),temperature=VALUES(temperature),pulse_rate=VALUES(pulse_rate),systolic_bp=VALUES(systolic_bp),diastolic_bp=VALUES(diastolic_bp),respiratory_rate=VALUES(respiratory_rate),
       oxygen_saturation=VALUES(oxygen_saturation),weight=VALUES(weight),height=VALUES(height),muac=VALUES(muac),hemoglobin=VALUES(hemoglobin),arv_status=VALUES(arv_status),general_condition=VALUES(general_condition),breast=VALUES(breast),cs_scar=VALUES(cs_scar),gravid_uterus=VALUES(gravid_uterus),episiotomy=VALUES(episiotomy),
       lochia=VALUES(lochia),pallor=VALUES(pallor),pph=VALUES(pph),mother_hiv_status=VALUES(mother_hiv_status),condition_of_baby=VALUES(condition_of_baby),baby_feeding_method=VALUES(baby_feeding_method),umblical_cord=VALUES(umblical_cord),baby_immunization_started=VALUES(baby_immunization_started),family_planning_counseling=VALUES(family_planning_counseling),uterus_examination=VALUES(uterus_examination),
       uterus_cervix_examination=VALUES(uterus_cervix_examination),vaginal_examination=VALUES(vaginal_examination),parametrial_examination=VALUES(parametrial_examination),external_genitalia_examination=VALUES(external_genitalia_examination),ovarian_examination=VALUES(ovarian_examination),pelvic_lymph_node_exam=VALUES(pelvic_lymph_node_exam),
       final_test_result=VALUES(final_test_result),
       patient_given_result=VALUES(patient_given_result),partner_hiv_tested=VALUES(partner_hiv_tested),partner_hiv_status=VALUES(partner_hiv_status),prophylaxis_given=VALUES(prophylaxis_given),baby_azt_dispensed=VALUES(baby_azt_dispensed),baby_nvp_dispensed=VALUES(baby_nvp_dispensed)
       ,maternal_condition=VALUES(maternal_condition),iron_supplementation=VALUES(iron_supplementation),fistula_screening=VALUES(fistula_screening),cacx_screening=VALUES(cacx_screening),cacx_screening_method=VALUES(cacx_screening_method),family_planning_status=VALUES(family_planning_status),family_planning_method=VALUES(family_planning_method)
-      ,referred_from=VALUES(referred_from),referred_to=VALUES(referred_to), clinical_notes=VALUES(clinical_notes)
+      ,referred_from=VALUES(referred_from),referred_to=VALUES(referred_to), clinical_notes=VALUES(clinical_notes),appointment_date=VALUES(appointment_date),counselled_on_infant_feeding=VALUES(counselled_on_infant_feeding)
     ;
 
     END ;;
@@ -22788,7 +21400,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_otz_activity`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_otz_activity`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating OTZ Activity ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_otz_activity(
@@ -22871,7 +21483,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_otz_enrollment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_otz_enrollment`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating OTZ Enrollment ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_otz_enrollment(
@@ -22950,7 +21562,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_ovc_enrolment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_ovc_enrolment`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating OVC Enrolment ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_ovc_enrolment(
@@ -23034,7 +21646,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_patient_demographics`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_patient_demographics`(IN last_update_time DATETIME)
 BEGIN
 insert into kenyaemr_etl.etl_patient_demographics(
 patient_id,
@@ -23160,8 +21772,10 @@ max(if(pit.uuid='c4e3caca-2dcc-4dc4-a8d9-513b6e63af91',pi.identifier,null)) Tb_t
 max(if(pit.uuid='b4d66522-11fc-45c7-83e3-39a1af21ae0d',pi.identifier,null)) Patient_clinic_number,
 max(if(pit.uuid='49af6cdc-7968-4abb-bf46-de10d7f4859f',pi.identifier,null)) National_id,
 max(if(pit.uuid='0691f522-dd67-4eeb-92c8-af5083baf338',pi.identifier,null)) Hei_id,
+max(if(pit.uuid='1dc8b419-35f2-4316-8d68-135f0689859b',pi.identifier,null)) cwc_number,
 max(if(pit.uuid='f2b0c94f-7b2b-4ab0-aded-0d970f88c063',pi.identifier,null)) kdod_service_number,
 max(if(pit.uuid='5065ae70-0b61-11ea-8d71-362b9e155667',pi.identifier,null)) CPIMS_unique_identifier,
+max(if(pit.uuid='dfacd928-0370-4315-99d7-6ec1c9f7ae76',pi.identifier,null)) openmrs_id,
 greatest(ifnull(max(pi.date_changed),'0000-00-00'),max(pi.date_created)) as latest_date
 from patient_identifier pi
 join patient_identifier_type pit on pi.identifier_type=pit.patient_identifier_type_id
@@ -23174,10 +21788,12 @@ set d.unique_patient_no=pid.UPN,
 	d.national_id_no=pid.National_id,
 	d.patient_clinic_number=pid.Patient_clinic_number,
     d.hei_no=pid.Hei_id,
+    d.cwc_number=pid.cwc_number,
     d.Tb_no=pid.Tb_treatment_number,
     d.district_reg_no=pid.district_reg_number,
     d.kdod_service_number=pid.kdod_service_number,
     d.CPIMS_unique_identifier=pid.CPIMS_unique_identifier,
+    d.openmrs_id=pid.openmrs_id,
     d.date_last_modified=if(pid.latest_date > ifnull(d.date_last_modified,'0000-00-00'),pid.latest_date,d.date_last_modified)
 ;
 
@@ -23215,7 +21831,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_patient_program`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_patient_program`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Updating patient program ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_patient_program(
@@ -23277,7 +21893,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_patient_triage`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_patient_triage`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing Patient Triage ", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_patient_triage(
@@ -23361,7 +21977,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_peer_calendar`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_peer_calendar`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing Peer calendar ", CONCAT("Time: ", NOW());
     INSERT INTO  kenyaemr_etl.etl_peer_calendar(
@@ -23413,7 +22029,7 @@ BEGIN
                                     when  165014 then" Park" when  1536 then" Homes" when  165015 then" Beach" when  165016 then" Casino"
                                     when  165017 then "Bar with lodging" when  165018 then "Bar without lodging"
                                     when  165019 then "Sex den" when  165020 then "Strip club" when  165021 then "Highways" when  165022 then "Brothel"
-                                    when  165023 then "Guest house/Hotels/Lodgings" when 165024 then "Massage parlor" when 165025 then "Chang���aa den" when 165026 then "Barbershop/Salon"
+                                    when  165023 then "Guest house/Hotels/Lodgings" when 165024 then "Massage parlor" when 165025 then "Chang’aa den" when 165026 then "Barbershop/Salon"
                                     when  165297 then "Virtual Space" when  5622 then "Other (Specify)" else "" end),null)) as typology,
         max(if(o.concept_id=165298,o.value_text,null)) as other_hotspots,
         max(if(o.concept_id=165007,o.value_numeric,null)) as weekly_sex_acts,
@@ -23493,7 +22109,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_peer_tracking`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_peer_tracking`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing kp peer tracking form", CONCAT("Time: ", NOW());
 
@@ -23583,7 +22199,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_person_address`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_person_address`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing person addresses ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_person_address(
@@ -23637,7 +22253,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_pharmacy_extract`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_pharmacy_extract`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_pharmacy_extract(
       obs_group_id,
@@ -23721,7 +22337,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_prep_behaviour_risk_assessment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_prep_behaviour_risk_assessment`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing Behaviour risk assessment", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_behaviour_risk_assessment(
@@ -23852,7 +22468,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_prep_discontinuation`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_prep_discontinuation`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing PrEP discontinuation", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_discontinuation(
@@ -23907,7 +22523,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_prep_enrolment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_prep_enrolment`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing PrEP enrolment", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_enrolment(
@@ -24008,7 +22624,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_prep_followup`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_prep_followup`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing PrEP follow-up", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_followup(
@@ -24115,7 +22731,7 @@ BEGIN
                 max(if(o.concept_id = 160855, (case o.value_coded when 160862 then "Once daily" when 160863 then "Once daily at bedtime" when 160864 then "Once daily in the evening" when 160865 then "Once daily in the morning" when 160858 then "Twice daily" when 160866 then "Thrice daily" when 160870 then "Four times daily" else "" end), "" )) as chronic_illness_frequency,
                 max(if(o.concept_id = 159368, o.value_numeric, null )) as chronic_illness_duration,
                 max(if(o.concept_id = 1732, (case o.value_coded when 1822 then "Hours" when 1072 then "Days" when 1073 then "Weeks" when 1074 then "Months" else "" end), "" )) as chronic_illness_duration_units,
-                max(if(o.concept_id = 121764, o.value_boolean, null )) as adverse_reactions,
+                max(if(o.concept_id = 121764, o.value_numeric, null )) as adverse_reactions,
                 max(if(o.concept_id = 1193, (case o.value_coded when 70056 then "Abicavir" when 162298 then "ACE inhibitors" when 70878 then "Allopurinol" when 155060 then "Aminoglycosides"
                                              when 162299 then "ARBs (angiotensin II receptor blockers)" when  103727 then "Aspirin" when 71647 then "Atazanavir" when 72822 then "Carbamazepine"  when 162301 then "Cephalosporins" when 73300 then "Chloroquine" when 73667 then "Codeine"
                                              when 74807 then "Didanosine" when 75523 then "Efavirenz" when 162302 then "Erythromycins" when 75948 then "Ethambutol" when 77164 then "Griseofulvin" when 162305 then "Heparins" when 77675 then "Hydralazine" when 78280 then "Isoniazid"
@@ -24128,7 +22744,7 @@ BEGIN
                                                when 879 then "Itching" when 121677 then "Mental status change" when 159347 then "Musculoskeletal pain" when 121 then "Myalgia" when 512 then "Rash" when 5622 then "Other" else "" end), "" )) as reaction,
                 max(if(o.concept_id = 162760, (case o.value_coded when 1498 then "Mild" when 1499 then "Moderate" when 1500 then "Severe" when 162819 then "Fatal" when 1067 then  "Unknown" else "" end), "" )) as severity,
                 max(if(o.concept_id = 1255, (case o.value_coded when 1257 then "Continue Regimen" when 1259 then "Switched Regimen" when 981 then "Changed Dose" when 1258 then "Substituted Drug" when 1107 then "None" when 1260 then "Stop" when 5622 then "Other" else "" end), "" )) as action_taken,
-                max(if(o.concept_id = 160557, o.value_boolean, null )) as known_allergies,
+                max(if(o.concept_id = 160557, o.value_numeric, null )) as known_allergies,
                 max(if(o.concept_id = 160643, (case o.value_coded when 162543 then "Beef" when 72609 then "Caffeine" when 162544 then "Chocolate" when 162545 then "Dairy Food" when 162171 then "Eggs" when 162546 then "Fish" when 162547  then "Milk Protein" when 162172 then "Peanuts" when 162175  then "Shellfish"
                                                when 162176 then "Soy" when 162548 then "Strawberries" when 162177 then "Wheat" when 162542 then "Adhesive Tape" when 162536 then "Bee Stings" when 162537 then "Dust" when 162538 then "Latex" when 162539 then "Mold" when 162540 then "Pollen"
                                                when 162541 then "Ragweed" when 5622 then "Other" else "" end), "" )) as allergen,
@@ -24233,7 +22849,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_prep_monthly_refill`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_prep_monthly_refill`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing monthly refill", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_prep_monthly_refill(
@@ -24335,7 +22951,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_PrEP_verification`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_PrEP_verification`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing kp PrEP verification form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_PrEP_verification(
@@ -24409,6 +23025,73 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `sp_update_etl_pre_hiv_enrollment_art` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_pre_hiv_enrollment_art`(IN last_update_time DATETIME)
+BEGIN
+SELECT "Processing pre_hiv enrollment ART", CONCAT("Time: ", NOW());
+insert into kenyaemr_etl.etl_pre_hiv_enrollment_art(
+    uuid,
+    provider,
+    patient_id,
+    visit_id,
+    visit_date,
+    location_id,
+    encounter_id,
+    obs_id,
+    PMTCT,
+    PMTCT_regimen,
+    PEP,
+    PEP_regimen,
+    PrEP,
+    PrEP_regimen,
+    HAART,
+    HAART_regimen,
+    date_created,
+    date_last_modified,
+    voided
+    )
+select
+       e.uuid,e.creator,e.patient_id,e.visit_id, date(e.encounter_datetime) as visit_date, e.location_id,e.encounter_id,o1.obs_id,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1148,o1.value_coded,null)) as PMTCT,
+       max(if(o1.obs_group =160741 and o1.concept_id = 966,o1.value_coded,null)) as PMTCT_regimen,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1691,o1.value_coded,null)) as PEP,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1088,o1.value_coded,null)) as PEP_regimen,
+       max(if(o1.obs_group =160741 and o1.concept_id = 165269,o1.value_coded,null)) as PrEP,
+       max(if(o1.obs_group =160741 and o1.concept_id = 1087,o1.value_coded,null)) as PrEP_regimen,
+       max(if(o1.obs_group =1085 and o1.concept_id = 1181,o1.value_coded,null)) as HAART,
+       max(if(o1.obs_group =1085 and o1.concept_id = 1088,o1.value_coded,null)) as HAART_regimen,
+       e.date_created as date_created,  if(max(o1.date_created)!=min(o1.date_created),max(o1.date_created),NULL) as date_last_modified,
+       e.voided as voided
+from encounter e
+       inner join person p on p.person_id=e.patient_id and p.voided=0
+       inner join (
+                  select encounter_type_id, uuid, name from encounter_type where uuid ='de78a6be-bfc5-4634-adc3-5f1a280455cc'
+                  ) et on et.encounter_type_id=e.encounter_type
+       inner join (select o.person_id,o1.encounter_id, o.obs_id,o.concept_id as obs_group,o1.concept_id as concept_id,o1.value_coded, o1.value_datetime,
+                          o1.date_created,o1.date_voided,o1.voided from obs o join obs o1 on o.obs_id = o1.obs_group_id
+                                                                                and o1.concept_id in (1148,966,1691,1088,1087,1181,165269) and o1.voided=0
+                                                                                and o.concept_id in(160741,1085)) o1 on o1.encounter_id = e.encounter_id
+where e.voided=0 and e.date_created >= last_update_time or e.date_changed >= last_update_time or e.date_voided >= last_update_time or o1.date_created >= last_update_time
+or o1.date_voided >= last_update_time
+group by o1.obs_id order by e.patient_id
+ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),provider=VALUES(provider),PMTCT=VALUES(PMTCT),PMTCT_regimen=VALUES(PMTCT_regimen),PEP=VALUES(PEP),PEP_regimen=VALUES(PEP_regimen),
+PrEP=VALUES(PrEP),PrEP_regimen=VALUES(PrEP_regimen),HAART=VALUES(HAART),HAART_regimen=VALUES(HAART_regimen),voided=VALUES(voided);
+SELECT "Completed processing pre_hiv enrollment ART data ", CONCAT("Time: ", NOW());
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `sp_update_etl_program_discontinuation` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -24419,7 +23102,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_program_discontinuation`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_program_discontinuation`(IN last_update_time DATETIME)
 BEGIN
     insert into kenyaemr_etl.etl_patient_program_discontinuation(
       patient_id,
@@ -24436,6 +23119,10 @@ BEGIN
       date_died,
       transfer_facility,
       transfer_date,
+      death_reason,
+      specific_death_cause,
+      natural_causes,
+      non_natural_cause,
       date_created,
       date_last_modified
     )
@@ -24463,11 +23150,15 @@ BEGIN
         max(if(o.concept_id=1543, o.value_datetime, null)) as date_died,
         max(if(o.concept_id=159495, left(trim(o.value_text),100), null)) as to_facility,
         max(if(o.concept_id=160649, o.value_datetime, null)) as to_date,
+        max(if(o.concept_id=1599, o.value_coded, null)) as death_reason,
+        max(if(o.concept_id=1748, o.value_coded, null)) as specific_death_cause,
+        max(if(o.concept_id=162580, left(trim(o.value_text),200), null)) as natural_causes,
+        max(if(o.concept_id=160218, left(trim(o.value_text),200), null)) as non_natural_cause,
         e.date_created as date_created,
         if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
-        inner join obs o on o.encounter_id=e.encounter_id and o.voided=0 and o.concept_id in (161555,164384,1543,159495,160649,165380,1285,164133)
+        inner join obs o on o.encounter_id=e.encounter_id and o.voided=0 and o.concept_id in (161555,164384,1543,159495,160649,165380,1285,164133,1599,1748,162580,160218)
         inner join
         (
           select encounter_type_id, uuid, name from encounter_type where
@@ -24482,7 +23173,8 @@ BEGIN
       group by e.encounter_id
     ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),discontinuation_reason=VALUES(discontinuation_reason),
       date_died=VALUES(date_died),transfer_facility=VALUES(transfer_facility),transfer_date=VALUES(transfer_date),
-      trf_out_verified=VALUES(trf_out_verified),trf_out_verification_date=VALUES(trf_out_verification_date)
+      trf_out_verified=VALUES(trf_out_verified),trf_out_verification_date=VALUES(trf_out_verification_date),
+      death_reason=VALUES(death_reason),specific_death_cause=VALUES(specific_death_cause)
     ;
 
     END ;;
@@ -24501,7 +23193,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_progress_note`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_progress_note`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing progress", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_progress_note(
@@ -24552,7 +23244,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_sti_treatment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_sti_treatment`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing STI Treatment ", CONCAT("Time: ", NOW());
     INSERT INTO kenyaemr_etl.etl_sti_treatment(
@@ -24668,7 +23360,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_tb_enrollment`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_tb_enrollment`(IN last_update_time DATETIME)
 BEGIN
 
 
@@ -24782,7 +23474,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_tb_follow_up_visit`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_tb_follow_up_visit`(IN last_update_time DATETIME)
 BEGIN
 
 
@@ -24879,41 +23571,83 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_tb_screening`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_tb_screening`(IN last_update_time DATETIME)
 BEGIN
 
     insert into kenyaemr_etl.etl_tb_screening(
-      patient_id,
-      uuid,
-      provider,
-      visit_id,
-      visit_date,
-      encounter_id,
-      location_id,
-      resulting_tb_status ,
-      tb_treatment_start_date ,
-      notes,
-      date_created,
-      date_last_modified
+        patient_id,
+        uuid,
+        provider,
+        visit_id,
+        visit_date,
+        encounter_id,
+        location_id,
+        cough_for_2wks_or_more,
+        confirmed_tb_contact,
+        fever_for_2wks_or_more,
+        noticeable_weight_loss,
+        night_sweat_for_2wks_or_more,
+        lethargy,
+        spatum_smear_ordered,
+        chest_xray_ordered,
+        genexpert_ordered,
+        spatum_smear_result,
+        chest_xray_result,
+        genexpert_result,
+        referral,
+        clinical_tb_diagnosis,
+        resulting_tb_status ,
+        contact_invitation,
+        evaluated_for_ipt,
+        started_anti_TB,
+        tb_treatment_start_date,
+        tb_prophylaxis,
+        notes,
+        person_present,
+        date_created,
+        date_last_modified
     )
       select
         e.patient_id, e.uuid, e.creator, e.visit_id, date(e.encounter_datetime) as visit_date, e.encounter_id, e.location_id,
-        max(case o.concept_id when 1659 then o.value_coded else null end) as resulting_tb_status,
-        max(case o.concept_id when 1113 then date(o.value_datetime)  else NULL end) as tb_treatment_start_date,
-        max(case o.concept_id when 160632 then value_text else NULL end) as notes,
+        max(if(o.concept_id=1729 and o.value_coded =159799,o.value_coded,null)) as cough_for_2wks_or_more,
+        max(if(o.concept_id=1729 and o.value_coded =124068,o.value_coded,null)) confirmed_tb_contact,
+        max(if(o.concept_id=1729 and o.value_coded =1494,o.value_coded,null)) fever_for_2wks_or_more,
+        max(if(o.concept_id=1729 and o.value_coded =832,o.value_coded,null)) as noticeable_weight_loss,
+        max(if(o.concept_id=1729 and o.value_coded =133027,o.value_coded,null)) as night_sweat_for_2wks_or_more,
+        max(if(o.concept_id=1729 and o.value_coded =116334,o.value_coded,null)) as lethargy,
+        max(if(o.concept_id=1271 and o.value_coded =307,o.value_coded,null)) as spatum_smear_ordered,
+        max(if(o.concept_id=1271 and o.value_coded =12,o.value_coded,null)) as chest_xray_ordered,
+        max(if(o.concept_id=1271 and o.value_coded = 162202,o.value_coded,null)) as genexpert_ordered,
+        max(if(o.concept_id=307,o.value_coded,null)) as spatum_smear_result,
+        max(if(o.concept_id=12,o.value_coded,null)) as chest_xray_result,
+        max(if(o.concept_id=162202,o.value_coded,null)) as genexpert_result,
+        max(if(o.concept_id=1272,o.value_coded,null)) as referral,
+        max(if(o.concept_id=163752,o.value_coded,null)) as clinical_tb_diagnosis,
+        max(if(o.concept_id=1659,o.value_coded,null)) as resulting_tb_status,
+        max(if(o.concept_id=163414,o.value_coded,null)) as contact_invitation,
+        max(if(o.concept_id=162275,o.value_coded,null)) as evaluated_for_ipt,
+        max(if(o.concept_id=162309,o.value_coded,null)) as started_anti_TB,
+        max(if(o.concept_id=1113,date(o.value_datetime),null)) as tb_treatment_start_date,
+        max(if(o.concept_id=1109,o.value_coded,null)) as tb_prophylaxis,
+        max(if(o.concept_id=160632,o.value_text,null)) as notes,
+        max(if(o.concept_id=161643,o.value_coded,null)) as person_present,
         e.date_created as date_created,
         if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
-        inner join form f on f.form_id=e.form_id and f.uuid in ("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259", "59ed8e62-7f1f-40ae-a2e3-eabe350277ce")
-        inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (1659, 1113, 160632) and o.voided=0
+        inner join form f on f.form_id=e.form_id and f.uuid in ("22c68f86-bbf0-49ba-b2d1-23fa7ccf0259", "59ed8e62-7f1f-40ae-a2e3-eabe350277ce","23b4ebbd-29ad-455e-be0e-04aa6bc30798")
+        inner join obs o on o.encounter_id = e.encounter_id and o.concept_id in (1659, 1113, 160632,161643,1729,1271,307,12,162202,1272,163752,163414,162275,162309,1109) and o.voided=0
       where e.date_changed >= last_update_time
             or e.date_voided >= last_update_time
             or o.date_created >= last_update_time
             or o.date_voided >= last_update_time
       group by e.patient_id,visit_date
-    ON DUPLICATE KEY UPDATE provider=VALUES(provider),visit_id=VALUES(visit_id),visit_date=VALUES(visit_date),encounter_id=VALUES(encounter_id),
-      resulting_tb_status=VALUES(resulting_tb_status), tb_treatment_start_date=VALUES(tb_treatment_start_date), notes=values(notes);
+    ON DUPLICATE KEY UPDATE provider=VALUES(provider),visit_id=VALUES(visit_id),visit_date=VALUES(visit_date),encounter_id=VALUES(encounter_id),cough_for_2wks_or_more=values(cough_for_2wks_or_more),confirmed_tb_contact=values(confirmed_tb_contact),
+    fever_for_2wks_or_more=values(fever_for_2wks_or_more),noticeable_weight_loss=values(noticeable_weight_loss),night_sweat_for_2wks_or_more=values(night_sweat_for_2wks_or_more),lethargy=values(lethargy),spatum_smear_ordered=values(spatum_smear_ordered),
+    chest_xray_ordered=values(chest_xray_ordered),genexpert_ordered=values(genexpert_ordered),spatum_smear_result=values(spatum_smear_result),
+    chest_xray_result=values(chest_xray_result),genexpert_result=values(genexpert_result),referral=values(referral),clinical_tb_diagnosis=values(clinical_tb_diagnosis),
+    resulting_tb_status=VALUES(resulting_tb_status), tb_treatment_start_date=VALUES(tb_treatment_start_date),contact_invitation=values(contact_invitation),evaluated_for_ipt=values(evaluated_for_ipt),started_anti_TB=values(started_anti_TB),
+    tb_prophylaxis=values(tb_prophylaxis), notes=values(notes);
 
 
     END ;;
@@ -24932,7 +23666,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_etl_treatment_verification`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_etl_treatment_verification`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing kp treatment verification form", CONCAT("Time: ", NOW());
     insert into kenyaemr_etl.etl_treatment_verification(
@@ -24992,7 +23726,7 @@ BEGIN
                                       when 162561 then "AZT/3TC/LPV/r"
                                       when 164511 then "AZT/3TC/ATV/r"
                                       when 162201 then "TDF/3TC/LPV/r"
-                                      when 164512 then "TDF/3TC/ATV/r"
+                                     when 164512 then "TDF/3TC/ATV/r"
                                       when 162560 then "D4T/3TC/LPV/r"
                                       when 162200 then "ABC/3TC/LPV/r"
                                       when 164971 then "TDF/3TC/AZT"
@@ -25089,7 +23823,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_hts_linkage_and_referral`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_hts_linkage_and_referral`(IN last_update_time DATETIME)
 BEGIN
 
     INSERT INTO kenyaemr_etl.etl_hts_referral_and_linkage (
@@ -25104,11 +23838,13 @@ BEGIN
       visit_date,
       tracing_type,
       tracing_status,
+      referral_facility,
       facility_linked_to,
       enrollment_date,
       art_start_date,
       ccc_number,
       provider_handed_to,
+      cadre,
       voided
     )
       select
@@ -25121,26 +23857,33 @@ BEGIN
         e.date_created,
         if(max(o.date_created)!=min(o.date_created),max(o.date_created),NULL) as date_last_modified,
         e.encounter_datetime as visit_date,
-        max(if(o.concept_id=164966,(case o.value_coded when 1650 then "Phone" when 164965 then "Physical" else null end),null)) as tracing_type ,
-        max(if(o.concept_id=159811,(case o.value_coded when 1065 then "Contacted and linked" when 1066 then "Contacted but not linked" else null end),null)) as tracing_status,
+        max(if(o.concept_id=164966,(case o.value_coded when 1650 then "Phone" when 164965 then "Physical" else "" end),null)) as tracing_type ,
+        max(if(o.concept_id=159811,(case o.value_coded when 1065 then "Contacted and linked" when 1066 then "Contacted but not linked" else "" end),null)) as tracing_status,
+        max(if(o.concept_id=160481,(case o.value_coded when 163266 then "This health facility" when 164407 then "Other health facility" else "" end),null)) as referral_facility,
         max(if(o.concept_id=162724,trim(o.value_text),null)) as facility_linked_to,
         max(if(o.concept_id=160555,o.value_datetime,null)) as enrollment_date,
         max(if(o.concept_id=159599,o.value_datetime,null)) as art_start_date,
         max(if(o.concept_id=162053,o.value_numeric,null)) as ccc_number,
         max(if(o.concept_id=1473,trim(o.value_text),null)) as provider_handed_to,
+        max(if(o.concept_id=162577,(case o.value_coded when 1577 then "Nurse"
+                                    when 1574 then "Clinical Officer/Doctor"
+                                    when 1555 then "Community Health Worker"
+                                    when 1540 then "Employee"
+                                    when 5488 then "Adherence counsellor"
+                                    when 5622 then "Other" else "" end),null)) as cadre,
         e.voided
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
-        inner join form f on f.form_id = e.form_id and f.uuid = "050a7f12-5c52-4cad-8834-863695af335d"
-        left outer join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 159811, 162724, 160555, 159599, 162053, 1473) and o.voided=0
+        inner join form f on f.form_id = e.form_id and f.uuid in ("050a7f12-5c52-4cad-8834-863695af335d","15ed03d2-c972-11e9-a32f-2a2ae2dbcce4")
+        left outer join obs o on o.encounter_id = e.encounter_id and o.concept_id in (164966, 159811, 162724, 160555, 159599, 162053, 1473,162577,160481) and o.voided=0
       where e.date_created >= last_update_time
             or e.date_changed >= last_update_time
             or e.date_voided >= last_update_time
             or o.date_created >= last_update_time
             or o.date_voided >= last_update_time
-      group by e.encounter_id
+      group by e.patient_id,e.visit_id
     ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),creator=VALUES(creator), tracing_type=VALUES(tracing_type), tracing_status=VALUES(tracing_status),
-      facility_linked_to=VALUES(facility_linked_to), ccc_number=VALUES(ccc_number), provider_handed_to=VALUES(provider_handed_to)
+      facility_linked_to=VALUES(facility_linked_to), ccc_number=VALUES(ccc_number), provider_handed_to=VALUES(provider_handed_to), cadre=VALUES(cadre)
     ;
     
     END ;;
@@ -25159,7 +23902,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_hts_referral`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_hts_referral`(IN last_update_time DATETIME)
 BEGIN
     SELECT "Processing hts referrals";
     INSERT INTO kenyaemr_etl.etl_hts_referral (
@@ -25221,7 +23964,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-CREATE DEFINER=`dwapi`@`%` PROCEDURE `sp_update_hts_test`(IN last_update_time DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_update_hts_test`(IN last_update_time DATETIME)
 BEGIN
 
 
@@ -25245,6 +23988,8 @@ BEGIN
       disability_type,
       patient_consented,
       client_tested_as,
+      setting,
+      approach,
       test_strategy,
       hts_entry_point,
       test_1_kit_name,
@@ -25258,6 +24003,9 @@ BEGIN
       final_test_result,
       patient_given_result,
       couple_discordant,
+      referral_for,
+      referral_facility,
+      other_referral_facility,
       tb_screening,
       patient_had_hiv_self_test ,
       remarks,
@@ -25279,19 +24027,27 @@ BEGIN
         max(if(o.concept_id=164401,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else null end),null)) as ever_tested_for_hiv,
         max(if(o.concept_id=159813,o.value_numeric,null)) as months_since_last_test,
         max(if(o.concept_id=164951,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else null end),null)) as patient_disabled,
-        max(if(o.concept_id=162558,(case o.value_coded when 120291 then "Deaf" when 147215 then "Blind" when 151342 then "Mentally Challenged" when 164538 then "Physically Challenged" when 5622 then "Other" else null end),null)) as disability_type,
+        concat_ws(',',nullif(max(if(o.concept_id=162558 and o.value_coded = 120291,"Hearing impairment",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded =147215,"Visual impairment",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded =151342,"Mentally Challenged",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded = 164538,"Physically Challenged",'')),''),
+                 nullif(max(if(o.concept_id=162558 and o.value_coded = 5622,"Other",'')),''),
+                 nullif(max(if(o.concept_id=160632,o.value_text,'')),'')) as disability_type,
         max(if(o.concept_id=1710,(case o.value_coded when 1 then "Yes" when 0 then "No" else null end),null)) as patient_consented,
         max(if(o.concept_id=164959,(case o.value_coded when 164957 then "Individual" when 164958 then "Couple" else null end),null)) as client_tested_as,
+        max(if(o.concept_id=165215,(case o.value_coded when 1537 then "Facility" when 163488 then "Community" else "" end ),null)) as setting,
+        max(if(o.concept_id=163556,(case o.value_coded when 164163 then "Provider Initiated Testing(PITC)" when 164953 then "Client Initiated Testing (CITC)" else "" end ),null)) as approach,
         max(if(o.concept_id=164956,(
           case o.value_coded
-          when 164163 then "Provider Initiated Testing(PITC)"
-          when 164953 then "Non Provider Initiated Testing"
-          when 164954 then "Integrated VCT Center"
+          when 164163 then "HP:Provider Initiated Testing(PITC)"
+          when 164953 then "NP: HTS for non-patients"
+          when 164954 then "VI:Integrated VCT Center"
           when 164955 then "Stand Alone VCT Center"
           when 159938 then "Home Based Testing"
-          when 159939 then "Mobile Outreach HTS"
+          when 159939 then "MO: Mobile Outreach HTS"
+          when 161557 then "Index testing"
           when 5622 then "Other"
-          else null
+          else ""
           end ),null)) as test_strategy,
         max(if(o.concept_id=160540,(
           case o.value_coded
@@ -25299,12 +24055,18 @@ BEGIN
           when 160542 then "Out Patient Department(OPD)"
           when 162181 then "Peadiatric Clinic"
           when 160552 then "Nutrition Clinic"
-          when 160538 then "PMTCT"
+          when 160538 then "PMTCT ANC"
+          when 160456 then "PMTCT MAT"
+          when 1623 then "PMTCT PNC"
           when 160541 then "TB"
           when 162050 then "CCC"
           when 159940 then "VCT"
           when 159938 then "Home Based Testing"
           when 159939 then "Mobile Outreach"
+          when 162223 then "VMMC"
+          when 160546 then "STI Clinic"
+          when 160522 then "Emergency"
+          when 163096 then "Community Testing"
           when 5622 then "Other"
           else ""
           end ),null)) as hts_entry_point,
@@ -25316,9 +24078,12 @@ BEGIN
         max(if(t.test_2_result is not null, t.lot_no, null)) as test_2_kit_lot_no,
         max(if(t.test_2_result is not null, t.expiry_date, null)) as test_2_kit_expiry,
         max(if(t.test_2_result is not null, t.test_2_result, null)) as test_2_result,
-        max(if(o.concept_id=159427,(case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1138 then "Inconclusive" else null end),null)) as final_test_result,
+        max(if(o.concept_id=159427,(case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1138 then "Inconclusive" when 163611 then "Invalid" else null end),null)) as final_test_result,
         max(if(o.concept_id=164848,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else null end),null)) as patient_given_result,
         max(if(o.concept_id=6096,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else null end),null)) as couple_discordant,
+        max(if(o.concept_id=1887,(case o.value_coded when 162082 then "Confirmatory test" when 162050 then "Comprehensive care center" when 164461 then "DBS for PCR" else "" end),null)) as referral_for,
+        max(if(o.concept_id=160481,(case o.value_coded when 163266 then "This health facility" when 164407 then "Other health facility" else "" end),null)) as referral_facility,
+        max(if(o.concept_id=161550,trim(o.value_text),null)) as other_referral_facility,
         max(if(o.concept_id=1659,(case o.value_coded when 1660 then "No TB signs" when 142177 then "Presumed TB" when 1662 then "TB Confirmed" when 160737 then "Not done" when 1111 then "On TB Treatment"  else null end),null)) as tb_screening,
         max(if(o.concept_id=164952,(case o.value_coded when 1065 then "Yes" when 1066 then "No" else null end),null)) as patient_had_hiv_self_test,
         max(if(o.concept_id=163042,trim(o.value_text),null)) as remarks,
@@ -25326,8 +24091,8 @@ BEGIN
       from encounter e
         inner join person p on p.person_id=e.patient_id and p.voided=0
         inner join form f on f.form_id=e.form_id and f.uuid in ("402dc5d7-46da-42d4-b2be-f43ea4ad87b0","b08471f6-0892-4bf7-ab2b-bf79797b8ea4")
-        inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 and o.concept_id in (162084, 164930, 160581, 164401, 164951, 162558, 1710, 164959, 164956,
-                                                                                                        159427, 164848, 6096, 1659, 164952, 163042, 159813)
+        inner join obs o on o.encounter_id = e.encounter_id and o.voided=0 and o.concept_id in (162084, 164930, 160581, 164401, 164951, 162558,160632, 1710, 164959, 164956,
+                                                                                                        159427, 164848, 6096, 1659, 164952, 163042, 159813,165215,163556,161550,1887,160481)
         inner join (
                      select
                        o.person_id,
@@ -25335,7 +24100,7 @@ BEGIN
                        o.obs_group_id,
                        max(if(o.concept_id=1040, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 163611 then "Invalid"  else null end),null)) as test_1_result ,
                        max(if(o.concept_id=1326, (case o.value_coded when 703 then "Positive" when 664 then "Negative" when 1175 then "N/A"  else null end),null)) as test_2_result ,
-                       max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" else null end),null)) as kit_name ,
+                       max(if(o.concept_id=164962, (case o.value_coded when 164960 then "Determine" when 164961 then "First Response" when 165351 then "Dual Kit" else null end),null)) as kit_name ,
                        max(if(o.concept_id=164964,trim(o.value_text),null)) as lot_no,
                        max(if(o.concept_id=162502,date(o.value_datetime),null)) as expiry_date
                      from obs o inner join encounter e on e.encounter_id = o.encounter_id
@@ -25356,7 +24121,8 @@ BEGIN
     ON DUPLICATE KEY UPDATE visit_date=VALUES(visit_date),creator=VALUES(creator), test_type=VALUES(test_type), population_type=VALUES(population_type),
       key_population_type=VALUES(key_population_type), ever_tested_for_hiv=VALUES(ever_tested_for_hiv), patient_disabled=VALUES(patient_disabled),
       disability_type=VALUES(disability_type), patient_consented=VALUES(patient_consented), client_tested_as=VALUES(client_tested_as),
-      test_strategy=VALUES(test_strategy),hts_entry_point=VALUES(hts_entry_point), test_1_kit_name=VALUES(test_1_kit_name), test_1_kit_lot_no=VALUES(test_1_kit_lot_no),
+      test_strategy=VALUES(test_strategy),hts_entry_point=VALUES(hts_entry_point),setting=VALUES(setting),approach=VALUES(approach),
+      test_1_kit_name=VALUES(test_1_kit_name), test_1_kit_lot_no=VALUES(test_1_kit_lot_no),
       test_1_kit_expiry=VALUES(test_1_kit_expiry), test_1_result=VALUES(test_1_result), test_2_kit_name=VALUES(test_2_kit_name),
       test_2_kit_lot_no=VALUES(test_2_kit_lot_no), test_2_kit_expiry=VALUES(test_2_kit_expiry), test_2_result=VALUES(test_2_result),
       final_test_result=VALUES(final_test_result), patient_given_result=VALUES(patient_given_result), couple_discordant=VALUES(couple_discordant),
@@ -25370,45 +24136,12 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `update_char_set` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_char_set`()
-BEGIN
-DECLARE done INT DEFAULT 0;
-DECLARE t_sql VARCHAR(256);
-DECLARE tableName VARCHAR(128);
-DECLARE lists CURSOR FOR SELECT table_name FROM `information_schema`.`TABLES` WHERE table_schema = 'openmrs';
-DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
-OPEN lists;
-FETCH lists INTO tableName;
-REPEAT
-SET @t_sql = CONCAT('ALTER TABLE ', tableName, ' CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
-PREPARE stmt FROM @t_sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-FETCH lists INTO tableName;
-UNTIL done END REPEAT;
-CLOSE lists;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Current Database: `kenyaemr_datatools`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `kenyaemr_datatools` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `kenyaemr_datatools` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 
 USE `kenyaemr_datatools`;
 
@@ -25420,7 +24153,7 @@ DROP TABLE IF EXISTS `adverse_events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `adverse_events` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -25451,7 +24184,7 @@ DROP TABLE IF EXISTS `alcohol_drug_abuse_screening`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `alcohol_drug_abuse_screening` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -25477,7 +24210,7 @@ DROP TABLE IF EXISTS `allergy_chronic_illness`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `allergy_chronic_illness` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -25508,26 +24241,26 @@ DROP TABLE IF EXISTS `art_preparation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `art_preparation` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `provider` int(11) DEFAULT NULL,
-  `understands_hiv_art_benefits` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `screened_negative_substance_abuse` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `screened_negative_psychiatric_illness` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `HIV_status_disclosure` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `trained_drug_admin` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_committed` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherance_barriers_identified` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_location_contacts_known` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ready_to_start_art` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `identified_drug_time` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_supporter_engaged` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `support_grp_meeting_awareness` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `enrolled_in_reminder_system` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `understands_hiv_art_benefits` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `screened_negative_substance_abuse` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `screened_negative_psychiatric_illness` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `HIV_status_disclosure` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `trained_drug_admin` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `caregiver_committed` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `adherance_barriers_identified` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `caregiver_location_contacts_known` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `ready_to_start_art` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `identified_drug_time` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `treatment_supporter_engaged` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `support_grp_meeting_awareness` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `enrolled_in_reminder_system` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   KEY `ready_to_start_art` (`ready_to_start_art`),
@@ -25544,16 +24277,16 @@ DROP TABLE IF EXISTS `client_trace`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `client_trace` (
   `id` int(11) DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `encounter_date` datetime DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
-  `contact_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unique_patient_no` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `facility_linked_to` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `health_worker_handed_to` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_type` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `status` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `unique_patient_no` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `facility_linked_to` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `health_worker_handed_to` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `remarks` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `appointment_date` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   KEY `client_id` (`client_id`),
@@ -25570,34 +24303,34 @@ DROP TABLE IF EXISTS `covid_19_assessment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `covid_19_assessment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `obs_id` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `obs_id` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `ever_vaccinated` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `first_vaccine_type` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
   `second_vaccine_type` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
-  `first_dose` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `second_dose` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `first_dose_date` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `second_dose_date` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `first_dose` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `second_dose` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `first_dose_date` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `second_dose_date` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `first_vaccination_verified` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `second_vaccination_verified` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `final_vaccination_status` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `ever_received_booster` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `booster_vaccine_taken` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
-  `date_taken_booster_vaccine` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `booster_sequence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date_taken_booster_vaccine` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `booster_sequence` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `booster_dose_verified` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `ever_tested_covid_19_positive` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `symptomatic` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `date_tested_positive` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `date_tested_positive` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `hospital_admission` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `admission_unit` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `admission_unit` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `on_ventillator` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `on_oxygen_supplement` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `date_created` datetime NOT NULL,
@@ -25620,16 +24353,16 @@ CREATE TABLE `current_in_care` (
   `visit_date` date DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `dob` date DEFAULT NULL,
-  `Gender` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Gender` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `enroll_date` date DEFAULT NULL,
   `latest_enrolment_date` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `latest_vis_date` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
   `latest_tca` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `stability` varchar(53) CHARACTER SET utf8 DEFAULT NULL,
-  `disc_patient` int(11) DEFAULT NULL,
+  `disc_patient` int(11),
   `effective_disc_date` date DEFAULT NULL,
   `date_discontinued` datetime DEFAULT NULL,
-  `started_on_drugs` int(11) DEFAULT NULL,
+  `started_on_drugs` int(11),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `current_in_care_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -25657,7 +24390,7 @@ DROP TABLE IF EXISTS `depression_screening`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `depression_screening` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -25681,22 +24414,22 @@ DROP TABLE IF EXISTS `drug_event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `drug_event` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `patient_id` int(11) NOT NULL,
   `date_started` date DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `program` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `regimen` mediumtext COLLATE utf8_unicode_ci,
-  `regimen_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `regimen_line` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `program` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `regimen` mediumtext CHARACTER SET utf8,
+  `regimen_name` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `regimen_line` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `discontinued` int(11) DEFAULT NULL,
   `regimen_stopped` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `regimen_discontinued` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `regimen_discontinued` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `date_discontinued` date DEFAULT NULL,
   `reason_discontinued` varchar(40) CHARACTER SET utf8 DEFAULT NULL,
-  `reason_discontinued_other` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `reason_discontinued_other` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `drug_event_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -25710,7 +24443,7 @@ DROP TABLE IF EXISTS `enhanced_adherence`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `enhanced_adherence` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -25720,36 +24453,36 @@ CREATE TABLE `enhanced_adherence` (
   `session_number` int(11) DEFAULT NULL,
   `first_session_date` date DEFAULT NULL,
   `pill_count` int(11) DEFAULT NULL,
-  `arv_adherence` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `has_vl_results` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_results_suppressed` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_results_feeling` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cause_of_high_vl` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `way_forward` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_hiv_knowledge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_uptake` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_reminder_tools` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_uptake_during_travels` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_side_effects_response` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_uptake_most_difficult_times` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_daily_uptake_feeling` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_ambitions` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_has_people_to_talk` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_enlisting_social_support` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_income_sources` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_challenges_reaching_clinic` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_worried_of_accidental_disclosure` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_treated_differently` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `stigma_hinders_adherence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_tried_faith_healing` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_adherence_improved` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_doses_missed` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `review_and_barriers_to_adherence` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_referrals` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `appointments_honoured` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_experience` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `home_visit_benefit` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence_plan` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `arv_adherence` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `has_vl_results` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `vl_results_suppressed` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `vl_results_feeling` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `cause_of_high_vl` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `way_forward` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_hiv_knowledge` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_drugs_uptake` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_drugs_reminder_tools` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_drugs_uptake_during_travels` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_drugs_side_effects_response` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_drugs_uptake_most_difficult_times` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_drugs_daily_uptake_feeling` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_ambitions` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_has_people_to_talk` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_enlisting_social_support` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_income_sources` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_challenges_reaching_clinic` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_worried_of_accidental_disclosure` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_treated_differently` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `stigma_hinders_adherence` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_tried_faith_healing` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_adherence_improved` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_doses_missed` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `review_and_barriers_to_adherence` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `other_referrals` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `appointments_honoured` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `referral_experience` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `home_visit_benefit` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
+  `adherence_plan` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
@@ -25766,7 +24499,7 @@ DROP TABLE IF EXISTS `gbv_screening`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `gbv_screening` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -25795,7 +24528,7 @@ DROP TABLE IF EXISTS `gbv_screening_action`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `gbv_screening_action` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -25814,52 +24547,6 @@ CREATE TABLE `gbv_screening_action` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `gender_based_violence`
---
-
-DROP TABLE IF EXISTS `gender_based_violence`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `gender_based_violence` (
-  `uuid` char(38) DEFAULT NULL,
-  `provider` int(11) DEFAULT NULL,
-  `client_id` int(11) NOT NULL,
-  `visit_id` int(11) DEFAULT NULL,
-  `visit_date` date DEFAULT NULL,
-  `location_id` int(11) DEFAULT NULL,
-  `encounter_id` int(11) NOT NULL,
-  `is_physically_abused` varchar(10) DEFAULT NULL,
-  `physical_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `other_physical_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `in_physically_abusive_relationship` varchar(10) DEFAULT NULL,
-  `in_physically_abusive_relationship_with` varchar(100) DEFAULT NULL,
-  `other_physically_abusive_relationship_perpetrator` varchar(100) DEFAULT NULL,
-  `in_emotionally_abusive_relationship` varchar(10) DEFAULT NULL,
-  `emotional_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `other_emotional_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `in_sexually_abusive_relationship` varchar(10) DEFAULT NULL,
-  `sexual_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `other_sexual_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `ever_abused_by_unrelated_person` varchar(10) DEFAULT NULL,
-  `unrelated_perpetrator` varchar(100) DEFAULT NULL,
-  `other_unrelated_perpetrator` varchar(100) DEFAULT NULL,
-  `sought_help` varchar(10) DEFAULT NULL,
-  `help_provider` varchar(100) DEFAULT NULL,
-  `date_helped` date DEFAULT NULL,
-  `help_outcome` varchar(100) DEFAULT NULL,
-  `other_outcome` varchar(100) DEFAULT NULL,
-  `reason_for_not_reporting` varchar(100) DEFAULT NULL,
-  `other_reason_for_not_reporting` varchar(100) DEFAULT NULL,
-  `date_created` datetime NOT NULL,
-  `date_last_modified` datetime DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL,
-  KEY `client_id` (`client_id`),
-  KEY `visit_date` (`visit_date`),
-  CONSTRAINT `gender_based_violence_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `hei_enrollment`
 --
 
@@ -25869,27 +24556,27 @@ DROP TABLE IF EXISTS `hei_enrollment`;
 CREATE TABLE `hei_enrollment` (
   `serial_no` int(11) NOT NULL DEFAULT '0',
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `child_exposed` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
-  `spd_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `spd_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `birth_weight` double DEFAULT NULL,
   `gestation_at_birth` double DEFAULT NULL,
   `birth_type` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
   `date_first_seen` date DEFAULT NULL,
-  `birth_notification_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `birth_certificate_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birth_notification_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `birth_certificate_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `need_for_special_care` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `reason_for_special_care` varchar(40) CHARACTER SET utf8 DEFAULT NULL,
   `referral_source` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `transfer_in` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `transfer_in_date` date DEFAULT NULL,
-  `facility_transferred_from` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_transferred_from` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_transferred_from` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `district_transferred_from` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `date_first_enrolled_in_hei_care` date DEFAULT NULL,
   `mother_breastfeeding` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `TB_contact_history_in_household` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
@@ -25899,20 +24586,20 @@ CREATE TABLE `hei_enrollment` (
   `mother_on_art_at_infant_enrollment` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `mother_drug_regimen` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
   `infant_prophylaxis` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
-  `parent_ccc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `parent_ccc_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `mode_of_delivery` varchar(9) CHARACTER SET utf8 DEFAULT NULL,
   `place_of_delivery` varchar(8) CHARACTER SET utf8 DEFAULT NULL,
   `birth_length` int(11) DEFAULT NULL,
   `birth_order` int(11) DEFAULT NULL,
-  `health_facility_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `health_facility_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `date_of_birth_notification` date DEFAULT NULL,
   `date_of_birth_registration` date DEFAULT NULL,
-  `birth_registration_place` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `permanent_registration_serial` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mother_facility_registered` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birth_registration_place` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `permanent_registration_serial` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `mother_facility_registered` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `exit_date` date DEFAULT NULL,
   `exit_reason` varchar(29) CHARACTER SET utf8 DEFAULT NULL,
-  `hiv_status_at_exit` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hiv_status_at_exit` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   CONSTRAINT `hei_enrollment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
@@ -25928,7 +24615,7 @@ DROP TABLE IF EXISTS `hei_follow_up_visit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hei_follow_up_visit` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -25966,14 +24653,14 @@ CREATE TABLE `hei_follow_up_visit` (
   `squint` varchar(9) CHARACTER SET utf8 DEFAULT NULL,
   `deworming_drug` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
   `dosage` int(11) DEFAULT NULL,
-  `unit` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `unit` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `vitaminA_given` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `disability` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `referred_from` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `referred_to` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `counselled_on` varchar(9) CHARACTER SET utf8 DEFAULT NULL,
   `MNPS_Supplementation` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `comments` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comments` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
@@ -25995,29 +24682,29 @@ CREATE TABLE `hei_immunization` (
   `created_by` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `encounter_id` int(11) NOT NULL,
-  `BCG` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_birth` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `IPV` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `DPT_Hep_B_Hib_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `DPT_Hep_B_Hib_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `DPT_Hep_B_Hib_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PCV_10_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PCV_10_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PCV_10_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ROTA_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ROTA_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Measles_rubella_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Measles_rubella_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Yellow_fever` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Measles_6_months` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_6_months` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_1_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_1_and_half_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_2_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_2_to_5_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `BCG` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `OPV_birth` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `OPV_1` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `OPV_2` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `OPV_3` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `IPV` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `DPT_Hep_B_Hib_1` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `DPT_Hep_B_Hib_2` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `DPT_Hep_B_Hib_3` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `PCV_10_1` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `PCV_10_2` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `PCV_10_3` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `ROTA_1` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `ROTA_2` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `Measles_rubella_1` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `Measles_rubella_2` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `Yellow_fever` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `Measles_6_months` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `VitaminA_6_months` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `VitaminA_1_yr` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `VitaminA_1_and_half_yr` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `VitaminA_2_yr` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `VitaminA_2_to_5_yr` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `fully_immunized` date DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `hei_immunization_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
@@ -26033,7 +24720,7 @@ DROP TABLE IF EXISTS `hiv_enrollment`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `hiv_enrollment` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -26045,17 +24732,17 @@ CREATE TABLE `hiv_enrollment` (
   `date_first_enrolled_in_care` date DEFAULT NULL,
   `entry_point` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
   `transfer_in_date` date DEFAULT NULL,
-  `facility_transferred_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_transferred_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_transferred_from` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `district_transferred_from` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `previous_regimen` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
   `date_started_art_at_transferring_facility` date DEFAULT NULL,
   `date_confirmed_hiv_positive` date DEFAULT NULL,
-  `facility_confirmed_hiv_positive` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_confirmed_hiv_positive` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `arv_status` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `name_of_treatment_supporter` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name_of_treatment_supporter` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `relationship_of_treatment_supporter` varchar(11) CHARACTER SET utf8 DEFAULT NULL,
-  `treatment_supporter_telephone` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_supporter_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `treatment_supporter_telephone` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `treatment_supporter_address` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `in_school` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `orphan` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `date_of_discontinuation` datetime DEFAULT NULL,
@@ -26101,7 +24788,7 @@ CREATE TABLE `hiv_followup` (
   `key_population_type` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
   `who_stage` varchar(10) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `presenting_complaints` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `clinical_notes` varchar(600) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(600) CHARACTER SET utf8 DEFAULT NULL,
   `on_anti_tb_drugs` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `on_ipt` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `ever_on_ipt` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
@@ -26111,7 +24798,7 @@ CREATE TABLE `hiv_followup` (
   `night_sweats` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `tb_case_contact` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `lethargy` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `screened_for_tb` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `screened_for_tb` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `spatum_smear_ordered` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `chest_xray_ordered` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `genexpert_ordered` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
@@ -26128,7 +24815,7 @@ CREATE TABLE `hiv_followup` (
   `pregnancy_status` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `wants_pregnancy` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `pregnancy_outcome` varchar(55) CHARACTER SET utf8 DEFAULT NULL,
-  `anc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `anc_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `expected_delivery_date` date DEFAULT NULL,
   `ever_had_menses` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `last_menstrual_period` date DEFAULT NULL,
@@ -26141,8 +24828,8 @@ CREATE TABLE `hiv_followup` (
   `family_planning_method` varchar(29) CHARACTER SET utf8 DEFAULT NULL,
   `reason_not_using_family_planning` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
   `tb_status` varchar(21) CHARACTER SET utf8 DEFAULT NULL,
-  `tb_treatment_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `general_examination` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tb_treatment_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `general_examination` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `system_examination` varchar(8) CHARACTER SET utf8 DEFAULT NULL,
   `skin_findings` varchar(21) CHARACTER SET utf8 DEFAULT NULL,
   `eyes_findings` varchar(18) CHARACTER SET utf8 DEFAULT NULL,
@@ -26160,7 +24847,7 @@ CREATE TABLE `hiv_followup` (
   `inh_dispensed` varchar(14) CHARACTER SET utf8 DEFAULT NULL,
   `arv_adherence` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `poor_arv_adherence_reason` varchar(66) CHARACTER SET utf8 DEFAULT NULL,
-  `poor_arv_adherence_reason_other` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `poor_arv_adherence_reason_other` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   `pwp_disclosure` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `pwp_partner_tested` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `condom_provided` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
@@ -26200,15 +24887,15 @@ CREATE TABLE `hts_referral` (
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `encounter_uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `encounter_uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `encounter_location` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
-  `facility_referred_to` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_referred_to` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `date_to_enrol` date DEFAULT NULL,
-  `remarks` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remarks` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -26224,21 +24911,21 @@ CREATE TABLE `hts_referral_and_linkage` (
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `encounter_uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `encounter_uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `encounter_location` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
-  `tracing_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tracing_status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ccc_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_facility` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `facility_linked_to` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tracing_type` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `tracing_status` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `ccc_number` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `referral_facility` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `facility_linked_to` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `enrollment_date` date DEFAULT NULL,
   `art_start_date` date DEFAULT NULL,
-  `provider_handed_to` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cadre` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `provider_handed_to` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `cadre` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
@@ -26257,42 +24944,42 @@ CREATE TABLE `hts_test` (
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `encounter_uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `encounter_uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `encounter_location` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `test_type` int(11) DEFAULT NULL,
-  `population_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `key_population_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ever_tested_for_hiv` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `population_type` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `key_population_type` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `ever_tested_for_hiv` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `months_since_last_test` int(11) DEFAULT NULL,
-  `patient_disabled` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `disability_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_consented` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `client_tested_as` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `setting` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `approach` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_strategy` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hts_entry_point` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `patient_disabled` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `disability_type` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_consented` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `client_tested_as` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `setting` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `approach` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `test_strategy` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `hts_entry_point` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `test_1_kit_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `test_1_kit_lot_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `test_1_kit_expiry` date DEFAULT NULL,
-  `test_1_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `test_2_kit_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `test_2_kit_lot_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `test_2_kit_expiry` date DEFAULT NULL,
-  `test_2_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `couple_discordant` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_for` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_facility` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_referral_facility` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_screening` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_had_hiv_self_test` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_2_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `final_test_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_given_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `couple_discordant` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `referral_for` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `referral_facility` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `other_referral_facility` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `tb_screening` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_had_hiv_self_test` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `remarks` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
@@ -26310,7 +24997,7 @@ DROP TABLE IF EXISTS `ipt_followup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ipt_followup` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -26322,11 +25009,11 @@ CREATE TABLE `ipt_followup` (
   `ipt_due_date` date DEFAULT NULL,
   `date_collected_ipt` date DEFAULT NULL,
   `weight` double DEFAULT NULL,
-  `hepatotoxity` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `peripheral_neuropathy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rash` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `action_taken` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hepatotoxity` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `peripheral_neuropathy` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `rash` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `adherence` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `action_taken` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `ipt_followup_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
@@ -26341,7 +25028,7 @@ DROP TABLE IF EXISTS `ipt_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `ipt_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -26376,16 +25063,16 @@ DROP TABLE IF EXISTS `laboratory_extract`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `laboratory_extract` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `encounter_id` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `lab_test` varchar(25) CHARACTER SET utf8 DEFAULT NULL,
-  `urgency` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `urgency` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `order_reason` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
-  `test_result` varchar(180) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_result` varchar(180) CHARACTER SET utf8 DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `created_by` int(11) DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
@@ -26405,7 +25092,7 @@ DROP TABLE IF EXISTS `mch_antenatal_visit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mch_antenatal_visit` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -26436,20 +25123,20 @@ CREATE TABLE `mch_antenatal_visit` (
   `viral_load` int(11) DEFAULT NULL,
   `ldl` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `arv_status` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `final_test_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_given_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_tested` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_status` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `prophylaxis_given` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
   `date_given_haart` date DEFAULT NULL,
   `baby_azt_dispensed` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `baby_nvp_dispensed` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
-  `TTT` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `IPT_malaria` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `iron_supplement` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `deworming` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `bed_nets` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `urine_microscopy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `TTT` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `IPT_malaria` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `iron_supplement` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `deworming` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `bed_nets` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `urine_microscopy` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `urinary_albumin` varchar(22) CHARACTER SET utf8 DEFAULT NULL,
   `glucose_measurement` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
   `urine_ph` int(11) DEFAULT NULL,
@@ -26482,7 +25169,7 @@ CREATE TABLE `mch_antenatal_visit` (
   `referred_from` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `referred_to` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   CONSTRAINT `mch_antenatal_visit_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
@@ -26498,14 +25185,14 @@ DROP TABLE IF EXISTS `mch_delivery`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mch_delivery` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
-  `admission_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `admission_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `duration_of_pregnancy` double DEFAULT NULL,
   `mode_of_delivery` varchar(36) CHARACTER SET utf8 DEFAULT NULL,
   `date_of_delivery` datetime DEFAULT NULL,
@@ -26517,7 +25204,7 @@ CREATE TABLE `mch_delivery` (
   `apgar_score_10min` double DEFAULT NULL,
   `resuscitation_done` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `place_of_delivery` varchar(27) CHARACTER SET utf8 DEFAULT NULL,
-  `delivery_assistant` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `delivery_assistant` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `counseling_on_infant_feeding` varchar(41) CHARACTER SET utf8 DEFAULT NULL,
   `counseling_on_exclusive_breastfeeding` varchar(38) CHARACTER SET utf8 DEFAULT NULL,
   `counseling_on_infant_feeding_for_hiv_infected` varchar(54) CHARACTER SET utf8 DEFAULT NULL,
@@ -26527,7 +25214,7 @@ CREATE TABLE `mch_delivery` (
   `cadre` varchar(29) CHARACTER SET utf8 DEFAULT NULL,
   `delivery_complications` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `coded_delivery_complications` varchar(16) CHARACTER SET utf8 DEFAULT NULL,
-  `other_delivery_complications` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_delivery_complications` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `duration_of_labor` int(11) DEFAULT NULL,
   `baby_sex` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
   `baby_condition` varchar(54) CHARACTER SET utf8 DEFAULT NULL,
@@ -26535,14 +25222,14 @@ CREATE TABLE `mch_delivery` (
   `birth_weight` int(11) DEFAULT NULL,
   `bf_within_one_hour` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `birth_with_deformity` varchar(14) CHARACTER SET utf8 DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `final_test_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_given_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_tested` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_status` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `prophylaxis_given` varchar(31) CHARACTER SET utf8 DEFAULT NULL,
   `baby_azt_dispensed` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `baby_nvp_dispensed` varchar(14) CHARACTER SET utf8 DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   CONSTRAINT `mch_delivery_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
@@ -26558,7 +25245,7 @@ DROP TABLE IF EXISTS `mch_discharge`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mch_discharge` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -26569,11 +25256,11 @@ CREATE TABLE `mch_discharge` (
   `baby_status` varchar(5) CHARACTER SET utf8 DEFAULT NULL,
   `vitamin_A_dispensed` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `birth_notification_number` int(50) DEFAULT NULL,
-  `condition_of_mother` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `condition_of_mother` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `discharge_date` date DEFAULT NULL,
   `referred_from` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `referred_to` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   CONSTRAINT `mch_discharge_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
@@ -26589,13 +25276,13 @@ DROP TABLE IF EXISTS `mch_enrollment`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mch_enrollment` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `service_type` varchar(8) CHARACTER SET utf8 DEFAULT NULL,
-  `anc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `anc_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `first_anc_visit_date` date DEFAULT NULL,
   `gravida` int(11) DEFAULT NULL,
   `parity` int(11) DEFAULT NULL,
@@ -26612,7 +25299,7 @@ CREATE TABLE `mch_enrollment` (
   `hiv_test_date` date DEFAULT NULL,
   `partner_hiv_status` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_test_date` date DEFAULT NULL,
-  `urine_microscopy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `urine_microscopy` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `urinary_albumin` varchar(22) CHARACTER SET utf8 DEFAULT NULL,
   `glucose_measurement` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
   `urine_ph` int(11) DEFAULT NULL,
@@ -26641,13 +25328,13 @@ DROP TABLE IF EXISTS `mch_postnatal_visit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mch_postnatal_visit` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `provider` int(11) DEFAULT NULL,
-  `pnc_register_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pnc_register_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `pnc_visit_no` int(11) DEFAULT NULL,
   `delivery_date` date DEFAULT NULL,
   `mode_of_delivery` varchar(9) CHARACTER SET utf8 DEFAULT NULL,
@@ -26679,15 +25366,15 @@ CREATE TABLE `mch_postnatal_visit` (
   `umblical_cord` varchar(34) CHARACTER SET utf8 DEFAULT NULL,
   `baby_immunization_started` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `family_planning_counseling` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
-  `uterus_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `uterus_cervix_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vaginal_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `parametrial_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `external_genitalia_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ovarian_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `pelvic_lymph_node_exam` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uterus_examination` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `uterus_cervix_examination` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `vaginal_examination` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `parametrial_examination` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `external_genitalia_examination` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `ovarian_examination` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `pelvic_lymph_node_exam` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `final_test_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_given_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_tested` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `partner_hiv_status` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `prophylaxis_given` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
@@ -26703,7 +25390,7 @@ CREATE TABLE `mch_postnatal_visit` (
   `family_planning_method` varchar(29) CHARACTER SET utf8 DEFAULT NULL,
   `referred_from` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `referred_to` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   `appointment_date` date DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
@@ -26720,25 +25407,25 @@ DROP TABLE IF EXISTS `patient_contact`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patient_contact` (
   `id` int(11) NOT NULL DEFAULT '0',
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `date_created` date DEFAULT NULL,
-  `first_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `middle_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sex` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `first_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `middle_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `last_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `sex` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `birth_date` datetime DEFAULT NULL,
-  `physical_address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `phone_contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `physical_address` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `phone_contact` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `patient_related_to` int(11) DEFAULT NULL,
   `patient_id` int(11) DEFAULT NULL,
   `relationship_type` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `appointment_date` datetime DEFAULT NULL,
-  `baseline_hiv_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ipv_outcome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `baseline_hiv_status` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `ipv_outcome` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `marital_status` varchar(18) CHARACTER SET utf8 DEFAULT NULL,
   `living_with_patient` varchar(18) CHARACTER SET utf8 DEFAULT NULL,
   `pns_approach` varchar(17) CHARACTER SET utf8 DEFAULT NULL,
-  `contact_listing_decline_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_listing_decline_reason` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `consented_contact_listing` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -26757,29 +25444,29 @@ DROP TABLE IF EXISTS `patient_demographics`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patient_demographics` (
   `patient_id` int(11) NOT NULL,
-  `given_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `middle_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `family_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Gender` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `given_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `middle_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `family_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `Gender` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `DOB` date DEFAULT NULL,
-  `national_id_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unique_patient_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_clinic_number` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Tb_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `CPIMS_unique_identifier` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `openmrs_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_reg_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hei_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cwc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `phone_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `birth_place` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `citizenship` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `email_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `occupation` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `next_of_kin` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `next_of_kin_relationship` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `marital_status` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `education_level` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `national_id_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `unique_patient_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `patient_clinic_number` varchar(15) CHARACTER SET utf8 DEFAULT NULL,
+  `Tb_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `CPIMS_unique_identifier` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `openmrs_id` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `district_reg_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `hei_no` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `cwc_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `phone_number` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `birth_place` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `citizenship` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `email_address` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `occupation` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `next_of_kin` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `next_of_kin_relationship` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `marital_status` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `education_level` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `dead` varchar(3) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `death_date` date DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -26797,20 +25484,20 @@ DROP TABLE IF EXISTS `patient_program_discontinuation`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `patient_program_discontinuation` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` datetime DEFAULT NULL,
-  `program_uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `program_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `program_uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
+  `program_name` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `discontinuation_reason` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `date_died` date DEFAULT NULL,
-  `transfer_facility` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `transfer_facility` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `transfer_date` date DEFAULT NULL,
   `death_reason` varchar(76) CHARACTER SET utf8 DEFAULT NULL,
   `specific_death_cause` varchar(182) CHARACTER SET utf8 DEFAULT NULL,
-  `natural_causes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `non_natural_cause` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `natural_causes` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
+  `non_natural_cause` varchar(200) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   KEY `discontinuation_reason` (`discontinuation_reason`),
@@ -26826,16 +25513,16 @@ DROP TABLE IF EXISTS `person_address`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `person_address` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) CHARACTER SET utf8 NOT NULL DEFAULT '',
   `patient_id` int(11) NOT NULL,
-  `county` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sub_county` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `location` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ward` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sub_location` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `village` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `postal_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `land_mark` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `county` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `sub_county` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `location` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `ward` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `sub_location` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `village` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `postal_address` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `land_mark` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -26849,23 +25536,23 @@ DROP TABLE IF EXISTS `pharmacy_extract`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pharmacy_extract` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
-  `encounter_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `encounter_name` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `drug` int(11) DEFAULT NULL,
-  `drug_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `drug_name` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `is_arv` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   `is_ctx` varchar(37) CHARACTER SET utf8 DEFAULT NULL,
   `is_dapsone` varchar(7) CHARACTER SET utf8 DEFAULT NULL,
   `frequency` int(11) DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
-  `duration_units` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `duration_units` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   `date_voided` date DEFAULT NULL,
-  `dispensing_provider` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dispensing_provider` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `pharmacy_extract_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient_demographics` (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -26879,7 +25566,7 @@ DROP TABLE IF EXISTS `pre_hiv_enrollment_art`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pre_hiv_enrollment_art` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -26913,26 +25600,26 @@ DROP TABLE IF EXISTS `tb_enrollment`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tb_enrollment` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `date_treatment_started` date DEFAULT NULL,
-  `district` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `district` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `referred_by` varchar(28) CHARACTER SET utf8 DEFAULT NULL,
   `referral_date` date DEFAULT NULL,
   `date_transferred_in` date DEFAULT NULL,
-  `facility_transferred_from` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_transferred_from` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_transferred_from` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `district_transferred_from` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `date_first_enrolled_in_tb_care` date DEFAULT NULL,
   `weight` double DEFAULT NULL,
   `height` double DEFAULT NULL,
-  `treatment_supporter` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `treatment_supporter` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `relation_to_patient` varchar(17) CHARACTER SET utf8 DEFAULT NULL,
-  `treatment_supporter_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_supporter_phone_contact` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `treatment_supporter_address` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
+  `treatment_supporter_phone_contact` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `disease_classification` varchar(18) CHARACTER SET utf8 DEFAULT NULL,
   `patient_classification` varchar(34) CHARACTER SET utf8 DEFAULT NULL,
   `pulmonary_smear_result` varchar(14) CHARACTER SET utf8 DEFAULT NULL,
@@ -26957,7 +25644,7 @@ DROP TABLE IF EXISTS `tb_follow_up_visit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tb_follow_up_visit` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -26965,7 +25652,7 @@ CREATE TABLE `tb_follow_up_visit` (
   `encounter_id` int(11) NOT NULL,
   `spatum_test` varchar(23) CHARACTER SET utf8 DEFAULT NULL,
   `spatum_result` varchar(8) CHARACTER SET utf8 DEFAULT NULL,
-  `result_serial_number` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `result_serial_number` varchar(20) CHARACTER SET utf8 DEFAULT NULL,
   `quantity` double DEFAULT NULL,
   `date_test_done` date DEFAULT NULL,
   `bacterial_colonie_growth` varchar(9) CHARACTER SET utf8 DEFAULT NULL,
@@ -26997,7 +25684,7 @@ DROP TABLE IF EXISTS `tb_screening`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tb_screening` (
   `patient_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27022,7 +25709,7 @@ CREATE TABLE `tb_screening` (
   `resulting_tb_status` varchar(21) CHARACTER SET utf8 DEFAULT NULL,
   `tb_treatment_start_date` date DEFAULT NULL,
   `tb_prophylaxis` varchar(13) CHARACTER SET utf8 DEFAULT NULL,
-  `notes` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `notes` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `person_present` varchar(3) CHARACTER SET utf8 DEFAULT NULL,
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
@@ -27038,7 +25725,7 @@ DROP TABLE IF EXISTS `triage`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `triage` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) CHARACTER SET utf8 DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27046,7 +25733,7 @@ CREATE TABLE `triage` (
   `encounter_id` int(11) NOT NULL,
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
-  `visit_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `visit_reason` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `weight` double DEFAULT NULL,
   `height` double DEFAULT NULL,
   `systolic_pressure` double DEFAULT NULL,
@@ -27077,9 +25764,89 @@ CREATE TABLE `triage` (
 -- Current Database: `kenyaemr_etl`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `kenyaemr_etl` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `kenyaemr_etl` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 
 USE `kenyaemr_etl`;
+
+--
+-- Table structure for table `etl_ART_preparation`
+--
+
+DROP TABLE IF EXISTS `etl_ART_preparation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `etl_ART_preparation` (
+  `uuid` char(38) DEFAULT NULL,
+  `patient_id` int(11) NOT NULL,
+  `visit_id` int(11) DEFAULT NULL,
+  `visit_date` date DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
+  `encounter_id` int(11) NOT NULL,
+  `provider` int(11) DEFAULT NULL,
+  `understands_hiv_art_benefits` varchar(10) DEFAULT NULL,
+  `screened_negative_substance_abuse` varchar(10) DEFAULT NULL,
+  `screened_negative_psychiatric_illness` varchar(10) DEFAULT NULL,
+  `HIV_status_disclosure` varchar(10) DEFAULT NULL,
+  `trained_drug_admin` varchar(10) DEFAULT NULL,
+  `informed_drug_side_effects` varchar(10) DEFAULT NULL,
+  `caregiver_committed` varchar(10) DEFAULT NULL,
+  `adherance_barriers_identified` varchar(10) DEFAULT NULL,
+  `caregiver_location_contacts_known` varchar(10) DEFAULT NULL,
+  `ready_to_start_art` varchar(10) DEFAULT NULL,
+  `identified_drug_time` varchar(10) DEFAULT NULL,
+  `treatment_supporter_engaged` varchar(10) DEFAULT NULL,
+  `support_grp_meeting_awareness` varchar(10) DEFAULT NULL,
+  `enrolled_in_reminder_system` varchar(10) DEFAULT NULL,
+  `other_support_systems` varchar(10) DEFAULT NULL,
+  `date_created` datetime NOT NULL,
+  `date_last_modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`encounter_id`),
+  UNIQUE KEY `unique_uuid` (`uuid`),
+  KEY `patient_id` (`patient_id`),
+  KEY `visit_date` (`visit_date`),
+  KEY `encounter_id` (`encounter_id`),
+  KEY `ready_to_start_art` (`ready_to_start_art`),
+  CONSTRAINT `etl_ART_preparation_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `etl_PrEP_verification`
+--
+
+DROP TABLE IF EXISTS `etl_PrEP_verification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `etl_PrEP_verification` (
+  `uuid` char(38) DEFAULT NULL,
+  `provider` int(11) DEFAULT NULL,
+  `client_id` int(11) NOT NULL,
+  `visit_id` int(11) DEFAULT NULL,
+  `visit_date` date DEFAULT NULL,
+  `location_id` int(11) DEFAULT NULL,
+  `encounter_id` int(11) NOT NULL,
+  `date_enrolled` date DEFAULT NULL,
+  `health_facility_accessing_PrEP` varchar(100) DEFAULT NULL,
+  `is_pepfar_site` varchar(11) DEFAULT NULL,
+  `date_initiated_PrEP` date DEFAULT NULL,
+  `PrEP_regimen` varchar(100) DEFAULT NULL,
+  `information_source` varchar(100) DEFAULT NULL,
+  `PrEP_status` varchar(100) DEFAULT NULL,
+  `verification_date` date DEFAULT NULL,
+  `discontinuation_reason` varchar(100) DEFAULT NULL,
+  `other_discontinuation_reason` varchar(100) DEFAULT NULL,
+  `appointment_date` date DEFAULT NULL,
+  `date_created` datetime NOT NULL,
+  `date_last_modified` datetime DEFAULT NULL,
+  `voided` int(11) DEFAULT NULL,
+  PRIMARY KEY (`encounter_id`),
+  UNIQUE KEY `unique_uuid` (`uuid`),
+  KEY `visit_date` (`visit_date`),
+  KEY `encounter_id` (`encounter_id`),
+  KEY `client_id` (`client_id`),
+  CONSTRAINT `etl_PrEP_verification_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `etl_adverse_events`
@@ -27089,7 +25856,7 @@ DROP TABLE IF EXISTS `etl_adverse_events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_adverse_events` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -27111,7 +25878,7 @@ CREATE TABLE `etl_adverse_events` (
   KEY `encounter_id` (`encounter_id`),
   KEY `obs_id` (`obs_id`),
   CONSTRAINT `etl_adverse_events_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27122,16 +25889,16 @@ DROP TABLE IF EXISTS `etl_alcohol_drug_abuse_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_alcohol_drug_abuse_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `alcohol_drinking_frequency` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `smoking_frequency` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `drugs_use_frequency` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `alcohol_drinking_frequency` varchar(50) DEFAULT NULL,
+  `smoking_frequency` varchar(50) DEFAULT NULL,
+  `drugs_use_frequency` varchar(50) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -27141,7 +25908,7 @@ CREATE TABLE `etl_alcohol_drug_abuse_screening` (
   KEY `encounter_id` (`encounter_id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `etl_alcohol_drug_abuse_screening_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27152,7 +25919,7 @@ DROP TABLE IF EXISTS `etl_allergy_chronic_illness`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_allergy_chronic_illness` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -27175,49 +25942,7 @@ CREATE TABLE `etl_allergy_chronic_illness` (
   KEY `encounter_id` (`encounter_id`),
   KEY `obs_id` (`obs_id`),
   CONSTRAINT `etl_allergy_chronic_illness_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `etl_art_preparation`
---
-
-DROP TABLE IF EXISTS `etl_art_preparation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `etl_art_preparation` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_id` int(11) NOT NULL,
-  `visit_id` int(11) DEFAULT NULL,
-  `visit_date` date DEFAULT NULL,
-  `location_id` int(11) DEFAULT NULL,
-  `encounter_id` int(11) NOT NULL,
-  `provider` int(11) DEFAULT NULL,
-  `understands_hiv_art_benefits` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `screened_negative_substance_abuse` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `screened_negative_psychiatric_illness` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `HIV_status_disclosure` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `trained_drug_admin` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `informed_drug_side_effects` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_committed` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherance_barriers_identified` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_location_contacts_known` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ready_to_start_art` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `identified_drug_time` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_supporter_engaged` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `support_grp_meeting_awareness` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `enrolled_in_reminder_system` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_support_systems` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date_created` datetime NOT NULL,
-  `date_last_modified` datetime DEFAULT NULL,
-  PRIMARY KEY (`encounter_id`),
-  UNIQUE KEY `unique_uuid` (`uuid`),
-  KEY `patient_id` (`patient_id`),
-  KEY `visit_date` (`visit_date`),
-  KEY `encounter_id` (`encounter_id`),
-  KEY `ready_to_start_art` (`ready_to_start_art`),
-  CONSTRAINT `etl_ART_preparation_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27228,7 +25953,7 @@ DROP TABLE IF EXISTS `etl_ccc_defaulter_tracing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_ccc_defaulter_tracing` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -27237,13 +25962,13 @@ CREATE TABLE `etl_ccc_defaulter_tracing` (
   `encounter_id` int(11) NOT NULL,
   `tracing_type` int(11) DEFAULT NULL,
   `reason_for_missed_appointment` int(11) DEFAULT NULL,
-  `non_coded_missed_appointment_reason` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `non_coded_missed_appointment_reason` varchar(100) DEFAULT NULL,
   `tracing_outcome` int(11) DEFAULT NULL,
   `attempt_number` int(11) DEFAULT NULL,
   `is_final_trace` int(11) DEFAULT NULL,
   `true_status` int(11) DEFAULT NULL,
   `cause_of_death` int(11) DEFAULT NULL,
-  `comments` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comments` varchar(100) DEFAULT NULL,
   `booking_date` date DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
@@ -27256,7 +25981,7 @@ CREATE TABLE `etl_ccc_defaulter_tracing` (
   KEY `cause_of_death` (`cause_of_death`),
   KEY `tracing_type` (`tracing_type`),
   CONSTRAINT `etl_ccc_defaulter_tracing_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27267,7 +25992,7 @@ DROP TABLE IF EXISTS `etl_cervical_cancer_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_cervical_cancer_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `encounter_provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
@@ -27276,23 +26001,23 @@ CREATE TABLE `etl_cervical_cancer_screening` (
   `location_id` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `visit_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `screening_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `post_treatment_complication_cause` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `post_treatment_complication_other` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `visit_type` varchar(255) DEFAULT NULL,
+  `screening_type` varchar(255) DEFAULT NULL,
+  `post_treatment_complication_cause` varchar(255) DEFAULT NULL,
+  `post_treatment_complication_other` varchar(255) DEFAULT NULL,
   `screening_number` int(11) DEFAULT NULL,
-  `screening_method` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `screening_result` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `previous_screening_method` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `screening_method` varchar(255) DEFAULT NULL,
+  `screening_result` varchar(255) DEFAULT NULL,
+  `previous_screening_method` varchar(255) DEFAULT NULL,
   `previous_screening_date` date DEFAULT NULL,
-  `previous_screening_result` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_method` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_method_other` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referred_out` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_facility` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `previous_screening_result` varchar(255) DEFAULT NULL,
+  `treatment_method` varchar(255) DEFAULT NULL,
+  `treatment_method_other` varchar(255) DEFAULT NULL,
+  `referred_out` varchar(100) DEFAULT NULL,
+  `referral_facility` varchar(100) DEFAULT NULL,
+  `referral_reason` varchar(255) DEFAULT NULL,
   `next_appointment_date` datetime DEFAULT NULL,
-  `encounter_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `encounter_type` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -27301,7 +26026,7 @@ CREATE TABLE `etl_cervical_cancer_screening` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_cervical_cancer_screening_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27312,7 +26037,7 @@ DROP TABLE IF EXISTS `etl_client_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_client_enrollment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `client_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27321,33 +26046,33 @@ CREATE TABLE `etl_client_enrollment` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `contacted_for_prevention` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `has_regular_free_sex_partner` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `year_started_sex_work` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `year_started_sex_with_men` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `year_started_drugs` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `has_expereienced_sexual_violence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `has_expereienced_physical_violence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ever_tested_for_hiv` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `share_test_results` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `willing_to_test` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_decline_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `receiving_hiv_care` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `care_facility_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ccc_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_test_done` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contacted_for_prevention` varchar(10) DEFAULT NULL,
+  `has_regular_free_sex_partner` varchar(10) DEFAULT NULL,
+  `year_started_sex_work` varchar(10) DEFAULT NULL,
+  `year_started_sex_with_men` varchar(10) DEFAULT NULL,
+  `year_started_drugs` varchar(10) DEFAULT NULL,
+  `has_expereienced_sexual_violence` varchar(10) DEFAULT NULL,
+  `has_expereienced_physical_violence` varchar(10) DEFAULT NULL,
+  `ever_tested_for_hiv` varchar(10) DEFAULT NULL,
+  `test_type` varchar(255) DEFAULT NULL,
+  `share_test_results` varchar(100) DEFAULT NULL,
+  `willing_to_test` varchar(10) DEFAULT NULL,
+  `test_decline_reason` varchar(255) DEFAULT NULL,
+  `receiving_hiv_care` varchar(10) DEFAULT NULL,
+  `care_facility_name` varchar(100) DEFAULT NULL,
+  `ccc_number` varchar(100) DEFAULT NULL,
+  `vl_test_done` varchar(10) DEFAULT NULL,
   `vl_results_date` date DEFAULT NULL,
-  `contact_for_appointment` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contact_method` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_phone_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_for_appointment` varchar(10) DEFAULT NULL,
+  `contact_method` varchar(255) DEFAULT NULL,
+  `buddy_name` varchar(255) DEFAULT NULL,
+  `buddy_phone_number` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
   KEY `client_id` (`client_id`),
   CONSTRAINT `etl_client_enrollment_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27359,17 +26084,17 @@ DROP TABLE IF EXISTS `etl_client_trace`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_client_trace` (
   `id` int(11) DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `encounter_date` datetime DEFAULT NULL,
   `client_id` int(11) DEFAULT NULL,
-  `contact_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unique_patient_no` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `facility_linked_to` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `health_worker_handed_to` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_type` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `unique_patient_no` varchar(255) DEFAULT NULL,
+  `facility_linked_to` varchar(255) DEFAULT NULL,
+  `health_worker_handed_to` varchar(255) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `appointment_date` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -27378,7 +26103,7 @@ CREATE TABLE `etl_client_trace` (
   KEY `id` (`id`),
   KEY `id_2` (`id`,`date_created`),
   CONSTRAINT `etl_client_trace_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_contact` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27389,7 +26114,7 @@ DROP TABLE IF EXISTS `etl_clinical_visit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_clinical_visit` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `client_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27398,117 +26123,117 @@ CREATE TABLE `etl_clinical_visit` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `implementing_partner` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `type_of_visit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `visit_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `service_delivery_model` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sti_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sti_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sti_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sti_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sti_referred_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_referred_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisB_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisB_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisB_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisB_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisB_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisC_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisC_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisC_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisC_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hepatitisC_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `overdose_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `overdose_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `overdose_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `received_naloxone` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `overdose_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `overdose_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `abscess_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `abscess_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `abscess_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `abscess_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `abscess_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `alcohol_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `alcohol_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `alcohol_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `alcohol_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `alcohol_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cerv_cancer_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cerv_cancer_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cerv_cancer_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cerv_cancer_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cerv_cancer_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `violence_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `violence_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `violence_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `violence_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `violence_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_red_counselling_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_red_counselling_eligibility` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_red_counselling_support` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_red_counselling_ebi_provided` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_red_counselling_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_eligibility` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mental_health_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mental_health_results` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mental_health_support` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mental_health_referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mental_health_text` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hiv_self_rep_status` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_hiv_test_setting` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `counselled_for_hiv` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hiv_tested` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_frequency` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `received_results` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_results` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `linked_to_art` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `facility_linked_to` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_test_education` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_test_kits_given` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_use_kits` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `distribution_kits` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_tested` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `implementing_partner` varchar(255) DEFAULT NULL,
+  `type_of_visit` varchar(255) DEFAULT NULL,
+  `visit_reason` varchar(255) DEFAULT NULL,
+  `service_delivery_model` varchar(255) DEFAULT NULL,
+  `sti_screened` varchar(10) DEFAULT NULL,
+  `sti_results` varchar(255) DEFAULT NULL,
+  `sti_treated` varchar(10) DEFAULT NULL,
+  `sti_referred` varchar(10) DEFAULT NULL,
+  `sti_referred_text` varchar(255) DEFAULT NULL,
+  `tb_screened` varchar(10) DEFAULT NULL,
+  `tb_results` varchar(255) DEFAULT NULL,
+  `tb_treated` varchar(10) DEFAULT NULL,
+  `tb_referred` varchar(10) DEFAULT NULL,
+  `tb_referred_text` varchar(255) DEFAULT NULL,
+  `hepatitisB_screened` varchar(10) DEFAULT NULL,
+  `hepatitisB_results` varchar(255) DEFAULT NULL,
+  `hepatitisB_treated` varchar(10) DEFAULT NULL,
+  `hepatitisB_referred` varchar(10) DEFAULT NULL,
+  `hepatitisB_text` varchar(255) DEFAULT NULL,
+  `hepatitisC_screened` varchar(10) DEFAULT NULL,
+  `hepatitisC_results` varchar(255) DEFAULT NULL,
+  `hepatitisC_treated` varchar(10) DEFAULT NULL,
+  `hepatitisC_referred` varchar(10) DEFAULT NULL,
+  `hepatitisC_text` varchar(255) DEFAULT NULL,
+  `overdose_screened` varchar(10) DEFAULT NULL,
+  `overdose_results` varchar(255) DEFAULT NULL,
+  `overdose_treated` varchar(10) DEFAULT NULL,
+  `received_naloxone` varchar(10) DEFAULT NULL,
+  `overdose_referred` varchar(10) DEFAULT NULL,
+  `overdose_text` varchar(255) DEFAULT NULL,
+  `abscess_screened` varchar(10) DEFAULT NULL,
+  `abscess_results` varchar(255) DEFAULT NULL,
+  `abscess_treated` varchar(10) DEFAULT NULL,
+  `abscess_referred` varchar(10) DEFAULT NULL,
+  `abscess_text` varchar(255) DEFAULT NULL,
+  `alcohol_screened` varchar(10) DEFAULT NULL,
+  `alcohol_results` varchar(255) DEFAULT NULL,
+  `alcohol_treated` varchar(10) DEFAULT NULL,
+  `alcohol_referred` varchar(10) DEFAULT NULL,
+  `alcohol_text` varchar(255) DEFAULT NULL,
+  `cerv_cancer_screened` varchar(10) DEFAULT NULL,
+  `cerv_cancer_results` varchar(255) DEFAULT NULL,
+  `cerv_cancer_treated` varchar(10) DEFAULT NULL,
+  `cerv_cancer_referred` varchar(10) DEFAULT NULL,
+  `cerv_cancer_text` varchar(255) DEFAULT NULL,
+  `prep_screened` varchar(10) DEFAULT NULL,
+  `prep_results` varchar(255) DEFAULT NULL,
+  `prep_treated` varchar(10) DEFAULT NULL,
+  `prep_referred` varchar(10) DEFAULT NULL,
+  `prep_text` varchar(255) DEFAULT NULL,
+  `violence_screened` varchar(10) DEFAULT NULL,
+  `violence_results` varchar(255) DEFAULT NULL,
+  `violence_treated` varchar(10) DEFAULT NULL,
+  `violence_referred` varchar(10) DEFAULT NULL,
+  `violence_text` varchar(255) DEFAULT NULL,
+  `risk_red_counselling_screened` varchar(10) DEFAULT NULL,
+  `risk_red_counselling_eligibility` varchar(255) DEFAULT NULL,
+  `risk_red_counselling_support` varchar(10) DEFAULT NULL,
+  `risk_red_counselling_ebi_provided` varchar(10) DEFAULT NULL,
+  `risk_red_counselling_text` varchar(255) DEFAULT NULL,
+  `fp_screened` varchar(10) DEFAULT NULL,
+  `fp_eligibility` varchar(255) DEFAULT NULL,
+  `fp_treated` varchar(10) DEFAULT NULL,
+  `fp_referred` varchar(10) DEFAULT NULL,
+  `fp_text` varchar(255) DEFAULT NULL,
+  `mental_health_screened` varchar(10) DEFAULT NULL,
+  `mental_health_results` varchar(255) DEFAULT NULL,
+  `mental_health_support` varchar(100) DEFAULT NULL,
+  `mental_health_referred` varchar(10) DEFAULT NULL,
+  `mental_health_text` varchar(255) DEFAULT NULL,
+  `hiv_self_rep_status` varchar(50) DEFAULT NULL,
+  `last_hiv_test_setting` varchar(100) DEFAULT NULL,
+  `counselled_for_hiv` varchar(10) DEFAULT NULL,
+  `hiv_tested` varchar(10) DEFAULT NULL,
+  `test_frequency` varchar(100) DEFAULT NULL,
+  `received_results` varchar(10) DEFAULT NULL,
+  `test_results` varchar(100) DEFAULT NULL,
+  `linked_to_art` varchar(10) DEFAULT NULL,
+  `facility_linked_to` varchar(10) DEFAULT NULL,
+  `self_test_education` varchar(10) DEFAULT NULL,
+  `self_test_kits_given` varchar(100) DEFAULT NULL,
+  `self_use_kits` varchar(10) DEFAULT NULL,
+  `distribution_kits` varchar(10) DEFAULT NULL,
+  `self_tested` varchar(10) DEFAULT NULL,
   `self_test_date` date DEFAULT NULL,
-  `self_test_frequency` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_test_results` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_confirmatory_results` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `confirmatory_facility` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `offsite_confirmatory_facility` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_test_linked_art` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `self_test_link_facility` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hiv_care_facility` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_hiv_care_facility` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `initiated_art_this_month` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `active_art` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `eligible_vl` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_test_done` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_results` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `received_vl_results` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `condom_use_education` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `post_abortal_care` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `linked_to_psychosocial` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `male_condoms_no` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `female_condoms_no` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lubes_no` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `syringes_needles_no` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `pep_eligible` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `exposure_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_exposure_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `clinical_notes` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `self_test_frequency` varchar(100) DEFAULT NULL,
+  `self_test_results` varchar(100) DEFAULT NULL,
+  `test_confirmatory_results` varchar(100) DEFAULT NULL,
+  `confirmatory_facility` varchar(100) DEFAULT NULL,
+  `offsite_confirmatory_facility` varchar(100) DEFAULT NULL,
+  `self_test_linked_art` varchar(10) DEFAULT NULL,
+  `self_test_link_facility` varchar(255) DEFAULT NULL,
+  `hiv_care_facility` varchar(255) DEFAULT NULL,
+  `other_hiv_care_facility` varchar(255) DEFAULT NULL,
+  `initiated_art_this_month` varchar(10) DEFAULT NULL,
+  `active_art` varchar(10) DEFAULT NULL,
+  `eligible_vl` varchar(50) DEFAULT NULL,
+  `vl_test_done` varchar(100) DEFAULT NULL,
+  `vl_results` varchar(100) DEFAULT NULL,
+  `received_vl_results` varchar(100) DEFAULT NULL,
+  `condom_use_education` varchar(10) DEFAULT NULL,
+  `post_abortal_care` varchar(10) DEFAULT NULL,
+  `linked_to_psychosocial` varchar(10) DEFAULT NULL,
+  `male_condoms_no` varchar(10) DEFAULT NULL,
+  `female_condoms_no` varchar(10) DEFAULT NULL,
+  `lubes_no` varchar(10) DEFAULT NULL,
+  `syringes_needles_no` varchar(10) DEFAULT NULL,
+  `pep_eligible` varchar(10) DEFAULT NULL,
+  `exposure_type` varchar(100) DEFAULT NULL,
+  `other_exposure_type` varchar(100) DEFAULT NULL,
+  `clinical_notes` varchar(255) DEFAULT NULL,
   `appointment_date` date DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -27516,7 +26241,7 @@ CREATE TABLE `etl_clinical_visit` (
   KEY `client_id` (`client_id`),
   KEY `client_id_2` (`client_id`,`visit_date`),
   CONSTRAINT `etl_clinical_visit_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27527,8 +26252,8 @@ DROP TABLE IF EXISTS `etl_contact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_contact` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unique_identifier` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
+  `unique_identifier` varchar(50) DEFAULT NULL,
   `client_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27537,20 +26262,20 @@ CREATE TABLE `etl_contact` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `key_population_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contacted_by_peducator` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `program_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `frequent_hotspot_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `frequent_hotspot_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `year_started_sex_work` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `year_started_sex_with_men` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `year_started_drugs` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `key_population_type` varchar(255) DEFAULT NULL,
+  `contacted_by_peducator` varchar(10) DEFAULT NULL,
+  `program_name` varchar(255) DEFAULT NULL,
+  `frequent_hotspot_name` varchar(255) DEFAULT NULL,
+  `frequent_hotspot_type` varchar(255) DEFAULT NULL,
+  `year_started_sex_work` varchar(10) DEFAULT NULL,
+  `year_started_sex_with_men` varchar(10) DEFAULT NULL,
+  `year_started_drugs` varchar(10) DEFAULT NULL,
   `avg_weekly_sex_acts` int(11) DEFAULT NULL,
   `avg_weekly_anal_sex_acts` int(11) DEFAULT NULL,
   `avg_daily_drug_injections` int(11) DEFAULT NULL,
-  `contact_person_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contact_person_alias` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contact_person_phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `contact_person_name` varchar(255) DEFAULT NULL,
+  `contact_person_alias` varchar(255) DEFAULT NULL,
+  `contact_person_phone` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -27558,7 +26283,7 @@ CREATE TABLE `etl_contact` (
   KEY `unique_identifier` (`unique_identifier`),
   KEY `key_population_type` (`key_population_type`),
   CONSTRAINT `etl_contact_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27572,9 +26297,9 @@ CREATE TABLE `etl_contacts_linked` (
   `id` int(11) DEFAULT NULL,
   `patient_id` int(11) DEFAULT NULL,
   `relationship_type` int(11) DEFAULT NULL,
-  `baseline_hiv_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `baseline_hiv_status` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `final_test_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   KEY `id` (`id`),
   KEY `visit_date` (`visit_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -27588,36 +26313,36 @@ DROP TABLE IF EXISTS `etl_covid19_assessment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_covid19_assessment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `obs_id` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ever_vaccinated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `first_vaccine_type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `second_vaccine_type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `first_dose` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `second_dose` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `first_dose_date` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `second_dose_date` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `first_vaccination_verified` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `second_vaccination_verified` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_vaccination_status` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ever_received_booster` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `booster_vaccine_taken` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date_taken_booster_vaccine` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `booster_sequence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `booster_dose_verified` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ever_tested_covid_19_positive` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `symptomatic` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date_tested_positive` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hospital_admission` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `admission_unit` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `on_ventillator` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `on_oxygen_supplement` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `obs_id` varchar(10) DEFAULT NULL,
+  `ever_vaccinated` varchar(10) DEFAULT NULL,
+  `first_vaccine_type` varchar(10) DEFAULT NULL,
+  `second_vaccine_type` varchar(10) DEFAULT NULL,
+  `first_dose` varchar(10) DEFAULT NULL,
+  `second_dose` varchar(10) DEFAULT NULL,
+  `first_dose_date` varchar(10) DEFAULT NULL,
+  `second_dose_date` varchar(10) DEFAULT NULL,
+  `first_vaccination_verified` varchar(10) DEFAULT NULL,
+  `second_vaccination_verified` varchar(10) DEFAULT NULL,
+  `final_vaccination_status` varchar(10) DEFAULT NULL,
+  `ever_received_booster` varchar(10) DEFAULT NULL,
+  `booster_vaccine_taken` varchar(10) DEFAULT NULL,
+  `date_taken_booster_vaccine` varchar(10) DEFAULT NULL,
+  `booster_sequence` varchar(10) DEFAULT NULL,
+  `booster_dose_verified` varchar(10) DEFAULT NULL,
+  `ever_tested_covid_19_positive` varchar(10) DEFAULT NULL,
+  `symptomatic` varchar(10) DEFAULT NULL,
+  `date_tested_positive` varchar(10) DEFAULT NULL,
+  `hospital_admission` varchar(10) DEFAULT NULL,
+  `admission_unit` varchar(50) DEFAULT NULL,
+  `on_ventillator` varchar(10) DEFAULT NULL,
+  `on_oxygen_supplement` varchar(10) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -27626,7 +26351,7 @@ CREATE TABLE `etl_covid19_assessment` (
   KEY `patient_id` (`patient_id`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_covid19_assessment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27640,16 +26365,16 @@ CREATE TABLE `etl_current_in_care` (
   `visit_date` date DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `dob` date DEFAULT NULL,
-  `Gender` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `Gender` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `enroll_date` date DEFAULT NULL,
   `latest_enrolment_date` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
   `latest_vis_date` varchar(19) CHARACTER SET utf8 DEFAULT NULL,
   `latest_tca` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   `stability` varchar(53) CHARACTER SET utf8 DEFAULT NULL,
-  `disc_patient` int(11) DEFAULT NULL,
+  `disc_patient` int(11),
   `effective_disc_date` date DEFAULT NULL,
   `date_discontinued` datetime DEFAULT NULL,
-  `started_on_drugs` int(11) DEFAULT NULL,
+  `started_on_drugs` int(11),
   KEY `enroll_date` (`enroll_date`),
   KEY `latest_vis_date` (`latest_vis_date`),
   KEY `latest_tca` (`latest_tca`),
@@ -27679,14 +26404,14 @@ DROP TABLE IF EXISTS `etl_depression_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_depression_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `PHQ_9_rating` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `PHQ_9_rating` varchar(255) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -27696,7 +26421,7 @@ CREATE TABLE `etl_depression_screening` (
   KEY `encounter_id` (`encounter_id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `etl_depression_screening_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27707,22 +26432,22 @@ DROP TABLE IF EXISTS `etl_drug_event`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_drug_event` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) NOT NULL DEFAULT '',
   `patient_id` int(11) NOT NULL,
   `date_started` date DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `program` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `regimen` mediumtext COLLATE utf8_unicode_ci,
-  `regimen_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `regimen_line` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `program` varchar(50) DEFAULT NULL,
+  `regimen` mediumtext,
+  `regimen_name` varchar(100) DEFAULT NULL,
+  `regimen_line` varchar(50) DEFAULT NULL,
   `discontinued` int(11) DEFAULT NULL,
-  `regimen_discontinued` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `regimen_discontinued` varchar(255) DEFAULT NULL,
   `regimen_stopped` int(11) DEFAULT NULL,
   `date_discontinued` date DEFAULT NULL,
   `reason_discontinued` int(11) DEFAULT NULL,
-  `reason_discontinued_other` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `reason_discontinued_other` varchar(100) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -27732,7 +26457,7 @@ CREATE TABLE `etl_drug_event` (
   KEY `date_discontinued` (`date_discontinued`),
   KEY `patient_id_2` (`patient_id`,`date_started`),
   CONSTRAINT `etl_drug_event_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27743,7 +26468,7 @@ DROP TABLE IF EXISTS `etl_enhanced_adherence`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_enhanced_adherence` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27753,36 +26478,36 @@ CREATE TABLE `etl_enhanced_adherence` (
   `session_number` int(11) DEFAULT NULL,
   `first_session_date` date DEFAULT NULL,
   `pill_count` int(11) DEFAULT NULL,
-  `arv_adherence` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `has_vl_results` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_results_suppressed` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vl_results_feeling` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cause_of_high_vl` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `way_forward` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_hiv_knowledge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_uptake` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_reminder_tools` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_uptake_during_travels` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_side_effects_response` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_uptake_most_difficult_times` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_drugs_daily_uptake_feeling` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_ambitions` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_has_people_to_talk` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_enlisting_social_support` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_income_sources` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_challenges_reaching_clinic` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_worried_of_accidental_disclosure` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_treated_differently` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `stigma_hinders_adherence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_tried_faith_healing` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_adherence_improved` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_doses_missed` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `review_and_barriers_to_adherence` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_referrals` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `appointments_honoured` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_experience` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `home_visit_benefit` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence_plan` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `arv_adherence` varchar(50) DEFAULT NULL,
+  `has_vl_results` varchar(10) DEFAULT NULL,
+  `vl_results_suppressed` varchar(10) DEFAULT NULL,
+  `vl_results_feeling` varchar(255) DEFAULT NULL,
+  `cause_of_high_vl` varchar(255) DEFAULT NULL,
+  `way_forward` varchar(255) DEFAULT NULL,
+  `patient_hiv_knowledge` varchar(255) DEFAULT NULL,
+  `patient_drugs_uptake` varchar(255) DEFAULT NULL,
+  `patient_drugs_reminder_tools` varchar(255) DEFAULT NULL,
+  `patient_drugs_uptake_during_travels` varchar(255) DEFAULT NULL,
+  `patient_drugs_side_effects_response` varchar(255) DEFAULT NULL,
+  `patient_drugs_uptake_most_difficult_times` varchar(255) DEFAULT NULL,
+  `patient_drugs_daily_uptake_feeling` varchar(255) DEFAULT NULL,
+  `patient_ambitions` varchar(255) DEFAULT NULL,
+  `patient_has_people_to_talk` varchar(10) DEFAULT NULL,
+  `patient_enlisting_social_support` varchar(255) DEFAULT NULL,
+  `patient_income_sources` varchar(255) DEFAULT NULL,
+  `patient_challenges_reaching_clinic` varchar(10) DEFAULT NULL,
+  `patient_worried_of_accidental_disclosure` varchar(10) DEFAULT NULL,
+  `patient_treated_differently` varchar(10) DEFAULT NULL,
+  `stigma_hinders_adherence` varchar(10) DEFAULT NULL,
+  `patient_tried_faith_healing` varchar(10) DEFAULT NULL,
+  `patient_adherence_improved` varchar(10) DEFAULT NULL,
+  `patient_doses_missed` varchar(10) DEFAULT NULL,
+  `review_and_barriers_to_adherence` varchar(255) DEFAULT NULL,
+  `other_referrals` varchar(10) DEFAULT NULL,
+  `appointments_honoured` varchar(10) DEFAULT NULL,
+  `referral_experience` varchar(255) DEFAULT NULL,
+  `home_visit_benefit` varchar(10) DEFAULT NULL,
+  `adherence_plan` varchar(255) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
@@ -27792,7 +26517,7 @@ CREATE TABLE `etl_enhanced_adherence` (
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_enhanced_adherence_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27803,18 +26528,18 @@ DROP TABLE IF EXISTS `etl_gbv_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_gbv_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `ipv` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `physical_ipv` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `emotional_ipv` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sexual_ipv` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ipv_relationship` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ipv` varchar(50) DEFAULT NULL,
+  `physical_ipv` varchar(50) DEFAULT NULL,
+  `emotional_ipv` varchar(50) DEFAULT NULL,
+  `sexual_ipv` varchar(50) DEFAULT NULL,
+  `ipv_relationship` varchar(50) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -27824,7 +26549,7 @@ CREATE TABLE `etl_gbv_screening` (
   KEY `encounter_id` (`encounter_id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `etl_gbv_screening_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27835,16 +26560,16 @@ DROP TABLE IF EXISTS `etl_gbv_screening_action`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_gbv_screening_action` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `obs_id` int(11) NOT NULL,
-  `help_provider` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `action_taken` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reason_for_not_reporting` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `help_provider` varchar(100) DEFAULT NULL,
+  `action_taken` varchar(100) DEFAULT NULL,
+  `reason_for_not_reporting` varchar(100) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -27853,55 +26578,6 @@ CREATE TABLE `etl_gbv_screening_action` (
   KEY `obs_id` (`obs_id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `etl_gbv_screening_action_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `etl_gender_based_violence`
---
-
-DROP TABLE IF EXISTS `etl_gender_based_violence`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `etl_gender_based_violence` (
-  `uuid` char(38) DEFAULT NULL,
-  `provider` int(11) DEFAULT NULL,
-  `client_id` int(11) NOT NULL,
-  `visit_id` int(11) DEFAULT NULL,
-  `visit_date` date DEFAULT NULL,
-  `location_id` int(11) DEFAULT NULL,
-  `encounter_id` int(11) NOT NULL,
-  `is_physically_abused` varchar(10) DEFAULT NULL,
-  `physical_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `other_physical_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `in_physically_abusive_relationship` varchar(10) DEFAULT NULL,
-  `in_physically_abusive_relationship_with` varchar(100) DEFAULT NULL,
-  `other_physically_abusive_relationship_perpetrator` varchar(100) DEFAULT NULL,
-  `in_emotionally_abusive_relationship` varchar(10) DEFAULT NULL,
-  `emotional_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `other_emotional_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `in_sexually_abusive_relationship` varchar(10) DEFAULT NULL,
-  `sexual_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `other_sexual_abuse_perpetrator` varchar(100) DEFAULT NULL,
-  `ever_abused_by_unrelated_person` varchar(10) DEFAULT NULL,
-  `unrelated_perpetrator` varchar(100) DEFAULT NULL,
-  `other_unrelated_perpetrator` varchar(100) DEFAULT NULL,
-  `sought_help` varchar(10) DEFAULT NULL,
-  `help_provider` varchar(100) DEFAULT NULL,
-  `date_helped` date DEFAULT NULL,
-  `help_outcome` varchar(100) DEFAULT NULL,
-  `other_outcome` varchar(100) DEFAULT NULL,
-  `reason_for_not_reporting` varchar(100) DEFAULT NULL,
-  `other_reason_for_not_reporting` varchar(100) DEFAULT NULL,
-  `date_created` datetime NOT NULL,
-  `date_last_modified` datetime DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL,
-  PRIMARY KEY (`encounter_id`),
-  UNIQUE KEY `unique_uuid` (`uuid`),
-  KEY `visit_date` (`visit_date`),
-  KEY `encounter_id` (`encounter_id`),
-  KEY `client_id` (`client_id`),
-  CONSTRAINT `etl_gender_based_violence_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -27914,7 +26590,7 @@ DROP TABLE IF EXISTS `etl_hei_enrollment`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_hei_enrollment` (
   `serial_no` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -27922,21 +26598,21 @@ CREATE TABLE `etl_hei_enrollment` (
   `provider` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `child_exposed` int(11) DEFAULT NULL,
-  `hei_id_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `spd_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hei_id_number` varchar(50) DEFAULT NULL,
+  `spd_number` varchar(50) DEFAULT NULL,
   `birth_weight` double DEFAULT NULL,
   `gestation_at_birth` double DEFAULT NULL,
-  `birth_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birth_type` varchar(50) DEFAULT NULL,
   `date_first_seen` date DEFAULT NULL,
-  `birth_notification_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `birth_certificate_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birth_notification_number` varchar(50) DEFAULT NULL,
+  `birth_certificate_number` varchar(50) DEFAULT NULL,
   `need_for_special_care` int(11) DEFAULT NULL,
   `reason_for_special_care` int(11) DEFAULT NULL,
   `referral_source` int(11) DEFAULT NULL,
   `transfer_in` int(11) DEFAULT NULL,
   `transfer_in_date` date DEFAULT NULL,
-  `facility_transferred_from` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_transferred_from` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_transferred_from` varchar(50) DEFAULT NULL,
+  `district_transferred_from` varchar(50) DEFAULT NULL,
   `date_first_enrolled_in_hei_care` date DEFAULT NULL,
   `arv_prophylaxis` int(11) DEFAULT NULL,
   `mother_breastfeeding` int(11) DEFAULT NULL,
@@ -27949,20 +26625,20 @@ CREATE TABLE `etl_hei_enrollment` (
   `mother_on_art_at_infant_enrollment` int(11) DEFAULT NULL,
   `mother_drug_regimen` int(11) DEFAULT NULL,
   `infant_prophylaxis` int(11) DEFAULT NULL,
-  `parent_ccc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `parent_ccc_number` varchar(50) DEFAULT NULL,
   `mode_of_delivery` int(11) DEFAULT NULL,
   `place_of_delivery` int(11) DEFAULT NULL,
   `birth_length` int(11) DEFAULT NULL,
   `birth_order` int(11) DEFAULT NULL,
-  `health_facility_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `health_facility_name` varchar(50) DEFAULT NULL,
   `date_of_birth_notification` date DEFAULT NULL,
   `date_of_birth_registration` date DEFAULT NULL,
-  `birth_registration_place` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `permanent_registration_serial` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mother_facility_registered` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `birth_registration_place` varchar(50) DEFAULT NULL,
+  `permanent_registration_serial` varchar(50) DEFAULT NULL,
+  `mother_facility_registered` varchar(50) DEFAULT NULL,
   `exit_date` date DEFAULT NULL,
   `exit_reason` int(11) DEFAULT NULL,
-  `hiv_status_at_exit` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hiv_status_at_exit` varchar(50) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -27978,7 +26654,7 @@ CREATE TABLE `etl_hei_enrollment` (
   KEY `transfer_in_2` (`transfer_in`),
   KEY `serial_no` (`serial_no`),
   CONSTRAINT `etl_hei_enrollment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -27989,7 +26665,7 @@ DROP TABLE IF EXISTS `etl_hei_follow_up_visit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_hei_follow_up_visit` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -28016,7 +26692,7 @@ CREATE TABLE `etl_hei_follow_up_visit` (
   `dna_pcr_sample_date` date DEFAULT NULL,
   `dna_pcr_contextual_status` int(11) DEFAULT NULL,
   `dna_pcr_result` int(11) DEFAULT NULL,
-  `dna_pcr_dbs_sample_code` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dna_pcr_dbs_sample_code` varchar(100) DEFAULT NULL,
   `dna_pcr_results_date` date DEFAULT NULL,
   `azt_given` int(11) DEFAULT NULL,
   `nvp_given` int(11) DEFAULT NULL,
@@ -28024,11 +26700,11 @@ CREATE TABLE `etl_hei_follow_up_visit` (
   `multi_vitamin_given` int(11) DEFAULT NULL,
   `first_antibody_sample_date` date DEFAULT NULL,
   `first_antibody_result` int(11) DEFAULT NULL,
-  `first_antibody_dbs_sample_code` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `first_antibody_dbs_sample_code` varchar(100) DEFAULT NULL,
   `first_antibody_result_date` date DEFAULT NULL,
   `final_antibody_sample_date` date DEFAULT NULL,
   `final_antibody_result` int(11) DEFAULT NULL,
-  `final_antibody_dbs_sample_code` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `final_antibody_dbs_sample_code` varchar(100) DEFAULT NULL,
   `final_antibody_result_date` date DEFAULT NULL,
   `tetracycline_ointment_given` int(11) DEFAULT NULL,
   `pupil_examination` int(11) DEFAULT NULL,
@@ -28036,11 +26712,11 @@ CREATE TABLE `etl_hei_follow_up_visit` (
   `squint` int(11) DEFAULT NULL,
   `deworming_drug` int(11) DEFAULT NULL,
   `dosage` int(11) DEFAULT NULL,
-  `unit` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `unit` varchar(100) DEFAULT NULL,
   `vitaminA_given` int(11) DEFAULT NULL,
   `disability` int(11) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
-  `comments` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comments` varchar(100) DEFAULT NULL,
   `referred_from` int(11) DEFAULT NULL,
   `referred_to` int(11) DEFAULT NULL,
   `counselled_on` int(11) DEFAULT NULL,
@@ -28054,7 +26730,7 @@ CREATE TABLE `etl_hei_follow_up_visit` (
   KEY `encounter_id` (`encounter_id`),
   KEY `infant_feeding` (`infant_feeding`),
   CONSTRAINT `etl_hei_follow_up_visit_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28071,36 +26747,36 @@ CREATE TABLE `etl_hei_immunization` (
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `created_by` int(11) DEFAULT NULL,
-  `BCG` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_birth` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `OPV_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `IPV` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `DPT_Hep_B_Hib_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `DPT_Hep_B_Hib_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `DPT_Hep_B_Hib_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PCV_10_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PCV_10_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PCV_10_3` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ROTA_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ROTA_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Measles_rubella_1` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Measles_rubella_2` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Yellow_fever` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Measles_6_months` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_6_months` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_1_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_1_and_half_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_2_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `VitaminA_2_to_5_yr` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `BCG` varchar(50) DEFAULT NULL,
+  `OPV_birth` varchar(50) DEFAULT NULL,
+  `OPV_1` varchar(50) DEFAULT NULL,
+  `OPV_2` varchar(50) DEFAULT NULL,
+  `OPV_3` varchar(50) DEFAULT NULL,
+  `IPV` varchar(50) DEFAULT NULL,
+  `DPT_Hep_B_Hib_1` varchar(50) DEFAULT NULL,
+  `DPT_Hep_B_Hib_2` varchar(50) DEFAULT NULL,
+  `DPT_Hep_B_Hib_3` varchar(50) DEFAULT NULL,
+  `PCV_10_1` varchar(50) DEFAULT NULL,
+  `PCV_10_2` varchar(50) DEFAULT NULL,
+  `PCV_10_3` varchar(50) DEFAULT NULL,
+  `ROTA_1` varchar(50) DEFAULT NULL,
+  `ROTA_2` varchar(50) DEFAULT NULL,
+  `Measles_rubella_1` varchar(50) DEFAULT NULL,
+  `Measles_rubella_2` varchar(50) DEFAULT NULL,
+  `Yellow_fever` varchar(50) DEFAULT NULL,
+  `Measles_6_months` varchar(50) DEFAULT NULL,
+  `VitaminA_6_months` varchar(50) DEFAULT NULL,
+  `VitaminA_1_yr` varchar(50) DEFAULT NULL,
+  `VitaminA_1_and_half_yr` varchar(50) DEFAULT NULL,
+  `VitaminA_2_yr` varchar(50) DEFAULT NULL,
+  `VitaminA_2_to_5_yr` varchar(50) DEFAULT NULL,
   `fully_immunized` date DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_hei_immunization_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28111,7 +26787,7 @@ DROP TABLE IF EXISTS `etl_hiv_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_hiv_enrollment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -28122,17 +26798,17 @@ CREATE TABLE `etl_hiv_enrollment` (
   `date_first_enrolled_in_care` date DEFAULT NULL,
   `entry_point` int(11) DEFAULT NULL,
   `transfer_in_date` date DEFAULT NULL,
-  `facility_transferred_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_transferred_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_transferred_from` varchar(255) DEFAULT NULL,
+  `district_transferred_from` varchar(255) DEFAULT NULL,
   `date_started_art_at_transferring_facility` date DEFAULT NULL,
   `date_confirmed_hiv_positive` date DEFAULT NULL,
-  `facility_confirmed_hiv_positive` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `previous_regimen` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_confirmed_hiv_positive` varchar(255) DEFAULT NULL,
+  `previous_regimen` varchar(255) DEFAULT NULL,
   `arv_status` int(11) DEFAULT NULL,
-  `name_of_treatment_supporter` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name_of_treatment_supporter` varchar(255) DEFAULT NULL,
   `relationship_of_treatment_supporter` int(11) DEFAULT NULL,
-  `treatment_supporter_telephone` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_supporter_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `treatment_supporter_telephone` varchar(100) DEFAULT NULL,
+  `treatment_supporter_address` varchar(100) DEFAULT NULL,
   `in_school` int(11) DEFAULT NULL,
   `orphan` int(11) DEFAULT NULL,
   `date_of_discontinuation` datetime DEFAULT NULL,
@@ -28153,7 +26829,7 @@ CREATE TABLE `etl_hiv_enrollment` (
   KEY `date_first_enrolled_in_care` (`date_first_enrolled_in_care`),
   KEY `entry_point_2` (`entry_point`,`transfer_in_date`,`visit_date`,`patient_id`),
   CONSTRAINT `etl_hiv_enrollment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28167,12 +26843,12 @@ CREATE TABLE `etl_hts_contacts` (
   `id` int(11) DEFAULT NULL,
   `patient_id` int(11) DEFAULT NULL,
   `relationship_type` int(11) DEFAULT NULL,
-  `baseline_hiv_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `baseline_hiv_status` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `test_type` int(11) DEFAULT NULL,
-  `test_1_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `test_2_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
+  `final_test_result` varchar(50) CHARACTER SET utf8 DEFAULT NULL,
   KEY `id` (`id`),
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`)
@@ -28187,7 +26863,7 @@ DROP TABLE IF EXISTS `etl_hts_linkage_tracing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_hts_linkage_tracing` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -28209,7 +26885,7 @@ CREATE TABLE `etl_hts_linkage_tracing` (
   KEY `reason_not_contacted` (`reason_not_contacted`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_hts_linkage_tracing_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28223,20 +26899,20 @@ CREATE TABLE `etl_hts_referral` (
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `encounter_uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `encounter_uuid` char(38) DEFAULT NULL,
   `encounter_location` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
-  `facility_referred_to` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_referred_to` varchar(50) DEFAULT NULL,
   `date_to_enrol` date DEFAULT NULL,
-  `remarks` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remarks` varchar(100) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28250,28 +26926,28 @@ CREATE TABLE `etl_hts_referral_and_linkage` (
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `encounter_uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `encounter_uuid` char(38) DEFAULT NULL,
   `encounter_location` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
-  `tracing_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tracing_status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ccc_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_facility` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `facility_linked_to` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tracing_type` varchar(50) DEFAULT NULL,
+  `tracing_status` varchar(100) DEFAULT NULL,
+  `ccc_number` varchar(100) DEFAULT NULL,
+  `referral_facility` varchar(200) DEFAULT NULL,
+  `facility_linked_to` varchar(100) DEFAULT NULL,
   `enrollment_date` date DEFAULT NULL,
   `art_start_date` date DEFAULT NULL,
-  `provider_handed_to` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cadre` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `provider_handed_to` varchar(100) DEFAULT NULL,
+  `cadre` varchar(100) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   KEY `patient_id` (`patient_id`),
   KEY `visit_date` (`visit_date`),
   KEY `tracing_type` (`tracing_type`),
   KEY `tracing_status` (`tracing_status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28285,42 +26961,42 @@ CREATE TABLE `etl_hts_test` (
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `encounter_uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `encounter_uuid` char(38) DEFAULT NULL,
   `encounter_location` int(11) NOT NULL,
   `creator` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `test_type` int(11) DEFAULT NULL,
-  `population_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `key_population_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ever_tested_for_hiv` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `population_type` varchar(50) DEFAULT NULL,
+  `key_population_type` varchar(50) DEFAULT NULL,
+  `ever_tested_for_hiv` varchar(10) DEFAULT NULL,
   `months_since_last_test` int(11) DEFAULT NULL,
-  `patient_disabled` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `disability_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_consented` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `client_tested_as` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `setting` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `approach` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_strategy` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hts_entry_point` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `patient_disabled` varchar(50) DEFAULT NULL,
+  `disability_type` varchar(255) DEFAULT NULL,
+  `patient_consented` varchar(50) DEFAULT NULL,
+  `client_tested_as` varchar(50) DEFAULT NULL,
+  `setting` varchar(50) DEFAULT NULL,
+  `approach` varchar(50) DEFAULT NULL,
+  `test_strategy` varchar(50) DEFAULT NULL,
+  `hts_entry_point` varchar(50) DEFAULT NULL,
+  `test_1_kit_name` varchar(50) DEFAULT NULL,
+  `test_1_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_1_kit_expiry` date DEFAULT NULL,
-  `test_1_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_result` varchar(50) DEFAULT NULL,
+  `test_2_kit_name` varchar(50) DEFAULT NULL,
+  `test_2_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_2_kit_expiry` date DEFAULT NULL,
-  `test_2_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `couple_discordant` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_for` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_facility` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_referral_facility` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tb_screening` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_had_hiv_self_test` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_2_result` varchar(50) DEFAULT NULL,
+  `final_test_result` varchar(50) DEFAULT NULL,
+  `patient_given_result` varchar(50) DEFAULT NULL,
+  `couple_discordant` varchar(100) DEFAULT NULL,
+  `referral_for` varchar(100) DEFAULT NULL,
+  `referral_facility` varchar(200) DEFAULT NULL,
+  `other_referral_facility` varchar(200) DEFAULT NULL,
+  `tb_screening` varchar(20) DEFAULT NULL,
+  `patient_had_hiv_self_test` varchar(50) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   KEY `patient_id` (`patient_id`),
@@ -28333,7 +27009,7 @@ CREATE TABLE `etl_hts_test` (
   KEY `couple_discordant` (`couple_discordant`),
   KEY `test_1_kit_name` (`test_1_kit_name`),
   KEY `test_2_kit_name` (`test_2_kit_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28344,7 +27020,7 @@ DROP TABLE IF EXISTS `etl_ipt_follow_up`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_ipt_follow_up` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -28356,11 +27032,11 @@ CREATE TABLE `etl_ipt_follow_up` (
   `ipt_due_date` date DEFAULT NULL,
   `date_collected_ipt` date DEFAULT NULL,
   `weight` double DEFAULT NULL,
-  `hepatotoxity` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `peripheral_neuropathy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rash` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `action_taken` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hepatotoxity` varchar(100) DEFAULT NULL,
+  `peripheral_neuropathy` varchar(100) DEFAULT NULL,
+  `rash` varchar(100) DEFAULT NULL,
+  `adherence` varchar(100) DEFAULT NULL,
+  `action_taken` varchar(100) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -28372,7 +27048,7 @@ CREATE TABLE `etl_ipt_follow_up` (
   KEY `rash` (`rash`),
   KEY `adherence` (`adherence`),
   CONSTRAINT `etl_ipt_follow_up_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28383,7 +27059,7 @@ DROP TABLE IF EXISTS `etl_ipt_initiation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_ipt_initiation` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -28392,7 +27068,7 @@ CREATE TABLE `etl_ipt_initiation` (
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `ipt_indication` int(11) DEFAULT NULL,
-  `sub_county_reg_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sub_county_reg_number` varchar(255) DEFAULT NULL,
   `sub_county_reg_date` date DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -28402,7 +27078,7 @@ CREATE TABLE `etl_ipt_initiation` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_ipt_initiation_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28413,7 +27089,7 @@ DROP TABLE IF EXISTS `etl_ipt_outcome`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_ipt_outcome` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -28431,7 +27107,7 @@ CREATE TABLE `etl_ipt_outcome` (
   KEY `outcome` (`outcome`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_ipt_outcome_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28442,7 +27118,7 @@ DROP TABLE IF EXISTS `etl_ipt_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_ipt_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -28470,7 +27146,7 @@ CREATE TABLE `etl_ipt_screening` (
   KEY `visit_date_2` (`visit_date`,`patient_id`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_ipt_screening_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28481,17 +27157,17 @@ DROP TABLE IF EXISTS `etl_laboratory_extract`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_laboratory_extract` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) NOT NULL DEFAULT '',
   `encounter_id` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
-  `order_id` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lab_test` varchar(180) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `urgency` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `order_reason` varchar(180) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_result` varchar(180) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `order_id` varchar(200) DEFAULT NULL,
+  `lab_test` varchar(180) DEFAULT NULL,
+  `urgency` varchar(50) DEFAULT NULL,
+  `order_reason` varchar(180) DEFAULT NULL,
+  `test_result` varchar(180) DEFAULT NULL,
   `date_test_requested` date DEFAULT NULL,
   `date_test_result_received` date DEFAULT NULL,
   `test_requested_by` int(11) DEFAULT NULL,
@@ -28506,7 +27182,7 @@ CREATE TABLE `etl_laboratory_extract` (
   KEY `lab_test` (`lab_test`),
   KEY `test_result` (`test_result`),
   CONSTRAINT `etl_laboratory_extract_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28541,7 +27217,7 @@ DROP TABLE IF EXISTS `etl_mch_antenatal_visit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_mch_antenatal_visit` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -28573,28 +27249,28 @@ CREATE TABLE `etl_mch_antenatal_visit` (
   `viral_load` int(11) DEFAULT NULL,
   `ldl` int(11) DEFAULT NULL,
   `arv_status` int(11) DEFAULT NULL,
-  `test_1_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_kit_name` varchar(50) DEFAULT NULL,
+  `test_1_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_1_kit_expiry` date DEFAULT NULL,
-  `test_1_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_result` varchar(50) DEFAULT NULL,
+  `test_2_kit_name` varchar(50) DEFAULT NULL,
+  `test_2_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_2_kit_expiry` date DEFAULT NULL,
-  `test_2_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_2_result` varchar(50) DEFAULT NULL,
+  `final_test_result` varchar(50) DEFAULT NULL,
+  `patient_given_result` varchar(50) DEFAULT NULL,
   `partner_hiv_tested` int(11) DEFAULT NULL,
   `partner_hiv_status` int(11) DEFAULT NULL,
   `prophylaxis_given` int(11) DEFAULT NULL,
   `date_given_haart` date DEFAULT NULL,
   `baby_azt_dispensed` int(11) DEFAULT NULL,
   `baby_nvp_dispensed` int(11) DEFAULT NULL,
-  `TTT` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `IPT_malaria` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `iron_supplement` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `deworming` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `bed_nets` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `urine_microscopy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `TTT` varchar(50) DEFAULT NULL,
+  `IPT_malaria` varchar(50) DEFAULT NULL,
+  `iron_supplement` varchar(50) DEFAULT NULL,
+  `deworming` varchar(50) DEFAULT NULL,
+  `bed_nets` varchar(50) DEFAULT NULL,
+  `urine_microscopy` varchar(100) DEFAULT NULL,
   `urinary_albumin` int(11) DEFAULT NULL,
   `glucose_measurement` int(11) DEFAULT NULL,
   `urine_ph` int(11) DEFAULT NULL,
@@ -28627,7 +27303,7 @@ CREATE TABLE `etl_mch_antenatal_visit` (
   `referred_from` int(11) DEFAULT NULL,
   `referred_to` int(11) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -28644,7 +27320,7 @@ CREATE TABLE `etl_mch_antenatal_visit` (
   KEY `next_appointment_date` (`next_appointment_date`),
   KEY `arv_status` (`arv_status`),
   CONSTRAINT `etl_mch_antenatal_visit_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28655,14 +27331,14 @@ DROP TABLE IF EXISTS `etl_mch_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_mch_enrollment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `service_type` int(11) DEFAULT NULL,
-  `anc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `anc_number` varchar(50) DEFAULT NULL,
   `first_anc_visit_date` date DEFAULT NULL,
   `gravida` int(11) DEFAULT NULL,
   `parity` int(11) DEFAULT NULL,
@@ -28679,7 +27355,7 @@ CREATE TABLE `etl_mch_enrollment` (
   `hiv_test_date` date DEFAULT NULL,
   `partner_hiv_status` int(11) DEFAULT NULL,
   `partner_hiv_test_date` date DEFAULT NULL,
-  `urine_microscopy` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `urine_microscopy` varchar(100) DEFAULT NULL,
   `urinary_albumin` int(11) DEFAULT NULL,
   `glucose_measurement` int(11) DEFAULT NULL,
   `urine_ph` int(11) DEFAULT NULL,
@@ -28706,7 +27382,7 @@ CREATE TABLE `etl_mch_enrollment` (
   KEY `hiv_test_date` (`hiv_test_date`),
   KEY `partner_hiv_status` (`partner_hiv_status`),
   CONSTRAINT `etl_mch_enrollment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28717,14 +27393,14 @@ DROP TABLE IF EXISTS `etl_mch_postnatal_visit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_mch_postnatal_visit` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `provider` int(11) DEFAULT NULL,
-  `pnc_register_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pnc_register_no` varchar(50) DEFAULT NULL,
   `pnc_visit_no` int(11) DEFAULT NULL,
   `delivery_date` date DEFAULT NULL,
   `mode_of_delivery` int(11) DEFAULT NULL,
@@ -28756,23 +27432,23 @@ CREATE TABLE `etl_mch_postnatal_visit` (
   `umblical_cord` int(11) DEFAULT NULL,
   `baby_immunization_started` int(11) DEFAULT NULL,
   `family_planning_counseling` int(11) DEFAULT NULL,
-  `uterus_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `uterus_cervix_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vaginal_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `parametrial_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `external_genitalia_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ovarian_examination` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `pelvic_lymph_node_exam` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uterus_examination` varchar(100) DEFAULT NULL,
+  `uterus_cervix_examination` varchar(100) DEFAULT NULL,
+  `vaginal_examination` varchar(100) DEFAULT NULL,
+  `parametrial_examination` varchar(100) DEFAULT NULL,
+  `external_genitalia_examination` varchar(100) DEFAULT NULL,
+  `ovarian_examination` varchar(100) DEFAULT NULL,
+  `pelvic_lymph_node_exam` varchar(100) DEFAULT NULL,
+  `test_1_kit_name` varchar(50) DEFAULT NULL,
+  `test_1_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_1_kit_expiry` date DEFAULT NULL,
-  `test_1_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_result` varchar(50) DEFAULT NULL,
+  `test_2_kit_name` varchar(50) DEFAULT NULL,
+  `test_2_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_2_kit_expiry` date DEFAULT NULL,
-  `test_2_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_2_result` varchar(50) DEFAULT NULL,
+  `final_test_result` varchar(50) DEFAULT NULL,
+  `patient_given_result` varchar(50) DEFAULT NULL,
   `partner_hiv_tested` int(11) DEFAULT NULL,
   `partner_hiv_status` int(11) DEFAULT NULL,
   `prophylaxis_given` int(11) DEFAULT NULL,
@@ -28788,7 +27464,7 @@ CREATE TABLE `etl_mch_postnatal_visit` (
   `family_planning_method` int(11) DEFAULT NULL,
   `referred_from` int(11) DEFAULT NULL,
   `referred_to` int(11) DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) DEFAULT NULL,
   `appointment_date` date DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
@@ -28801,7 +27477,7 @@ CREATE TABLE `etl_mch_postnatal_visit` (
   KEY `mother_hiv_status` (`mother_hiv_status`),
   KEY `arv_status_2` (`arv_status`),
   CONSTRAINT `etl_mch_postnatal_visit_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28812,7 +27488,7 @@ DROP TABLE IF EXISTS `etl_mchs_delivery`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_mchs_delivery` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -28821,19 +27497,19 @@ CREATE TABLE `etl_mchs_delivery` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `admission_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `admission_number` varchar(50) DEFAULT NULL,
   `duration_of_pregnancy` double DEFAULT NULL,
   `mode_of_delivery` int(11) DEFAULT NULL,
   `date_of_delivery` datetime DEFAULT NULL,
   `blood_loss` int(11) DEFAULT NULL,
   `condition_of_mother` int(11) DEFAULT NULL,
-  `delivery_outcome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `delivery_outcome` varchar(255) DEFAULT NULL,
   `apgar_score_1min` double DEFAULT NULL,
   `apgar_score_5min` double DEFAULT NULL,
   `apgar_score_10min` double DEFAULT NULL,
   `resuscitation_done` int(11) DEFAULT NULL,
   `place_of_delivery` int(11) DEFAULT NULL,
-  `delivery_assistant` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `delivery_assistant` varchar(100) DEFAULT NULL,
   `counseling_on_infant_feeding` int(11) DEFAULT NULL,
   `counseling_on_exclusive_breastfeeding` int(11) DEFAULT NULL,
   `counseling_on_infant_feeding_for_hiv_infected` int(11) DEFAULT NULL,
@@ -28843,7 +27519,7 @@ CREATE TABLE `etl_mchs_delivery` (
   `cadre` int(11) DEFAULT NULL,
   `delivery_complications` int(11) DEFAULT NULL,
   `coded_delivery_complications` int(11) DEFAULT NULL,
-  `other_delivery_complications` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `other_delivery_complications` varchar(100) DEFAULT NULL,
   `duration_of_labor` int(11) DEFAULT NULL,
   `baby_sex` int(11) DEFAULT NULL,
   `baby_condition` int(11) DEFAULT NULL,
@@ -28851,22 +27527,22 @@ CREATE TABLE `etl_mchs_delivery` (
   `birth_weight` int(11) DEFAULT NULL,
   `bf_within_one_hour` int(11) DEFAULT NULL,
   `birth_with_deformity` int(11) DEFAULT NULL,
-  `test_1_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_1_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_kit_name` varchar(50) DEFAULT NULL,
+  `test_1_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_1_kit_expiry` date DEFAULT NULL,
-  `test_1_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `test_2_kit_lot_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_1_result` varchar(50) DEFAULT NULL,
+  `test_2_kit_name` varchar(50) DEFAULT NULL,
+  `test_2_kit_lot_no` varchar(50) DEFAULT NULL,
   `test_2_kit_expiry` date DEFAULT NULL,
-  `test_2_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `final_test_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_given_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `test_2_result` varchar(50) DEFAULT NULL,
+  `final_test_result` varchar(50) DEFAULT NULL,
+  `patient_given_result` varchar(50) DEFAULT NULL,
   `partner_hiv_tested` int(11) DEFAULT NULL,
   `partner_hiv_status` int(11) DEFAULT NULL,
   `prophylaxis_given` int(11) DEFAULT NULL,
   `baby_azt_dispensed` int(11) DEFAULT NULL,
   `baby_nvp_dispensed` int(11) DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
   KEY `patient_id` (`patient_id`),
@@ -28877,7 +27553,7 @@ CREATE TABLE `etl_mchs_delivery` (
   KEY `partner_hiv_tested` (`partner_hiv_tested`),
   KEY `partner_hiv_status` (`partner_hiv_status`),
   CONSTRAINT `etl_mchs_delivery_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28888,7 +27564,7 @@ DROP TABLE IF EXISTS `etl_mchs_discharge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_mchs_discharge` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -28901,11 +27577,11 @@ CREATE TABLE `etl_mchs_discharge` (
   `baby_status` int(11) DEFAULT NULL,
   `vitamin_A_dispensed` int(11) DEFAULT NULL,
   `birth_notification_number` int(50) DEFAULT NULL,
-  `condition_of_mother` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `condition_of_mother` varchar(100) DEFAULT NULL,
   `discharge_date` date DEFAULT NULL,
   `referred_from` int(11) DEFAULT NULL,
   `referred_to` int(11) DEFAULT NULL,
-  `clinical_notes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
   KEY `patient_id` (`patient_id`),
@@ -28914,7 +27590,7 @@ CREATE TABLE `etl_mchs_discharge` (
   KEY `baby_status` (`baby_status`),
   KEY `discharge_date` (`discharge_date`),
   CONSTRAINT `etl_mchs_discharge_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28929,7 +27605,7 @@ CREATE TABLE `etl_missed_appointments` (
   `patient_id` int(11) NOT NULL,
   `last_tca_date` date DEFAULT NULL,
   `last_visit_date` date DEFAULT NULL,
-  `last_encounter_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_encounter_type` varchar(100) DEFAULT NULL,
   `days_since_last_visit` int(11) DEFAULT NULL,
   `date_table_created` date DEFAULT NULL,
   `date_created` datetime NOT NULL,
@@ -28937,7 +27613,7 @@ CREATE TABLE `etl_missed_appointments` (
   PRIMARY KEY (`id`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `etl_missed_appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28948,7 +27624,7 @@ DROP TABLE IF EXISTS `etl_otz_activity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_otz_activity` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -28957,16 +27633,16 @@ CREATE TABLE `etl_otz_activity` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `orientation` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `leadership` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `participation` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_literacy` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transition_to_adult_care` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `making_decision_future` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `srh` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `beyond_third_ninety` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `attended_support_group` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `orientation` varchar(11) DEFAULT NULL,
+  `leadership` varchar(11) DEFAULT NULL,
+  `participation` varchar(11) DEFAULT NULL,
+  `treatment_literacy` varchar(11) DEFAULT NULL,
+  `transition_to_adult_care` varchar(11) DEFAULT NULL,
+  `making_decision_future` varchar(11) DEFAULT NULL,
+  `srh` varchar(11) DEFAULT NULL,
+  `beyond_third_ninety` varchar(11) DEFAULT NULL,
+  `attended_support_group` varchar(11) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -28975,7 +27651,7 @@ CREATE TABLE `etl_otz_activity` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_otz_activity_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -28986,7 +27662,7 @@ DROP TABLE IF EXISTS `etl_otz_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_otz_enrollment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -28994,15 +27670,15 @@ CREATE TABLE `etl_otz_enrollment` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `orientation` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `leadership` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `participation` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_literacy` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transition_to_adult_care` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `making_decision_future` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `srh` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `beyond_third_ninety` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transfer_in` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `orientation` varchar(11) DEFAULT NULL,
+  `leadership` varchar(11) DEFAULT NULL,
+  `participation` varchar(11) DEFAULT NULL,
+  `treatment_literacy` varchar(11) DEFAULT NULL,
+  `transition_to_adult_care` varchar(11) DEFAULT NULL,
+  `making_decision_future` varchar(11) DEFAULT NULL,
+  `srh` varchar(11) DEFAULT NULL,
+  `beyond_third_ninety` varchar(11) DEFAULT NULL,
+  `transfer_in` varchar(11) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29011,7 +27687,7 @@ CREATE TABLE `etl_otz_enrollment` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_otz_enrollment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29022,7 +27698,7 @@ DROP TABLE IF EXISTS `etl_ovc_enrolment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_ovc_enrolment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -29031,16 +27707,16 @@ CREATE TABLE `etl_ovc_enrolment` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `caregiver_enrolled_here` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_name` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_gender` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `relationship_to_client` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `caregiver_phone_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `client_enrolled_cpims` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `partner_offering_ovc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ovc_comprehensive_program` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `dreams_program` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ovc_preventive_program` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `caregiver_enrolled_here` varchar(11) DEFAULT NULL,
+  `caregiver_name` varchar(11) DEFAULT NULL,
+  `caregiver_gender` varchar(255) DEFAULT NULL,
+  `relationship_to_client` varchar(255) DEFAULT NULL,
+  `caregiver_phone_number` varchar(255) DEFAULT NULL,
+  `client_enrolled_cpims` varchar(11) DEFAULT NULL,
+  `partner_offering_ovc` varchar(255) DEFAULT NULL,
+  `ovc_comprehensive_program` varchar(255) DEFAULT NULL,
+  `dreams_program` varchar(255) DEFAULT NULL,
+  `ovc_preventive_program` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29049,7 +27725,7 @@ CREATE TABLE `etl_ovc_enrolment` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_ovc_enrolment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29061,26 +27737,26 @@ DROP TABLE IF EXISTS `etl_patient_contact`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_patient_contact` (
   `id` int(11) DEFAULT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `date_created` date DEFAULT NULL,
-  `first_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `middle_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sex` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `middle_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `sex` varchar(50) DEFAULT NULL,
   `birth_date` datetime DEFAULT NULL,
-  `physical_address` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `phone_contact` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `physical_address` varchar(255) DEFAULT NULL,
+  `phone_contact` varchar(255) DEFAULT NULL,
   `patient_related_to` int(11) DEFAULT NULL,
   `patient_id` int(11) DEFAULT NULL,
   `relationship_type` int(11) DEFAULT NULL,
   `appointment_date` datetime DEFAULT NULL,
-  `baseline_hiv_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ipv_outcome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `marital_status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `living_with_patient` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `pns_approach` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `contact_listing_decline_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `consented_contact_listing` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `baseline_hiv_status` varchar(255) DEFAULT NULL,
+  `ipv_outcome` varchar(255) DEFAULT NULL,
+  `marital_status` varchar(100) DEFAULT NULL,
+  `living_with_patient` varchar(100) DEFAULT NULL,
+  `pns_approach` varchar(100) DEFAULT NULL,
+  `contact_listing_decline_reason` varchar(255) DEFAULT NULL,
+  `consented_contact_listing` varchar(100) DEFAULT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29089,7 +27765,7 @@ CREATE TABLE `etl_patient_contact` (
   KEY `id` (`id`),
   KEY `id_2` (`id`,`date_created`),
   CONSTRAINT `etl_patient_contact_ibfk_1` FOREIGN KEY (`patient_related_to`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29101,34 +27777,34 @@ DROP TABLE IF EXISTS `etl_patient_demographics`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_patient_demographics` (
   `patient_id` int(11) NOT NULL,
-  `given_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `middle_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `family_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Gender` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `given_name` varchar(255) DEFAULT NULL,
+  `middle_name` varchar(255) DEFAULT NULL,
+  `family_name` varchar(255) DEFAULT NULL,
+  `Gender` varchar(10) DEFAULT NULL,
   `DOB` date DEFAULT NULL,
-  `national_id_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unique_patient_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `patient_clinic_number` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `Tb_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `CPIMS_unique_identifier` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `openmrs_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_reg_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hei_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cwc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `phone_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `birth_place` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `citizenship` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `email_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `occupation` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `next_of_kin` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `next_of_kin_phone` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `next_of_kin_relationship` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `marital_status` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `education_level` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `kdod_service_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cadre` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rank` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `unit` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `national_id_no` varchar(50) DEFAULT NULL,
+  `unique_patient_no` varchar(50) DEFAULT NULL,
+  `patient_clinic_number` varchar(15) DEFAULT NULL,
+  `Tb_no` varchar(50) DEFAULT NULL,
+  `CPIMS_unique_identifier` varchar(50) DEFAULT NULL,
+  `openmrs_id` varchar(50) DEFAULT NULL,
+  `district_reg_no` varchar(50) DEFAULT NULL,
+  `hei_no` varchar(50) DEFAULT NULL,
+  `cwc_number` varchar(50) DEFAULT NULL,
+  `phone_number` varchar(50) DEFAULT NULL,
+  `birth_place` varchar(50) DEFAULT NULL,
+  `citizenship` varchar(50) DEFAULT NULL,
+  `email_address` varchar(100) DEFAULT NULL,
+  `occupation` varchar(100) DEFAULT NULL,
+  `next_of_kin` varchar(255) DEFAULT NULL,
+  `next_of_kin_phone` varchar(100) DEFAULT NULL,
+  `next_of_kin_relationship` varchar(100) DEFAULT NULL,
+  `marital_status` varchar(50) DEFAULT NULL,
+  `education_level` varchar(50) DEFAULT NULL,
+  `kdod_service_number` varchar(50) DEFAULT NULL,
+  `cadre` varchar(100) DEFAULT NULL,
+  `rank` varchar(100) DEFAULT NULL,
+  `unit` varchar(100) DEFAULT NULL,
   `dead` int(11) DEFAULT NULL,
   `death_date` date DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -29139,7 +27815,7 @@ CREATE TABLE `etl_patient_demographics` (
   KEY `Gender` (`Gender`),
   KEY `unique_patient_no` (`unique_patient_no`),
   KEY `DOB` (`DOB`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29150,7 +27826,7 @@ DROP TABLE IF EXISTS `etl_patient_hiv_followup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_patient_hiv_followup` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -29175,7 +27851,7 @@ CREATE TABLE `etl_patient_hiv_followup` (
   `key_population_type` int(11) DEFAULT NULL,
   `who_stage` int(11) DEFAULT NULL,
   `presenting_complaints` int(11) DEFAULT NULL,
-  `clinical_notes` varchar(600) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `clinical_notes` varchar(600) DEFAULT NULL,
   `on_anti_tb_drugs` int(11) DEFAULT NULL,
   `on_ipt` int(11) DEFAULT NULL,
   `ever_on_ipt` int(11) DEFAULT NULL,
@@ -29185,7 +27861,7 @@ CREATE TABLE `etl_patient_hiv_followup` (
   `night_sweats` int(11) DEFAULT '-1',
   `tb_case_contact` int(11) DEFAULT '-1',
   `lethargy` int(11) DEFAULT '-1',
-  `screened_for_tb` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `screened_for_tb` varchar(50) DEFAULT NULL,
   `spatum_smear_ordered` int(11) DEFAULT NULL,
   `chest_xray_ordered` int(11) DEFAULT NULL,
   `genexpert_ordered` int(11) DEFAULT NULL,
@@ -29208,7 +27884,7 @@ CREATE TABLE `etl_patient_hiv_followup` (
   `pregnancy_status` int(11) DEFAULT NULL,
   `wants_pregnancy` int(11) DEFAULT NULL,
   `pregnancy_outcome` int(11) DEFAULT NULL,
-  `anc_number` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `anc_number` varchar(50) DEFAULT NULL,
   `expected_delivery_date` date DEFAULT NULL,
   `ever_had_menses` int(11) DEFAULT NULL,
   `last_menstrual_period` date DEFAULT NULL,
@@ -29223,8 +27899,8 @@ CREATE TABLE `etl_patient_hiv_followup` (
   `tb_status` int(11) DEFAULT NULL,
   `started_anti_TB` int(11) DEFAULT NULL,
   `tb_rx_date` date DEFAULT NULL,
-  `tb_treatment_no` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `general_examination` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tb_treatment_no` varchar(50) DEFAULT NULL,
+  `general_examination` varchar(255) DEFAULT NULL,
   `system_examination` int(11) DEFAULT NULL,
   `skin_findings` int(11) DEFAULT NULL,
   `eyes_findings` int(11) DEFAULT NULL,
@@ -29234,7 +27910,7 @@ CREATE TABLE `etl_patient_hiv_followup` (
   `abdomen_findings` int(11) DEFAULT NULL,
   `cns_findings` int(11) DEFAULT NULL,
   `genitourinary_findings` int(11) DEFAULT NULL,
-  `prophylaxis_given` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `prophylaxis_given` varchar(50) DEFAULT NULL,
   `ctx_adherence` int(11) DEFAULT NULL,
   `ctx_dispensed` int(11) DEFAULT NULL,
   `dapsone_adherence` int(11) DEFAULT NULL,
@@ -29242,7 +27918,7 @@ CREATE TABLE `etl_patient_hiv_followup` (
   `inh_dispensed` int(11) DEFAULT NULL,
   `arv_adherence` int(11) DEFAULT NULL,
   `poor_arv_adherence_reason` int(11) DEFAULT NULL,
-  `poor_arv_adherence_reason_other` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `poor_arv_adherence_reason_other` varchar(200) DEFAULT NULL,
   `pwp_disclosure` int(11) DEFAULT NULL,
   `pwp_partner_tested` int(11) DEFAULT NULL,
   `condom_provided` int(11) DEFAULT NULL,
@@ -29284,7 +27960,7 @@ CREATE TABLE `etl_patient_hiv_followup` (
   KEY `visit_date_3` (`visit_date`,`condom_provided`),
   KEY `visit_date_4` (`visit_date`,`family_planning_method`),
   CONSTRAINT `etl_patient_hiv_followup_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29295,10 +27971,10 @@ DROP TABLE IF EXISTS `etl_patient_program`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_patient_program` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) NOT NULL DEFAULT '',
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
-  `program` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `program` varchar(100) DEFAULT NULL,
   `date_enrolled` date NOT NULL,
   `date_completed` date DEFAULT NULL,
   `outcome` int(11) DEFAULT NULL,
@@ -29312,7 +27988,7 @@ CREATE TABLE `etl_patient_program` (
   KEY `patient_id` (`patient_id`),
   KEY `outcome` (`outcome`),
   CONSTRAINT `etl_patient_program_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29323,25 +27999,25 @@ DROP TABLE IF EXISTS `etl_patient_program_discontinuation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_patient_program_discontinuation` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` datetime DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
-  `program_uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `program_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `program_uuid` char(38) DEFAULT NULL,
+  `program_name` varchar(50) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `discontinuation_reason` int(11) DEFAULT NULL,
   `effective_discontinuation_date` date DEFAULT NULL,
   `trf_out_verified` int(11) DEFAULT NULL,
   `trf_out_verification_date` date DEFAULT NULL,
   `date_died` date DEFAULT NULL,
-  `transfer_facility` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `transfer_facility` varchar(100) DEFAULT NULL,
   `transfer_date` date DEFAULT NULL,
   `death_reason` int(11) DEFAULT NULL,
   `specific_death_cause` int(11) DEFAULT NULL,
-  `natural_causes` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `non_natural_cause` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `natural_causes` varchar(200) DEFAULT NULL,
+  `non_natural_cause` varchar(200) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -29355,7 +28031,7 @@ CREATE TABLE `etl_patient_program_discontinuation` (
   KEY `date_died` (`date_died`),
   KEY `transfer_date` (`transfer_date`),
   CONSTRAINT `etl_patient_program_discontinuation_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29366,7 +28042,7 @@ DROP TABLE IF EXISTS `etl_patient_triage`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_patient_triage` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -29375,7 +28051,7 @@ CREATE TABLE `etl_patient_triage` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `visit_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `visit_reason` varchar(255) DEFAULT NULL,
   `weight` double DEFAULT NULL,
   `height` double DEFAULT NULL,
   `systolic_pressure` double DEFAULT NULL,
@@ -29395,7 +28071,7 @@ CREATE TABLE `etl_patient_triage` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_patient_triage_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29425,7 +28101,7 @@ DROP TABLE IF EXISTS `etl_peer_calendar`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_peer_calendar` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -29434,9 +28110,9 @@ CREATE TABLE `etl_peer_calendar` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `hotspot_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `typology` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_hotspots` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hotspot_name` varchar(255) DEFAULT NULL,
+  `typology` varchar(255) DEFAULT NULL,
+  `other_hotspots` varchar(255) DEFAULT NULL,
   `weekly_sex_acts` int(10) DEFAULT NULL,
   `monthly_condoms_required` int(10) DEFAULT NULL,
   `weekly_anal_sex_acts` int(10) DEFAULT NULL,
@@ -29444,25 +28120,25 @@ CREATE TABLE `etl_peer_calendar` (
   `daily_injections` int(10) DEFAULT NULL,
   `monthly_syringes_required` int(10) DEFAULT NULL,
   `years_in_sexwork_drugs` int(10) DEFAULT NULL,
-  `experienced_violence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `service_provided_within_last_month` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `experienced_violence` varchar(10) DEFAULT NULL,
+  `service_provided_within_last_month` varchar(255) DEFAULT NULL,
   `monthly_n_and_s_distributed` int(10) DEFAULT NULL,
   `monthly_male_condoms_distributed` int(10) DEFAULT NULL,
   `monthly_lubes_distributed` int(10) DEFAULT NULL,
   `monthly_female_condoms_distributed` int(10) DEFAULT NULL,
   `monthly_self_test_kits_distributed` int(10) DEFAULT NULL,
-  `received_clinical_service` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `violence_reported` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referred` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `health_edu` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `received_clinical_service` varchar(10) DEFAULT NULL,
+  `violence_reported` varchar(10) DEFAULT NULL,
+  `referred` varchar(10) DEFAULT NULL,
+  `health_edu` varchar(10) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
   KEY `visit_date` (`visit_date`),
   KEY `client_id` (`client_id`,`visit_date`),
   CONSTRAINT `etl_peer_calendar_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29473,25 +28149,25 @@ DROP TABLE IF EXISTS `etl_peer_tracking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_peer_tracking` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `client_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
-  `tracing_attempted` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tracing_not_attempted_reason` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `attempt_number` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tracing_attempted` varchar(10) DEFAULT NULL,
+  `tracing_not_attempted_reason` varchar(100) DEFAULT NULL,
+  `attempt_number` varchar(11) DEFAULT NULL,
   `tracing_date` date DEFAULT NULL,
-  `tracing_type` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tracing_outcome` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_final_trace` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `tracing_outcome_status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `voluntary_exit_comment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `status_in_program` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `source_of_information` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_informant` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tracing_type` varchar(100) DEFAULT NULL,
+  `tracing_outcome` varchar(100) DEFAULT NULL,
+  `is_final_trace` varchar(10) DEFAULT NULL,
+  `tracing_outcome_status` varchar(100) DEFAULT NULL,
+  `voluntary_exit_comment` varchar(255) DEFAULT NULL,
+  `status_in_program` varchar(100) DEFAULT NULL,
+  `source_of_information` varchar(100) DEFAULT NULL,
+  `other_informant` varchar(100) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -29503,7 +28179,7 @@ CREATE TABLE `etl_peer_tracking` (
   KEY `status_in_program` (`status_in_program`),
   KEY `tracing_type` (`tracing_type`),
   CONSTRAINT `etl_peer_tracking_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29514,22 +28190,22 @@ DROP TABLE IF EXISTS `etl_person_address`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_person_address` (
-  `uuid` char(38) COLLATE utf8_unicode_ci NOT NULL,
+  `uuid` char(38) NOT NULL DEFAULT '',
   `patient_id` int(11) NOT NULL,
-  `county` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sub_county` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `location` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ward` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sub_location` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `village` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `postal_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `land_mark` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `county` varchar(100) DEFAULT NULL,
+  `sub_county` varchar(100) DEFAULT NULL,
+  `location` varchar(100) DEFAULT NULL,
+  `ward` varchar(100) DEFAULT NULL,
+  `sub_location` varchar(100) DEFAULT NULL,
+  `village` varchar(100) DEFAULT NULL,
+  `postal_address` varchar(100) DEFAULT NULL,
+  `land_mark` varchar(100) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`uuid`),
   UNIQUE KEY `unique_uuid` (`uuid`),
   KEY `patient_id` (`patient_id`),
   CONSTRAINT `etl_person_address_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29541,28 +28217,28 @@ DROP TABLE IF EXISTS `etl_pharmacy_extract`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_pharmacy_extract` (
   `obs_group_id` int(11) NOT NULL,
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) DEFAULT NULL,
-  `encounter_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `encounter_name` varchar(100) DEFAULT NULL,
   `drug` int(11) DEFAULT NULL,
   `is_arv` int(11) DEFAULT NULL,
   `is_ctx` int(11) DEFAULT NULL,
   `is_dapsone` int(11) DEFAULT NULL,
-  `drug_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `drug_name` varchar(255) DEFAULT NULL,
   `dose` int(11) DEFAULT NULL,
   `unit` int(11) DEFAULT NULL,
   `frequency` int(11) DEFAULT NULL,
   `duration` int(11) DEFAULT NULL,
-  `duration_units` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `duration_units` varchar(20) DEFAULT NULL,
   `duration_in_days` int(11) DEFAULT NULL,
-  `prescription_provider` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `dispensing_provider` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `regimen` mediumtext COLLATE utf8_unicode_ci,
-  `adverse_effects` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `prescription_provider` varchar(50) DEFAULT NULL,
+  `dispensing_provider` varchar(50) DEFAULT NULL,
+  `regimen` mediumtext,
+  `adverse_effects` varchar(100) DEFAULT NULL,
   `date_of_refill` date DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
@@ -29576,7 +28252,7 @@ CREATE TABLE `etl_pharmacy_extract` (
   KEY `drug` (`drug`),
   KEY `is_arv` (`is_arv`),
   CONSTRAINT `etl_pharmacy_extract_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29587,7 +28263,7 @@ DROP TABLE IF EXISTS `etl_pre_hiv_enrollment_art`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_pre_hiv_enrollment_art` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29612,7 +28288,7 @@ CREATE TABLE `etl_pre_hiv_enrollment_art` (
   KEY `encounter_id` (`encounter_id`),
   KEY `obs_id` (`obs_id`),
   CONSTRAINT `etl_pre_hiv_enrollment_art_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29623,7 +28299,7 @@ DROP TABLE IF EXISTS `etl_prep_behaviour_risk_assessment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_prep_behaviour_risk_assessment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29632,34 +28308,34 @@ CREATE TABLE `etl_prep_behaviour_risk_assessment` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `sexual_partner_hiv_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sexual_partner_on_art` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `high_risk_partner` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sex_with_multiple_partners` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ipv_gbv` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transactional_sex` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `recent_sti_infected` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `recurrent_pep_use` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `recurrent_sex_under_influence` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `inconsistent_no_condom_use` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sharing_drug_needles` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `assessment_outcome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_education_offered` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_reduction` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `willing_to_take_prep` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reason_not_willing` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_edu_offered` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `risk_education` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_for_prevention_services` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referral_facility` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `time_partner_hiv_positive_known` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `partner_enrolled_ccc` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `partner_ccc_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sexual_partner_hiv_status` varchar(255) DEFAULT NULL,
+  `sexual_partner_on_art` varchar(10) DEFAULT NULL,
+  `risk` varchar(255) DEFAULT NULL,
+  `high_risk_partner` varchar(10) DEFAULT NULL,
+  `sex_with_multiple_partners` varchar(10) DEFAULT NULL,
+  `ipv_gbv` varchar(10) DEFAULT NULL,
+  `transactional_sex` varchar(10) DEFAULT NULL,
+  `recent_sti_infected` varchar(10) DEFAULT NULL,
+  `recurrent_pep_use` varchar(10) DEFAULT NULL,
+  `recurrent_sex_under_influence` varchar(10) DEFAULT NULL,
+  `inconsistent_no_condom_use` varchar(10) DEFAULT NULL,
+  `sharing_drug_needles` varchar(255) DEFAULT NULL,
+  `assessment_outcome` varchar(255) DEFAULT NULL,
+  `risk_education_offered` varchar(10) DEFAULT NULL,
+  `risk_reduction` varchar(10) DEFAULT NULL,
+  `willing_to_take_prep` varchar(10) DEFAULT NULL,
+  `reason_not_willing` varchar(255) DEFAULT NULL,
+  `risk_edu_offered` varchar(10) DEFAULT NULL,
+  `risk_education` varchar(255) DEFAULT NULL,
+  `referral_for_prevention_services` varchar(255) DEFAULT NULL,
+  `referral_facility` varchar(255) DEFAULT NULL,
+  `time_partner_hiv_positive_known` varchar(255) DEFAULT NULL,
+  `partner_enrolled_ccc` varchar(255) DEFAULT NULL,
+  `partner_ccc_number` varchar(255) DEFAULT NULL,
   `partner_art_start_date` date DEFAULT NULL,
   `serodiscordant_confirmation_date` date DEFAULT NULL,
-  `recent_unprotected_sex_with_positive_partner` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `children_with_hiv_positive_partner` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `recent_unprotected_sex_with_positive_partner` varchar(10) DEFAULT NULL,
+  `children_with_hiv_positive_partner` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29667,7 +28343,7 @@ CREATE TABLE `etl_prep_behaviour_risk_assessment` (
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_prep_behaviour_risk_assessment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29678,7 +28354,7 @@ DROP TABLE IF EXISTS `etl_prep_discontinuation`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_prep_discontinuation` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29687,7 +28363,7 @@ CREATE TABLE `etl_prep_discontinuation` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `discontinue_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `discontinue_reason` varchar(255) DEFAULT NULL,
   `care_end_date` date DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -29698,7 +28374,7 @@ CREATE TABLE `etl_prep_discontinuation` (
   KEY `discontinue_reason` (`discontinue_reason`),
   KEY `care_end_date` (`care_end_date`),
   CONSTRAINT `etl_prep_discontinuation_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29709,7 +28385,7 @@ DROP TABLE IF EXISTS `etl_prep_enrolment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_prep_enrolment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29718,23 +28394,23 @@ CREATE TABLE `etl_prep_enrolment` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `patient_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transfer_in_entry_point` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referred_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `transit_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `patient_type` varchar(255) DEFAULT NULL,
+  `transfer_in_entry_point` varchar(255) DEFAULT NULL,
+  `referred_from` varchar(255) DEFAULT NULL,
+  `transit_from` varchar(255) DEFAULT NULL,
   `transfer_in_date` date DEFAULT NULL,
-  `transfer_from` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `transfer_from` varchar(255) DEFAULT NULL,
   `initial_enrolment_date` date DEFAULT NULL,
   `date_started_prep_trf_facility` date DEFAULT NULL,
-  `previously_on_prep` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `regimen` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `previously_on_prep` varchar(10) DEFAULT NULL,
+  `regimen` varchar(255) DEFAULT NULL,
   `prep_last_date` date DEFAULT NULL,
-  `in_school` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_alias` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_relationship` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `buddy_alt_phone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `in_school` varchar(10) DEFAULT NULL,
+  `buddy_name` varchar(255) DEFAULT NULL,
+  `buddy_alias` varchar(255) DEFAULT NULL,
+  `buddy_relationship` varchar(255) DEFAULT NULL,
+  `buddy_phone` varchar(255) DEFAULT NULL,
+  `buddy_alt_phone` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29742,7 +28418,7 @@ CREATE TABLE `etl_prep_enrolment` (
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_prep_enrolment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29753,7 +28429,7 @@ DROP TABLE IF EXISTS `etl_prep_followup`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_prep_followup` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29762,59 +28438,59 @@ CREATE TABLE `etl_prep_followup` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `sti_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `genital_ulcer_desease` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vaginal_discharge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `cervical_discharge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `pid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `urethral_discharge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `anal_discharge` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_sti_symptoms` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sti_treated` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vmmc_screened` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vmmc_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `vmmc_referred` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `sti_screened` varchar(10) DEFAULT NULL,
+  `genital_ulcer_desease` varchar(255) DEFAULT NULL,
+  `vaginal_discharge` varchar(255) DEFAULT NULL,
+  `cervical_discharge` varchar(255) DEFAULT NULL,
+  `pid` varchar(255) DEFAULT NULL,
+  `urethral_discharge` varchar(255) DEFAULT NULL,
+  `anal_discharge` varchar(255) DEFAULT NULL,
+  `other_sti_symptoms` varchar(255) DEFAULT NULL,
+  `sti_treated` varchar(10) DEFAULT NULL,
+  `vmmc_screened` varchar(10) DEFAULT NULL,
+  `vmmc_status` varchar(255) DEFAULT NULL,
+  `vmmc_referred` varchar(255) DEFAULT NULL,
   `lmp` date DEFAULT NULL,
-  `pregnant` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `pregnant` varchar(10) DEFAULT NULL,
   `edd` date DEFAULT NULL,
-  `planned_pregnancy` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `wanted_pregnancy` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `breastfeeding` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `fp_method` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ended_pregnancy` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `pregnancy_outcome` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `planned_pregnancy` varchar(10) DEFAULT NULL,
+  `wanted_pregnancy` varchar(10) DEFAULT NULL,
+  `breastfeeding` varchar(10) DEFAULT NULL,
+  `fp_status` varchar(255) DEFAULT NULL,
+  `fp_method` varchar(255) DEFAULT NULL,
+  `ended_pregnancy` varchar(255) DEFAULT NULL,
+  `pregnancy_outcome` varchar(10) DEFAULT NULL,
   `outcome_date` date DEFAULT NULL,
-  `defects` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `has_chronic_illness` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `chronic_illness` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `defects` varchar(10) DEFAULT NULL,
+  `has_chronic_illness` varchar(10) DEFAULT NULL,
+  `chronic_illness` varchar(255) DEFAULT NULL,
   `chronic_illness_onset_date` date DEFAULT NULL,
-  `chronic_illness_drug` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `chronic_illness_dose` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `chronic_illness_units` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `chronic_illness_frequency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `chronic_illness_duration` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `chronic_illness_duration_units` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adverse_reactions` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `medicine_reactions` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `reaction` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `severity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `action_taken` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `known_allergies` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `allergen` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `allergy_reaction` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `allergy_severity` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `chronic_illness_drug` varchar(255) DEFAULT NULL,
+  `chronic_illness_dose` varchar(255) DEFAULT NULL,
+  `chronic_illness_units` varchar(255) DEFAULT NULL,
+  `chronic_illness_frequency` varchar(255) DEFAULT NULL,
+  `chronic_illness_duration` varchar(255) DEFAULT NULL,
+  `chronic_illness_duration_units` varchar(255) DEFAULT NULL,
+  `adverse_reactions` varchar(255) DEFAULT NULL,
+  `medicine_reactions` varchar(255) DEFAULT NULL,
+  `reaction` varchar(255) DEFAULT NULL,
+  `severity` varchar(255) DEFAULT NULL,
+  `action_taken` varchar(255) DEFAULT NULL,
+  `known_allergies` varchar(10) DEFAULT NULL,
+  `allergen` varchar(255) DEFAULT NULL,
+  `allergy_reaction` varchar(255) DEFAULT NULL,
+  `allergy_severity` varchar(255) DEFAULT NULL,
   `allergy_date` date DEFAULT NULL,
-  `hiv_signs` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence_counselled` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_contraindicatios` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_plan` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `condoms_issued` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `number_of_condoms` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `appointment_given` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `hiv_signs` varchar(10) DEFAULT NULL,
+  `adherence_counselled` varchar(10) DEFAULT NULL,
+  `prep_contraindicatios` varchar(255) DEFAULT NULL,
+  `treatment_plan` varchar(255) DEFAULT NULL,
+  `condoms_issued` varchar(10) DEFAULT NULL,
+  `number_of_condoms` varchar(10) DEFAULT NULL,
+  `appointment_given` varchar(10) DEFAULT NULL,
   `appointment_date` date DEFAULT NULL,
-  `reason_no_appointment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `clinical_notes` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `reason_no_appointment` varchar(255) DEFAULT NULL,
+  `clinical_notes` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29822,7 +28498,7 @@ CREATE TABLE `etl_prep_followup` (
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_prep_followup_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29833,7 +28509,7 @@ DROP TABLE IF EXISTS `etl_prep_monthly_refill`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_prep_monthly_refill` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29842,21 +28518,21 @@ CREATE TABLE `etl_prep_monthly_refill` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `risk_for_hiv_positive_partner` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `client_assessment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence_assessment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `poor_adherence_reasons` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_poor_adherence_reasons` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `adherence_counselling_done` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_status` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prescribed_prep_today` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prescribed_regimen` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prescribed_regimen_months` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_discontinue_reasons` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `prep_discontinue_other_reasons` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `appointment_given` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `risk_for_hiv_positive_partner` varchar(255) DEFAULT NULL,
+  `client_assessment` varchar(255) DEFAULT NULL,
+  `adherence_assessment` varchar(255) DEFAULT NULL,
+  `poor_adherence_reasons` varchar(255) DEFAULT NULL,
+  `other_poor_adherence_reasons` varchar(255) DEFAULT NULL,
+  `adherence_counselling_done` varchar(10) DEFAULT NULL,
+  `prep_status` varchar(255) DEFAULT NULL,
+  `prescribed_prep_today` varchar(10) DEFAULT NULL,
+  `prescribed_regimen` varchar(10) DEFAULT NULL,
+  `prescribed_regimen_months` varchar(10) DEFAULT NULL,
+  `prep_discontinue_reasons` varchar(255) DEFAULT NULL,
+  `prep_discontinue_other_reasons` varchar(255) DEFAULT NULL,
+  `appointment_given` varchar(10) DEFAULT NULL,
   `next_appointment` date DEFAULT NULL,
-  `remarks` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29864,45 +28540,7 @@ CREATE TABLE `etl_prep_monthly_refill` (
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_prep_monthly_refill_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `etl_prep_verification`
---
-
-DROP TABLE IF EXISTS `etl_prep_verification`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `etl_prep_verification` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `provider` int(11) DEFAULT NULL,
-  `client_id` int(11) NOT NULL,
-  `visit_id` int(11) DEFAULT NULL,
-  `visit_date` date DEFAULT NULL,
-  `location_id` int(11) DEFAULT NULL,
-  `encounter_id` int(11) NOT NULL,
-  `date_enrolled` date DEFAULT NULL,
-  `health_facility_accessing_PrEP` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_pepfar_site` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `date_initiated_PrEP` date DEFAULT NULL,
-  `PrEP_regimen` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `information_source` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `PrEP_status` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `verification_date` date DEFAULT NULL,
-  `discontinuation_reason` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_discontinuation_reason` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `appointment_date` date DEFAULT NULL,
-  `date_created` datetime NOT NULL,
-  `date_last_modified` datetime DEFAULT NULL,
-  `voided` int(11) DEFAULT NULL,
-  PRIMARY KEY (`encounter_id`),
-  UNIQUE KEY `unique_uuid` (`uuid`),
-  KEY `visit_date` (`visit_date`),
-  KEY `encounter_id` (`encounter_id`),
-  KEY `client_id` (`client_id`),
-  CONSTRAINT `etl_PrEP_verification_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29913,7 +28551,7 @@ DROP TABLE IF EXISTS `etl_progress_note`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_progress_note` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -29922,7 +28560,7 @@ CREATE TABLE `etl_progress_note` (
   `encounter_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `notes` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `notes` varchar(255) DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
   UNIQUE KEY `unique_uuid` (`uuid`),
@@ -29930,7 +28568,7 @@ CREATE TABLE `etl_progress_note` (
   KEY `visit_date` (`visit_date`),
   KEY `encounter_id` (`encounter_id`),
   CONSTRAINT `etl_progress_note_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29942,12 +28580,12 @@ DROP TABLE IF EXISTS `etl_script_status`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_script_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `script_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `script_name` varchar(50) DEFAULT NULL,
   `start_time` datetime DEFAULT NULL,
   `stop_time` datetime DEFAULT NULL,
-  `error` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `error` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -29958,7 +28596,7 @@ DROP TABLE IF EXISTS `etl_sti_treatment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_sti_treatment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
@@ -29967,23 +28605,23 @@ CREATE TABLE `etl_sti_treatment` (
   `encounter_provider` int(11) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
-  `visit_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `syndrome` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_syndrome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `drug_prescription` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_drug_prescription` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `genital_exam_done` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lab_referral` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lab_form_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `referred_to_facility` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `facility_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `partner_referral_done` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `given_lubes` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `visit_reason` varchar(255) DEFAULT NULL,
+  `syndrome` varchar(10) DEFAULT NULL,
+  `other_syndrome` varchar(255) DEFAULT NULL,
+  `drug_prescription` varchar(10) DEFAULT NULL,
+  `other_drug_prescription` varchar(255) DEFAULT NULL,
+  `genital_exam_done` varchar(10) DEFAULT NULL,
+  `lab_referral` varchar(10) DEFAULT NULL,
+  `lab_form_number` varchar(100) DEFAULT NULL,
+  `referred_to_facility` varchar(10) DEFAULT NULL,
+  `facility_name` varchar(255) DEFAULT NULL,
+  `partner_referral_done` varchar(10) DEFAULT NULL,
+  `given_lubes` varchar(10) DEFAULT NULL,
   `no_of_lubes` int(10) DEFAULT NULL,
-  `given_condoms` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `given_condoms` varchar(10) DEFAULT NULL,
   `no_of_condoms` int(10) DEFAULT NULL,
-  `provider_comments` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `provider_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `provider_comments` varchar(255) DEFAULT NULL,
+  `provider_name` varchar(255) DEFAULT NULL,
   `appointment_date` date DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
   PRIMARY KEY (`encounter_id`),
@@ -29995,7 +28633,7 @@ CREATE TABLE `etl_sti_treatment` (
   KEY `given_lubes` (`given_lubes`),
   KEY `given_condoms` (`given_condoms`),
   CONSTRAINT `etl_sti_treatment_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -30006,7 +28644,7 @@ DROP TABLE IF EXISTS `etl_tb_enrollment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_tb_enrollment` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
@@ -30014,20 +28652,20 @@ CREATE TABLE `etl_tb_enrollment` (
   `encounter_id` int(11) NOT NULL,
   `provider` int(11) DEFAULT NULL,
   `date_treatment_started` date DEFAULT NULL,
-  `district` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_registration_number` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `district` varchar(50) DEFAULT NULL,
+  `district_registration_number` varchar(20) DEFAULT NULL,
   `referred_by` int(11) DEFAULT NULL,
   `referral_date` date DEFAULT NULL,
   `date_transferred_in` date DEFAULT NULL,
-  `facility_transferred_from` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `district_transferred_from` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `facility_transferred_from` varchar(100) DEFAULT NULL,
+  `district_transferred_from` varchar(100) DEFAULT NULL,
   `date_first_enrolled_in_tb_care` date DEFAULT NULL,
   `weight` double DEFAULT NULL,
   `height` double DEFAULT NULL,
-  `treatment_supporter` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `treatment_supporter` varchar(100) DEFAULT NULL,
   `relation_to_patient` int(11) DEFAULT NULL,
-  `treatment_supporter_address` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `treatment_supporter_phone_contact` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `treatment_supporter_address` varchar(100) DEFAULT NULL,
+  `treatment_supporter_phone_contact` varchar(100) DEFAULT NULL,
   `disease_classification` int(11) DEFAULT NULL,
   `patient_classification` int(11) DEFAULT NULL,
   `pulmonary_smear_result` int(11) DEFAULT NULL,
@@ -30037,7 +28675,7 @@ CREATE TABLE `etl_tb_enrollment` (
   `has_extra_pulmonary_menengitis` int(11) DEFAULT NULL,
   `has_extra_pulmonary_skeleton` int(11) DEFAULT NULL,
   `has_extra_pulmonary_abdominal` int(11) DEFAULT NULL,
-  `has_extra_pulmonary_other` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `has_extra_pulmonary_other` varchar(100) DEFAULT NULL,
   `treatment_outcome` int(11) DEFAULT NULL,
   `treatment_outcome_date` date DEFAULT NULL,
   `date_of_discontinuation` datetime DEFAULT NULL,
@@ -30054,7 +28692,7 @@ CREATE TABLE `etl_tb_enrollment` (
   KEY `pulmonary_smear_result` (`pulmonary_smear_result`),
   KEY `date_first_enrolled_in_tb_care` (`date_first_enrolled_in_tb_care`),
   CONSTRAINT `etl_tb_enrollment_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -30065,7 +28703,7 @@ DROP TABLE IF EXISTS `etl_tb_follow_up_visit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_tb_follow_up_visit` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -30074,7 +28712,7 @@ CREATE TABLE `etl_tb_follow_up_visit` (
   `encounter_id` int(11) NOT NULL,
   `spatum_test` int(11) DEFAULT NULL,
   `spatum_result` int(11) DEFAULT NULL,
-  `result_serial_number` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `result_serial_number` varchar(20) DEFAULT NULL,
   `quantity` double DEFAULT NULL,
   `date_test_done` date DEFAULT NULL,
   `bacterial_colonie_growth` int(11) DEFAULT NULL,
@@ -30099,7 +28737,7 @@ CREATE TABLE `etl_tb_follow_up_visit` (
   KEY `patient_id` (`patient_id`),
   KEY `hiv_status` (`hiv_status`),
   CONSTRAINT `etl_tb_follow_up_visit_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -30110,7 +28748,7 @@ DROP TABLE IF EXISTS `etl_tb_screening`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_tb_screening` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `patient_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -30136,8 +28774,8 @@ CREATE TABLE `etl_tb_screening` (
   `evaluated_for_ipt` int(11) DEFAULT NULL,
   `started_anti_TB` int(11) DEFAULT NULL,
   `tb_treatment_start_date` date DEFAULT NULL,
-  `tb_prophylaxis` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `notes` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tb_prophylaxis` varchar(50) DEFAULT NULL,
+  `notes` varchar(100) DEFAULT NULL,
   `person_present` int(11) DEFAULT '978',
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
@@ -30152,7 +28790,7 @@ CREATE TABLE `etl_tb_screening` (
   KEY `night_sweat_for_2wks_or_more` (`night_sweat_for_2wks_or_more`),
   KEY `resulting_tb_status` (`resulting_tb_status`),
   CONSTRAINT `etl_tb_screening_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -30163,7 +28801,7 @@ DROP TABLE IF EXISTS `etl_treatment_verification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_treatment_verification` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `provider` int(11) DEFAULT NULL,
   `client_id` int(11) NOT NULL,
   `visit_id` int(11) DEFAULT NULL,
@@ -30171,29 +28809,29 @@ CREATE TABLE `etl_treatment_verification` (
   `location_id` int(11) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `date_diagnosed_with_hiv` date DEFAULT NULL,
-  `art_health_facility` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ccc_number` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_pepfar_site` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `art_health_facility` varchar(100) DEFAULT NULL,
+  `ccc_number` varchar(100) DEFAULT NULL,
+  `is_pepfar_site` varchar(11) DEFAULT NULL,
   `date_initiated_art` date DEFAULT NULL,
-  `current_regimen` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `information_source` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `current_regimen` varchar(100) DEFAULT NULL,
+  `information_source` varchar(100) DEFAULT NULL,
   `cd4_test_date` date DEFAULT NULL,
-  `cd4` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cd4` varchar(100) DEFAULT NULL,
   `vl_test_date` date DEFAULT NULL,
-  `viral_load` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `disclosed_status` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `person_disclosed_to` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `other_person_disclosed_to` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `viral_load` varchar(100) DEFAULT NULL,
+  `disclosed_status` varchar(11) DEFAULT NULL,
+  `person_disclosed_to` varchar(100) DEFAULT NULL,
+  `other_person_disclosed_to` varchar(100) DEFAULT NULL,
   `IPT_start_date` date DEFAULT NULL,
   `IPT_completion_date` date DEFAULT NULL,
-  `on_diff_care` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `in_support_group` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `support_group_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `opportunistic_infection` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `on_diff_care` varchar(11) DEFAULT NULL,
+  `in_support_group` varchar(11) DEFAULT NULL,
+  `support_group_name` varchar(100) DEFAULT NULL,
+  `opportunistic_infection` varchar(100) DEFAULT NULL,
   `oi_diagnosis_date` date DEFAULT NULL,
   `oi_treatment_start_date` date DEFAULT NULL,
   `oi_treatment_end_date` date DEFAULT NULL,
-  `comment` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` varchar(100) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -30203,7 +28841,7 @@ CREATE TABLE `etl_treatment_verification` (
   KEY `encounter_id` (`encounter_id`),
   KEY `client_id` (`client_id`),
   CONSTRAINT `etl_treatment_verification_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -30214,21 +28852,21 @@ DROP TABLE IF EXISTS `etl_viral_load`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `etl_viral_load` (
-  `uuid` char(38) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `uuid` char(38) DEFAULT NULL,
   `encounter_id` int(11) NOT NULL,
   `patient_id` int(11) NOT NULL,
   `location_id` int(11) DEFAULT NULL,
   `visit_date` date DEFAULT NULL,
   `order_date` date DEFAULT NULL,
   `date_of_result` date DEFAULT NULL,
-  `order_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `previous_vl_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `current_vl_result` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `order_reason` varchar(255) DEFAULT NULL,
+  `previous_vl_result` varchar(50) DEFAULT NULL,
+  `current_vl_result` varchar(50) DEFAULT NULL,
   `previous_vl_date` date DEFAULT NULL,
-  `previous_vl_reason` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `previous_vl_reason` varchar(255) DEFAULT NULL,
   `vl_months_since_hiv_enrollment` int(11) DEFAULT NULL,
   `vl_months_since_otz_enrollment` int(11) DEFAULT NULL,
-  `eligibility` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `eligibility` varchar(50) DEFAULT NULL,
   `date_created` datetime NOT NULL,
   `date_last_modified` datetime DEFAULT NULL,
   `voided` int(11) DEFAULT NULL,
@@ -30239,7 +28877,7 @@ CREATE TABLE `etl_viral_load` (
   KEY `patient_id` (`patient_id`),
   KEY `patient_id_2` (`patient_id`,`visit_date`),
   CONSTRAINT `etl_viral_load_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `etl_patient_demographics` (`patient_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -30266,39 +28904,6 @@ CREATE TABLE `etl_viral_load_tracker` (
 --
 -- Dumping routines for database 'kenyaemr_etl'
 --
-/*!50003 DROP PROCEDURE IF EXISTS `update_char_set` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_char_set`()
-BEGIN
-DECLARE done INT DEFAULT 0;
-DECLARE t_sql VARCHAR(256);
-DECLARE tableName VARCHAR(128);
-DECLARE lists CURSOR FOR SELECT table_name FROM `information_schema`.`TABLES` WHERE table_schema = 'kenyaemr_etl';
-DECLARE CONTINUE HANDLER FOR SQLSTATE '02000' SET done = 1;
-OPEN lists;
-FETCH lists INTO tableName;
-REPEAT
-SET @t_sql = CONCAT('ALTER TABLE ', tableName, ' CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
-PREPARE stmt FROM @t_sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-FETCH lists INTO tableName;
-UNTIL done END REPEAT;
-CLOSE lists;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -30309,4 +28914,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-16 13:34:15
+-- Dump completed on 2021-11-26 13:20:02
