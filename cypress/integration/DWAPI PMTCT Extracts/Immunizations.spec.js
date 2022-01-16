@@ -1,7 +1,7 @@
 describe("Connect and validate Immunizations extracts", () => {
   let res = [];
   it("Check if the Immunizations.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT Extracts/Immunizations.sql").then(
+    cy.readFile("./DWAPI PMTCT EXTRACTS/Immunizations.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

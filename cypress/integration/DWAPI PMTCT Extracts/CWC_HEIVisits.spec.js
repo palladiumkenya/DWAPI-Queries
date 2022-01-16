@@ -1,7 +1,7 @@
 describe("Connect and validate CWC HEI  Visit extracts", () => {
   let res = [];
   it("Check if the CWH HEI Visits.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT Extracts/CWC_HEI Visits.sql").then(
+    cy.readFile("./DWAPI PMTCT EXTRACTS/CWC_HEI Visits.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

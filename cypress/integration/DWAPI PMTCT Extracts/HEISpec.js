@@ -1,7 +1,7 @@
 describe("Connect and validate HEI extracts", () => {
   let res = [];
   it("Check if the HEI.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT Extracts/HEI.sql").then((querystring) => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/HEI.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

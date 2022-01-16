@@ -1,7 +1,7 @@
 describe("Connect and validate CWC Enrolment extracts", () => {
   let res = [];
   it("Check if the CWC_Enrollment.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT Extracts/CWC_Enrolment.sql").then(
+    cy.readFile("./DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;
