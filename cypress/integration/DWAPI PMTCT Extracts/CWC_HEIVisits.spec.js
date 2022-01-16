@@ -1,6 +1,6 @@
-describe("Connect and validate CWC Enrolment extracts", () => {
+describe("Connect and validate CWC HEI  Visit extracts", () => {
   let res = [];
-  it("Check if the ANC_Visits.sql will run without any error", () => {
+  it("Check if the CWH HEI Visits.sql will run without any error", () => {
     cy.readFile("./DWAPI PMTCT Extracts/CWC_HEI Visits.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
@@ -23,7 +23,7 @@ describe("Connect and validate CWC Enrolment extracts", () => {
       expect(res[0]).to.have.property("FacilityName");
       expect(res[0]).to.have.property("PatientMNCH_ID");
       expect(res[0]).to.have.property("VisitDate");
-      expect(res[0]).to.have.property("VIsitID");
+      expect(res[0]).to.have.property("VisitID");
       expect(res[0]).to.have.property("Height");
       expect(res[0]).to.have.property("Weight");
       expect(res[0]).to.have.property("Temp");
