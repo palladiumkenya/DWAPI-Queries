@@ -6,7 +6,7 @@ select d.openmrs_id                                                             
        i.facilityName                                                                FacilityName,
        a.visit_id                                                                    VisitId,
        a.visit_date                                                                  Covid19AssessmentDate,
-       if(a.final_vaccination_status in (66192, 5585), 'Yes', 'No')               as ReceivedCOVID19Vaccine,
+       if(a.final_vaccination_status in (166192, 5585), 'Yes', 'No')               as ReceivedCOVID19Vaccine,
        a.first_dose_date                                                          as DategivenFirstDose,
        (case a.first_vaccine_type
           when 166156 then 'Astrazeneca'
