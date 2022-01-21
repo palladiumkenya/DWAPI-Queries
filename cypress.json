@@ -1,11 +1,11 @@
 {
   "database": {
     "database": "openmrs",
-    "host": "localhost",
-    "user": "root",
-    "password": "test123",
+    "host": "197.248.44.228",
+    "user": "chester",
+    "password": "Osoro1234",
     "port": "3306",
-    "connectTimeout": 67000,
+    "connectTimeout": 80000,
     "multipleStatements": true
   }
 }
