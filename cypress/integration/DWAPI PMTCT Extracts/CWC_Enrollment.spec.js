@@ -1,7 +1,7 @@
 describe("Connect and validate CWC Enrolment extracts", () => {
   let res = [];
-  it("Check if the ANC_Visits.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT Extracts/CWC_Enrolment.sql").then(
+  it("Check if the CWC_Enrollment.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/CWC_Enrolment.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;
@@ -20,7 +20,7 @@ describe("Connect and validate CWC Enrolment extracts", () => {
       expect(res[0]).to.have.property("PatientMNCH_ID");
       expect(res[0]).to.have.property("SiteCode");
       expect(res[0]).to.have.property("PatientIDCWC");
-      expect(res[0]).to.have.property("HeIID");
+      expect(res[0]).to.have.property("HEIID");
 
       expect(res[0]).to.have.property("MothersPKV");
       expect(res[0]).to.have.property("RegistrationAtCWC");
@@ -34,7 +34,7 @@ describe("Connect and validate CWC Enrolment extracts", () => {
       expect(res[0]).to.have.property("BirthLength");
       expect(res[0]).to.have.property("BirthOrder");
       expect(res[0]).to.have.property("BirthType");
-      expect(res[0]).to.have.property("PlaceOfDelivery");
+      expect(res[0]).to.have.property("PlaceOfdelivery");
       expect(res[0]).to.have.property("ModeOfDelivery");
       expect(res[0]).to.have.property("SpecialNeeds");
       expect(res[0]).to.have.property("SpecialCare");
