@@ -53,5 +53,12 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          env: true
+        env:
+          host: ${{secrets.HOST}},
+          database: ${{ secrets.DATABASE }},
+          user: ${{secrets.USER }},
+          password: ${{secrets.PASSWORD }},
+          port: ${{ secrets.PORT }}
           build: npm run build --if-present
-          start: npm run cypress:open
+          start: npm run cypress --env host=${{ secrets.HOST }} database=${{ secrets.DATABASE}} user=${{secrets.USER}} password=${{secrets.PASSWORD}}

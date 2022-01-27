@@ -17,10 +17,19 @@
  */
 // eslint-disable-next-line no-unused-vars
 
+const cypress = require("cypress");
 const mysql = require("mysql");
-const config = require("../../cypress.json");
+//const config = require("../../cypress.json");
 function queryDatabase(query) {
-  const connection = mysql.createConnection(config.database);
+  const connection = mysql.createConnection({
+    host: cypress.env("host"),
+    user: cypess.env("user"),
+    password: cypress.env("password"),
+    database: cypress.env("database"),
+    port: cypress.env("port"),
+    connectTimeout: 80000,
+    multipleStatements: true,
+  });
   connection.connect();
 
   return new Promise((resolve, reject) => {
