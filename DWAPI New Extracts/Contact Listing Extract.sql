@@ -1,4 +1,5 @@
 select v.patient_related_to as PatientPK,
+       v.patient_id as ContactPatientPK,
        s.siteCode as SiteCode,
        de.unique_patient_no as PatientID,
        'KenyaEMR' as Emr,'Kenya HMIS II' as Project,

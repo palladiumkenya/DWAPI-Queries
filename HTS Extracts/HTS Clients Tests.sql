@@ -3,7 +3,7 @@ SELECT t.patient_id                                                      as Pati
        (select siteCode from kenyaemr_etl.etl_default_facility_info)     as SiteCode,
        'KenyaEMR'                                                        as Emr,
        'Kenya HMIS II'                                                   AS Project,
-       id.identifier                                                     AS HtsNumber,
+       demographics.openmrs_id                                           AS HtsNumber,
        t.encounter_id                                                    as EncounterId,
        t.visit_date                                                      as TestDate,
        t.ever_tested_for_hiv                                             as EverTestedForHiv,
@@ -19,15 +19,11 @@ SELECT t.patient_id                                                      as Pati
        t.patient_had_hiv_self_test                                       as ClientSelfTested,
        t.couple_discordant                                               as CoupleDiscordant,
        CASE t.test_type
-         WHEN 1 THEN 'Initial'
-         WHEN 2 THEN 'Repeat'
+           WHEN 1 THEN 'Initial'
+           WHEN 2 THEN 'Repeat'
            END                                                           AS TestType,
        t.patient_consented                                               as Consent
 FROM kenyaemr_etl.etl_hts_test t
-       inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id
-       LEFT JOIN location_attribute SC ON SC.location_id = t.encounter_location AND SC.attribute_type_id = 1
-       LEFT JOIN location SN ON SN.location_id = t.encounter_location
-       LEFT JOIN patient_identifier id ON id.patient_id = t.patient_id AND id.identifier_type =
-                                                                           (select patient_identifier_type_id
-                                                                            from patient_identifier_type
-                                                                            where name = 'OpenMRS ID');
+         inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id
+         LEFT JOIN location_attribute SC ON SC.location_id = t.encounter_location AND SC.attribute_type_id = 1
+         LEFT JOIN location SN ON SN.location_id = t.encounter_location;
