@@ -50,15 +50,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+
       - name: Cypress run
         uses: cypress-io/github-action@v2
-        with:
-          env: true
+
         env:
-          host: ${{secrets.HOST}},
-          database: ${{ secrets.DATABASE }},
-          user: ${{secrets.USER }},
-          password: ${{secrets.PASSWORD }},
-          port: ${{ secrets.PORT }}
+          CYPRESS_host: ${{secrets.CYPRESS_HOST}}
+          CYPRESS_database: ${{ secrets.CYPRESS_DATABASE }}
+          CYPRESS_user: ${{secrets.CYPRESS_USER}}
+          CYPRESS_password: ${{secrets.CYPRESS_PASSWORD }}
+          CYPRESS_port: ${{ secrets.CYPRESS_PORT }}
           build: npm run build --if-present
-          start: npm run cypress --env host=${{ secrets.HOST }} database=${{ secrets.DATABASE}} user=${{secrets.USER}} password=${{secrets.PASSWORD}}
+          run: npm run cypress:open

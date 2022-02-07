@@ -18,15 +18,19 @@
 // eslint-disable-next-line no-unused-vars
 
 const cypress = require("cypress");
+//const { config } = require("cypress/types/bluebird");
 const mysql = require("mysql");
 //const config = require("../../cypress.json");
+
+
+module.exports = (on, config) => {
 function queryDatabase(query) {
   const connection = mysql.createConnection({
-    host: cypress.env("host"),
-    user: cypess.env("user"),
-    password: cypress.env("password"),
-    database: cypress.env("database"),
-    port: cypress.env("port"),
+    host: config.env.host,
+    user: config.env.user,
+    password: config.env.password,
+    database: config.env.database,
+    port: config.env.port,
     connectTimeout: 80000,
     multipleStatements: true,
   });
@@ -44,8 +48,6 @@ function queryDatabase(query) {
     });
   });
 }
-
-module.exports = (on, config) => {
   on("task", {
     queryDatabase: (query) => {
       return queryDatabase(query);
