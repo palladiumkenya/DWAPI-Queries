@@ -1,3 +1,9 @@
 {
-  "projectId": "yqyx59"
+  "env": {
+    "host": "",
+    "password": "",
+    "user": "",
+    "database": "",
+    "port": ""
+  }
 }

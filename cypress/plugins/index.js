@@ -11,43 +11,40 @@
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
-
+//plugin
 /**
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
 
-const cypress = require("cypress");
-//const { config } = require("cypress/types/bluebird");
 const mysql = require("mysql");
-//const config = require("../../cypress.json");
-
 
 module.exports = (on, config) => {
-function queryDatabase(query) {
-  const connection = mysql.createConnection({
-    host: config.env.host,
-    user: config.env.user,
-    password: config.env.password,
-    database: config.env.database,
-    port: config.env.port,
-    connectTimeout: 80000,
-    multipleStatements: true,
-  });
-  connection.connect();
-
-  return new Promise((resolve, reject) => {
-    connection.query(query, (error, results, fields) => {
-      if (error) {
-        return reject(error);
-      }
-
-      connection.end();
-
-      return resolve(results);
+  function queryDatabase(query) {
+    const connection = mysql.createConnection({
+      host: config.env.host,
+      user: config.env.user,
+      password: config.env.password,
+      database: config.env.database,
+      port: config.env.port,
+      connectTimeout: 100000,
+      multipleStatements: true,
     });
-  });
-}
+
+    connection.connect();
+
+    return new Promise((resolve, reject) => {
+      connection.query(query, (error, results, fields) => {
+        if (error) {
+          return reject(error);
+        }
+
+        connection.end();
+
+        return resolve(results);
+      });
+    });
+  }
   on("task", {
     queryDatabase: (query) => {
       return queryDatabase(query);
