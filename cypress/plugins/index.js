@@ -22,11 +22,11 @@ const mysql = require("mysql");
 module.exports = (on, config) => {
   function queryDatabase(query) {
     const connection = mysql.createConnection({
-      host: config.env.host,
-      user: config.env.user,
-      password: config.env.password,
-      database: config.env.database,
-      port: config.env.port,
+      host: process.env.host,
+      user: process.env.user,
+      password: process.env.password,
+      database: process.env.database,
+      port: process.env.port,
       connectTimeout: 100000,
       multipleStatements: true,
     });

@@ -33,6 +33,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        env:
+          host: ${{secrets.CYPRESS_HOST}}
+          database: ${{ secrets.CYPRESS_DATABASE }}
+          user: ${{secrets.CYPRESS_USER}}
+          password: ${{secrets.CYPRESS_PASSWORD }}
+          port: ${{ secrets.CYPRESS_PORT }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
