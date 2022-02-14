@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     services:
       mysql:
         image: mysql:5.7
@@ -28,30 +27,32 @@ jobs:
           MYSQL_PASSWORD: test123
 
         ports:
-          - "3306:3306"
+          - "3310:3310"
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
       - uses: actions/checkout@v2
+        env:
+          host: ${{secrets.CYPRESS_HOST}}
+          database: ${{ secrets.CYPRESS_DATABASE }}
+          user: ${{secrets.CYPRESS_USER}}
+          password: ${{secrets.CYPRESS_PASSWORD }}
+          port: ${{ secrets.CYPRESS_PORT }}
 
-      - name: Verify MySQL connection from host
-
-        run: |
-          mysql --protocol=tcp -h localhost -P 3306 -u root -ptest123 -e 'SHOW DATABASES'
-          mysql --protocol=tcp -h localhost -P 3306 -u root -ptest123 -e "select @@hostname"
-      - name: load database
-        run: mysql --protocol=tcp  -h localhost -P 3306 -u root -ptest123 < ./openmrs.sql
-      - name: Check the DATABASES
-        run: |
-          mysql --protocol=tcp -h localhost -P 3306 -u root -ptest123 -e 'SHOW DATABASES'
-          mysql --protocol=tcp -h localhost -P 3306 -u root -ptest123 -e "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
           build: npm run build --if-present
           start: npm run cypress:open
+        env:
+          CYPRESS_host: ${{secrets.CYPRESS_HOST}}
+          CYPRESS_database: ${{ secrets.CYPRESS_DATABASE }}
+          CYPRESS_user: ${{secrets.CYPRESS_USER}}
+          CYPRESS_password: ${{secrets.CYPRESS_PASSWORD }}
+          CYPRESS_port: ${{ secrets.CYPRESS_PORT }}

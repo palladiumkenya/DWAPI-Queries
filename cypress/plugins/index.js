@@ -11,32 +11,40 @@
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
-
+//plugin
 /**
  * @type {Cypress.PluginConfig}
  */
 // eslint-disable-next-line no-unused-vars
 
 const mysql = require("mysql");
-const config = require("../../cypress.json");
-function queryDatabase(query) {
-  const connection = mysql.createConnection(config.database);
-  connection.connect();
-
-  return new Promise((resolve, reject) => {
-    connection.query(query, (error, results, fields) => {
-      if (error) {
-        return reject(error);
-      }
-
-      connection.end();
-
-      return resolve(results);
-    });
-  });
-}
 
 module.exports = (on, config) => {
+  function queryDatabase(query) {
+    const connection = mysql.createConnection({
+      host: process.env.host,
+      user: process.env.user,
+      password: process.env.password,
+      database: process.env.database,
+      port: process.env.port,
+      connectTimeout: 100000,
+      multipleStatements: true,
+    });
+
+    connection.connect();
+
+    return new Promise((resolve, reject) => {
+      connection.query(query, (error, results, fields) => {
+        if (error) {
+          return reject(error);
+        }
+
+        connection.end();
+
+        return resolve(results);
+      });
+    });
+  }
   on("task", {
     queryDatabase: (query) => {
       return queryDatabase(query);
