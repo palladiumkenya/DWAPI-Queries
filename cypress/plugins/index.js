@@ -18,15 +18,26 @@
 // eslint-disable-next-line no-unused-vars
 
 const mysql = require("mysql");
+const crypto = require("crypto");
 
 module.exports = (on, config) => {
+  function decryptdata(data) {
+    let algorithm = "aes256";
+    const decipher = crypto.createDecipher(algorithm, config.env.secretkey);
+
+    let decryptedData = decipher.update(data, "hex", "utf8");
+    decryptedData += decipher.final("utf8");
+
+    return decryptedData.toString();
+  }
+
   function queryDatabase(query) {
     const connection = mysql.createConnection({
-      host: process.env.host,
-      user: process.env.user,
-      password: process.env.password,
-      database: process.env.database,
-      port: process.env.port,
+      host: decryptdata(config.env.host),
+      user: decryptdata(config.env.user),
+      password: decryptdata(config.env.password),
+      database: decryptdata(config.env.database),
+      port: decryptdata(config.env.port),
       connectTimeout: 100000,
       multipleStatements: true,
     });

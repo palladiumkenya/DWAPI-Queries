@@ -12,12 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      host: ${{secrets.CYPRESS_HOST}}
-      database: ${{ secrets.CYPRESS_DATABASE }}
-      user: ${{secrets.CYPRESS_USER}}
-      password: ${{secrets.CYPRESS_PASSWORD }}
-      port: ${{ secrets.CYPRESS_PORT }}
 
     strategy:
       matrix:
@@ -51,8 +45,4 @@ jobs:
           build: npm run build --if-present
           start: npm run cypress:open
         env:
-          CYPRESS_host: ${{secrets.CYPRESS_HOST}}
-          CYPRESS_database: ${{ secrets.CYPRESS_DATABASE }}
-          CYPRESS_user: ${{secrets.CYPRESS_USER}}
-          CYPRESS_password: ${{secrets.CYPRESS_PASSWORD }}
-          CYPRESS_port: ${{ secrets.CYPRESS_PORT }}
+          CYPRESS_secretkey: ${{secrets.CYPRESS_KEY}}
