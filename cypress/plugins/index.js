@@ -22,7 +22,7 @@ const crypto = require("crypto");
 
 module.exports = (on, config) => {
   function decryptdata(data) {
-    let algorithm = "aes256";
+    let algorithm = "aes-256-cbc";
     const decipher = crypto.createDecipher(algorithm, config.env.secretkey);
 
     let decryptedData = decipher.update(data, "hex", "utf8");
