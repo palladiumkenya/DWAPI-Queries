@@ -21,6 +21,7 @@
     "cypress": "^8.7.0"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
     "mysql": "github:mysqljs/mysql"
   }
 }
