@@ -24,5 +24,6 @@ from kenyaemr_etl.etl_laboratory_extract l
        join concept_name cn on cn.concept_id=l.lab_test and cn.concept_name_type='FULLY_SPECIFIED'and cn.locale='en'
        join concept c on c.concept_id = l.lab_test
        join kenyaemr_etl.etl_default_facility_info i
+    left outer join (select p.patient_id from kenyaemr_etl.etl_prep_enrolment p)p on l.patient_id = p.patient_id
        left outer join concept_name cn2 on cn2.concept_id=l.test_result and cn2.concept_name_type='FULLY_SPECIFIED'
-                                             and cn2.locale='en' where d.unique_patient_no is not null;
+                                             and cn2.locale='en' where d.unique_patient_no is not null or p.patient_id is not null;

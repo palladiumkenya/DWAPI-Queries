@@ -47,6 +47,10 @@ select d.patient_id                                              as PatientPK,
        f.reason_no_appointment                                   as Reasonfornotgivingnextappointment,
        f.appointment_date                                        as NextAppointment,
        f.clinical_notes                                          as ClinicalNotes,
+       case f.hepatitisB_vaccinated when 1065 then 'Yes' when 1066 then 'No' end as VaccinationForHepBStarted,
+       case f.hepatitisB_treated when 1065 then 'Yes' when 1066 then 'No' when 1788 then 'Referred' end as TreatedForHepB,
+       case f.hepatitisC_vaccinated when 1065 then 'Yes' when 1066 then 'No'  end as VaccinationForHepCStarted,
+       case f.hepatitisC_treated when 1065 then 'Yes' when 1066 then 'No' when 1788 then 'Referred' end as TreatedForHepC,
        f.date_created,
        f.date_last_modified
 from kenyaemr_etl.etl_prep_followup f
