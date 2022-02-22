@@ -9,7 +9,6 @@ select d.patient_id                as PatientPK,
        f.regimen_prescribed        as RegimenPrescribed,
        f.visit_date                as DispenseDate,
        f.months_prescribed_regimen as Duration,
-
        f.date_created              as DateCreated,
        f.date_last_modified        as DateModified
 from kenyaemr_etl.etl_prep_followup f
