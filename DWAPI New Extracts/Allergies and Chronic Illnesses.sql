@@ -64,27 +64,28 @@ select ci.patient_id                                             as PatientPK,
                         end SEPARATOR
                     '|')                                         as AllergyCausativeAgent,
        group_concat(case ci.allergy_reaction
-                        when 1067 then 'Anaemia'
-                        when 121629 then 'Anaphylaxis'
-                        when 148888 then 'Angioedema'
-                        when 148787 then 'Arrhythmia'
-                        when 120148 then 'Bronchospasm'
-                        when 108 then 'Cough'
-                        when 143264 then 'Diarrhea'
-                        when 142412 then 'Dystonia'
-                        when 118773 then 'Fever'
-                        when 140238 then 'Flushing'
-                        when 140039 then 'GI upset'
-                        when 139581 then 'Headache'
-                        when 139084 then 'Hepatotoxicity'
-                        when 159098 then 'Hives'
-                        when 111061 then 'Hypertension'
-                        when 117399 then 'Itching'
-                        when 879 then 'Mental status change'
-                        when 121677 then 'Musculoskeletal pain'
-                        when 159347 then 'Myalgia'
-                        when 121 then 'Rash'
-                        when 512 then 'Other'
+                        when 1067 then 'Unknown'
+                        when 121629 then 'Anaemia'
+                        when 148888 then 'Anaphylaxis'
+                        when 148787 then 'Angioedema'
+                        when 120148 then 'Arrhythmia'
+                        when 108 then 'Bronchospasm'
+                        when 143264 then 'Cough'
+                        when 142412 then 'Diarrhea'
+                        when 118773 then 'Dystonia'
+                        when 140238 then 'Fever'
+                        when 140039 then 'Flushing'
+                        when 139581 then 'GI upset'
+                        when 139084 then 'Headache'
+                        when 159098 then 'Hepatotoxicity'
+                        when 111061 then 'Hives'
+                        when 117399 then 'Hypertension'
+                        when 879 then 'Itching'
+                        when 121677 then 'Mental status change'
+                        when 159347 then 'Musculoskeletal pain'
+                        when 121 then 'Myalgia'
+                        when 512 then 'Rash'
+                        when 5622 then 'Other'
                         end SEPARATOR
                     '|')                                         as AllergicReaction,
        group_concat(case ci.allergy_severity
@@ -129,4 +130,4 @@ from kenyaemr_etl.etl_allergy_chronic_illness ci
 where (d.hiv_disc_patient is null
     or d.hiv_outcome_date < e.latest_enrolment_date)
    or (pd.PrEP_disc_patient is null or pd.PrEP_Outcome_date < pe.prep_latest_enrolment_date)
-group by ci.visit_date;
+group by ci.patient_id,ci.visit_date;
