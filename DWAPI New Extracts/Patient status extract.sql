@@ -8,6 +8,7 @@ select ''                                                                       
        'KenyaEMR'                                                                  as Emr,
        'Kenya HMIS II'                                                             as Project,
        max(date(disc.visit_date))                                                  AS ExitDate,
+       max(date(disc.effective_discontinuation_date))                              AS EffectiveDiscontinuationDate,
        mid(max(concat(visit_date, (case discontinuation_reason
                                      when 159492 then 'Transfer Out'
                                      when 160034 then 'Died'
@@ -73,9 +74,3 @@ where d.unique_patient_no is not null
   and disc.program_name = 'HIV'
 group by PatientID
 order by disc.visit_date ASC;
-
-select d.visit_date,d.death_reason,d.specific_death_cause from kenyaemr_etl.etl_patient_program_discontinuation d
-where d.patient_id in (846,867);
-
-select * from kenyaemr_etl.etl_pre_hiv_enrollment_art p where
-    p.patient_id = (select d.patient_id from kenyaemr_etl.etl_patient_demographics d where d.unique_patient_no = 1302802909);
