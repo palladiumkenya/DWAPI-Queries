@@ -1,0 +1,10 @@
+{
+  "env": {
+    "host": "6ff6eb16d3bc93008d00b495d1efd00a",
+    "password": "06d9ace6c8d1e7bf1907ac9a295f53b2",
+    "user": "41f93e68a8b17c72401eb231a5044aae",
+    "database": "cef05213cd79a7b1b42fab2acd735e54",
+    "port": "6ccde2050cf193c1d9710a64eb4f7109",
+    "secretkey": ""
+  }
+}
