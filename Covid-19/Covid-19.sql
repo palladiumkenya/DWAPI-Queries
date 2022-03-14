@@ -56,8 +56,8 @@ select d.openmrs_id                                                             
        (case booster_dose_verified when 164134 then 'Yes' end)                    as BoosterDoseVerified,
        a.date_tested_positive                                                     as COVID19TestDate,
        (case a.symptomatic
-          when 1068 then 'Yes'
-          when 165912 then 'No' END)                                              as PatientStatus,
+          when 1068 then 'Symptomatic'
+          when 165912 then 'Asymptomatic' END)                                              as Covid19Presentation,
        (case a.hospital_admission
           when 1065 then 'Yes'
           when 1066 then 'No' end)                                                as AdmissionStatus,
@@ -78,4 +78,3 @@ from kenyaemr_etl.etl_patient_demographics d
        join kenyaemr_etl.etl_covid19_assessment a on d.patient_id = a.patient_id
        join kenyaemr_etl.etl_default_facility_info i
 group by a.visit_id;
-
