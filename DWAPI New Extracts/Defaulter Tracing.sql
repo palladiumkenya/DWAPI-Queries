@@ -23,6 +23,10 @@ select d.openmrs_id                                                             
           when 160037 then 'Still in care at CCC'
           when 5240 then 'Lost to follow up'
           when 164435 then 'Stopped treatment' end)                           as TrueStatus,
+       (case f.reason_for_missed_appointment when 165609 then 'Client has covid-19 infection' when 165610 then 'COVID-19 restrictions' when 164407 then 'Client refilled drugs from another facility' when 159367 then 'Client has enough drugs' when
+           162619 then 'Client travelled' when 126240 then 'Client could not get an off from work/school' when 160583
+           then 'Client is sharing drugs with partner' when 162192 then 'Client forgot clinic dates' when 164349
+           then 'Client stopped medications' when 1654 then 'Client sick at home/admitted' when 5622 then 'Other' end) as ReasonForMissedAppointment,
        (case f.cause_of_death
           when 165609 then 'Infection due to COVID-19'
           when 162574 then 'Death related to HIV infection'
