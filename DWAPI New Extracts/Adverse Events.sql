@@ -112,7 +112,7 @@ from kenyaemr_etl.etl_adverse_events a
                     group by d.patient_id) pd on pd.PrEP_disc_patient = a.patient_id
          inner join kenyaemr_etl.etl_patient_demographics de on a.patient_id = de.patient_id
          join kenyaemr_etl.etl_default_facility_info s
-where (d.hiv_disc_patient is null
-    or d.hiv_outcome_date < e.latest_enrolment_date)
-   or (pd.PrEP_disc_patient is null or pd.PrEP_Outcome_date < pe.prep_latest_enrolment_date)
+where a.form in ('Greencard','prep-initial','prep-consultation')
+      and ((d.hiv_disc_patient is null or d.hiv_outcome_date < e.latest_enrolment_date)
+           or (pd.PrEP_disc_patient is null or pd.PrEP_Outcome_date < pe.prep_latest_enrolment_date))
 group by a.patient_id,a.visit_date;
