@@ -241,5 +241,5 @@ from kenyaemr_etl.etl_patient_demographics d
                   where de.discontinued is null
                   group by de.patient_id)de on fup.patient_id = de.patient_id
 where d.unique_patient_no is not null
-  and fup.visit_date > '1990-01-01'
+  and fup.visit_date > '1990-01-01' and fup.next_appointment_date is not null
   and fup.visit_id is not null;
