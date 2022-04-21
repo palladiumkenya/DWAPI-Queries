@@ -95,4 +95,4 @@ from kenyaemr_etl.etl_patient_demographics d
 join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=d.patient_id
 left join concept_name dc on dc.concept_id =  fup.differentiated_care and dc.concept_name_type='FULLY_SPECIFIED'
 left join concept_name pt on fup.population_type = pt.concept_id AND pt.concept_name_type='FULLY_SPECIFIED'
-where d.unique_patient_no is not null and fup.visit_date > '1990-01-01'  
+where d.unique_patient_no is not null and fup.visit_date > '1990-01-01' and fup.next_appointment_date is not null

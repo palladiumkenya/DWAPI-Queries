@@ -127,7 +127,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
          from kenyaemr_etl.etl_patient_program
          group by Patient_Id,program
          ) as prg on prg.patient_id = d.patient_id
-       left join kenyaemr_etl.etl_contact c on c.client_id = d.patient_id and prg.status='Active' and prg.program='KP'
+       left join kenyaemr_etl.etl_kp_contact c on c.client_id = d.patient_id and prg.status='Active' and prg.program='KP'
 join kenyaemr_etl.etl_default_facility_info i
 where unique_patient_no is not null
 group by d.patient_id
