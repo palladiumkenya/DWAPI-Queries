@@ -12,8 +12,8 @@ select distinct
                   when is_arv=1 then ph.drugreg
                   else if(cn2.name is not null, cn2.name,cn.name) END as Drug,
                 ph.visit_date as DispenseDate,
-                ph.duration AS duration,
-                ph.duration AS PeriodTaken,
+                ph.duration_in_days AS duration,
+                ph.duration_in_days AS PeriodTaken,
                 fup.next_appointment_date as ExpectedReturn,
                 'KenyaEMR' as Emr,
                 'Kenya HMIS II' as Project,
@@ -31,7 +31,7 @@ select distinct
                 GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified), COALESCE(d.date_last_modified, ph.date_last_modified)) as date_last_modified
 from (SELECT * FROM (
                     ( select patient_id, visit_id,visit_date,encounter_id,drug,is_arv, is_ctx,is_dapsone,drug_name as drugreg,frequency,
-                             '' as DispenseDate,duration, duration PeriodTaken,
+                             '' as DispenseDate,duration_in_days, duration_in_days PeriodTaken,
                              ''ExpectedReturn, CASE WHEN is_ctx=1 OR is_dapsone= 1 THEN 'Prophylaxis' END AS TreatmentType,'' as RegimenLine,'' as regimen,
                              CASE WHEN is_ctx=1 THEN 'CTX'
                                   WHEN is_dapsone =1 THEN 'DAPSON' END AS ProphylaxisType,'' as previousRegimen,'' as RegimenChangedSwitched,'' as RegimenChangeSwitchReason, '' as StopRegimenReason,'' as StopRegimenDate,'' as prev_Regimen,/*'' as regimen,*/
@@ -48,7 +48,7 @@ from (SELECT * FROM (
                                                        when 159598 then 'Non-compliance with treatment or therapy' when 1754 then 'Drugs out of stock'
                                                        when 1434 then 'Pregnancy"  when 1253 then "Completed PMTCT'  when 843 then 'Clinical treatment failure'
                                                        when 160566 then 'Immunological failure'
-                                                       when 5622 then "Other"else "" end) as RegimenChangeSwitchReason,
+                                                       when 5622 then "Other" else "" end) as RegimenChangeSwitchReason,
                              if(regimen_stopped = 1260, (case reason_discontinued when 102 then 'Drug toxicity' end),null) as StopRegimenReason,if(regimen_stopped= 1260,date_discontinued,NULL) as StopRegimenDate,
                              @prev_regimen := e.regimen prev_regimen,'' as date_created, ''as date_last_modified
                      FROM kenyaemr_etl.etl_drug_event e , (SELECT @s := 0,@prev_regimen := -1, @x :=0 ,@prev_regimen_line := -1) s
