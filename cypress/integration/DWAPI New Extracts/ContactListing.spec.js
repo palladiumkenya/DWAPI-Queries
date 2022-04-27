@@ -26,9 +26,9 @@ describe("Connect and validate ContactListing extracts", () => {
       expect(res[0]).to.have.property("ContactAge");
       expect(res[0]).to.have.property("ContactMaritalStatus");
       expect(res[0]).to.have.property("RelationshipWithPatient");
-      expect(res[0]).to.have.property("ScreenedForIPV");
+      expect(res[0]).to.have.property("ScreenedForIpv");
       expect(res[0]).to.have.property("IpvScreening");
-      expect(res[0]).to.have.property("IPVSCreeningOutcome");
+      expect(res[0]).to.have.property("IPVScreeningOutcome");
       expect(res[0]).to.have.property("CurrentlyLivingWithIndexClient");
       expect(res[0]).to.have.property("KnowledgeOfHivStatus");
       expect(res[0]).to.have.property("PnsApproach");

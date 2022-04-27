@@ -27,7 +27,7 @@ describe("Connect and validate HTS Client Linkage extracts", () => {
       expect(res[0]).to.have.property("EnrolledFacilityName");
       expect(res[0]).to.have.property("ReferralDate");
       expect(res[0]).to.have.property("DateEnrolled");
-      expect(res[0]).to.have.property("ReportedCCNumber");
+      expect(res[0]).to.have.property("ReportedCCCNumber");
       expect(res[0]).to.have.property("ReportedStartARTDate");
 
       

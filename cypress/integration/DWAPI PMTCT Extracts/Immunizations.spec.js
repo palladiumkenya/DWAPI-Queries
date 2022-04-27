@@ -28,8 +28,9 @@ describe("Connect and validate Immunizations extracts", () => {
       expect(res[0]).to.have.property("OPV2");
       expect(res[0]).to.have.property("OPV3");
       expect(res[0]).to.have.property("IPV");
-      expect(res[0]).to.have.property("DPTHepBH1B1");
-      expect(res[0]).to.have.property("DPTHepBH1B2");
+      expect(res[0]).to.have.property("DPTHepBHIB1");
+      expect(res[0]).to.have.property("DPTHepBHIB2");
+      expect(res[0]).to.have.property("DPTHepBHIB3");
       expect(res[0]).to.have.property("PCV101");
       expect(res[0]).to.have.property("PCV102");
       expect(res[0]).to.have.property("PCV103");
