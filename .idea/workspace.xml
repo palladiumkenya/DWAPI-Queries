@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8d4cc733-10c7-45e2-b868-7e59b02a3514" name="Default" comment="">
+<<<<<<< HEAD
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/DWAPI UPI Extracts/Dwapi_one_time_dump.sql" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -159,10 +163,34 @@
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="art_patients.sql" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/art_patients.sql">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1241">
+              <caret line="73" column="71" lean-forward="false" selection-start-line="73" selection-start-column="71" selection-end-line="73" selection-end-column="71" />
+=======
+      <file leaf-file-name="Adverse Events.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Adverse Events.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1887">
+              <caret line="111" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="111" selection-end-column="0" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< HEAD
+      <file leaf-file-name="Patient Pharmacy.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Pharmacy.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+=======
+      <file leaf-file-name="art_patients.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/art_patients.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
               <caret line="73" column="71" lean-forward="false" selection-start-line="73" selection-start-column="71" selection-end-line="73" selection-end-column="71" />
               <folding />
             </state>
@@ -172,7 +200,8 @@
       <file leaf-file-name="Patient Pharmacy.sql" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Pharmacy.sql">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
+            <state relative-caret-position="-68">
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
               <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
               <folding />
             </state>
@@ -182,33 +211,65 @@
       <file leaf-file-name="patient_labs.sql" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/patient_labs.sql">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="119">
               <caret line="7" column="16" lean-forward="false" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
+=======
+            <state relative-caret-position="85">
+              <caret line="14" column="4" lean-forward="true" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Dwapi_one_time_dump.sql" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/DWAPI UPI Extracts/Dwapi_one_time_dump.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+<<<<<<< HEAD
       <file leaf-file-name="TX_PVLS" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DWAPI Metrics/TX_PVLS">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="303">
               <caret line="55" column="109" lean-forward="true" selection-start-line="49" selection-start-column="30" selection-end-line="55" selection-end-column="109" />
+=======
+      <file leaf-file-name="Patient Art Extracts.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1137">
+              <caret line="237" column="37" lean-forward="true" selection-start-line="237" selection-start-column="37" selection-end-line="237" selection-end-column="37" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="Dwapi_one_time_dump.sql" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI UPI Extracts/Dwapi_one_time_dump.sql">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="163">
               <caret line="45" column="48" lean-forward="false" selection-start-line="45" selection-start-column="29" selection-end-line="45" selection-end-column="48" />
+=======
+      <file leaf-file-name="patient_status.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/patient_status.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="272">
+              <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="34" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
               <folding />
             </state>
           </provider>
         </entry>
       </file>
+<<<<<<< HEAD
       <file leaf-file-name="Patient Art Extracts.sql" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
           <provider selected="true" editor-type-id="text-editor">
@@ -233,6 +294,12 @@
         <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/all_ct_patients.sql">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1955">
+=======
+      <file leaf-file-name="all_ct_patients.sql" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/all_ct_patients.sql">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="527">
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
               <caret line="115" column="29" lean-forward="false" selection-start-line="115" selection-start-column="29" selection-end-line="115" selection-end-column="29" />
               <folding />
             </state>
@@ -253,6 +320,11 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
+=======
+      <find>fina</find>
+      <find>nvp</find>
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
       <find>referred_from</find>
       <find>encounter</find>
       <find>ttt</find>
@@ -281,8 +353,11 @@
       <find>reg</find>
       <find>enr</find>
       <find>lastViralLoadDate</find>
+<<<<<<< HEAD
       <find>lastViralLoadResult</find>
       <find>test_result</find>
+=======
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
     </findStrings>
     <replaceStrings>
       <replace>e.</replace>
@@ -390,9 +465,15 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+<<<<<<< HEAD
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
       <pane id="Scope" />
+=======
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="AndroidView" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -403,18 +484,25 @@
             <path>
               <item name="DWAPI-Queries" type="b2602c69:ProjectViewProjectNode" />
               <item name="DWAPI-Queries" type="462c0819:PsiDirectoryNode" />
+<<<<<<< HEAD
               <item name="DWAPI Current Extracts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="DWAPI-Queries" type="b2602c69:ProjectViewProjectNode" />
               <item name="DWAPI-Queries" type="462c0819:PsiDirectoryNode" />
+=======
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
               <item name="DWAPI UPI Extracts" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+<<<<<<< HEAD
       <pane id="Scratches" />
+=======
+      <pane id="PackagesPane" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -593,15 +681,23 @@
       <workItem from="1641358559946" duration="3076000" />
       <workItem from="1650543490914" duration="792000" />
       <workItem from="1650614963254" duration="1037000" />
+<<<<<<< HEAD
       <workItem from="1652098574574" duration="5798000" />
       <workItem from="1652202987918" duration="2149000" />
       <workItem from="1652256438370" duration="23000" />
       <workItem from="1652771285484" duration="2665000" />
+=======
+      <workItem from="1652098574574" duration="5383000" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
+<<<<<<< HEAD
     <option name="totallyTimeSpent" value="588469000" />
+=======
+    <option name="totallyTimeSpent" value="583217000" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -619,7 +715,11 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.29787233" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18683812" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+=======
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24205749" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12102874" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1172466" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -896,6 +996,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
           <caret line="29" column="89" lean-forward="false" selection-start-line="29" selection-start-column="89" selection-end-line="29" selection-end-column="89" />
+<<<<<<< HEAD
+=======
+          <folding />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
         </state>
       </provider>
     </entry>
@@ -938,7 +1042,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/all_ct_patients.sql">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="1955">
+=======
+        <state relative-caret-position="527">
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
           <caret line="115" column="29" lean-forward="false" selection-start-line="115" selection-start-column="29" selection-end-line="115" selection-end-column="29" />
           <folding />
         </state>
@@ -962,15 +1070,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="4029">
           <caret line="237" column="37" lean-forward="false" selection-start-line="237" selection-start-column="37" selection-end-line="237" selection-end-column="37" />
+=======
+        <state relative-caret-position="1137">
+          <caret line="237" column="37" lean-forward="true" selection-start-line="237" selection-start-column="37" selection-end-line="237" selection-end-column="37" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Pharmacy.sql">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="238">
+=======
+        <state relative-caret-position="-68">
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
           <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
           <folding />
         </state>
@@ -978,7 +1095,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/art_patients.sql">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="1241">
+=======
+        <state relative-caret-position="323">
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
           <caret line="73" column="71" lean-forward="false" selection-start-line="73" selection-start-column="71" selection-end-line="73" selection-end-column="71" />
           <folding />
         </state>
@@ -986,14 +1107,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI Current Extracts/patient_labs.sql">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="119">
           <caret line="7" column="16" lean-forward="false" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
+=======
+        <state relative-caret-position="85">
+          <caret line="14" column="4" lean-forward="true" selection-start-line="14" selection-start-column="4" selection-end-line="14" selection-end-column="4" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DWAPI UPI Extracts/Dwapi_one_time_dump.sql">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="163">
           <caret line="45" column="48" lean-forward="false" selection-start-line="45" selection-start-column="29" selection-end-line="45" selection-end-column="48" />
           <folding />
@@ -1004,6 +1131,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="303">
           <caret line="55" column="109" lean-forward="true" selection-start-line="49" selection-start-column="30" selection-end-line="55" selection-end-column="109" />
+=======
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+>>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
           <folding />
         </state>
       </provider>
