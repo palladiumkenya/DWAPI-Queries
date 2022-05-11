@@ -89,9 +89,8 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id
                left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id
              group by e.patient_id)reg on reg.patient_id=hiv.patient_id
-  left join (select c.patient_id
-             from kenyaemr_etl.etl_current_in_care c
-               join kenyaemr_etl.etl_drug_event de on de.patient_id=c.patient_id and de.date_started is not null and de.program='HIV'
+  left join (select ca.patient_id
+             from kenyaemr_etl.etl_current_in_care ca where ca.started_on_drugs is not null
             ) cc on cc.patient_id = dm.patient_id
 
 
