@@ -42,7 +42,7 @@ from (SELECT *
                        frequency,
                        ''                                                            as DispenseDate,
                        duration_in_days                                              as duration,
-                       duration_in_days                                                 PeriodTaken,
+                       ''                                                            as PeriodTaken,
                        ''                                                               ExpectedReturn,
                        CASE WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END AS TreatmentType,
                        ''                                                            as RegimenLine,
