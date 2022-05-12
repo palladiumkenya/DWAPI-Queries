@@ -268,18 +268,17 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="272">
               <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="34" />
->>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
+
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-<<<<<<< HEAD
+
       <file leaf-file-name="Patient Art Extracts.sql" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DWAPI New Extracts/Patient Art Extracts.sql">
           <provider selected="true" editor-type-id="text-editor">
-=======
->>>>>>> 5ed5875 (Updated the one time dump query to add Current_On_ART column)
+
             <state relative-caret-position="4029">
               <caret line="237" column="37" lean-forward="false" selection-start-line="237" selection-start-column="37" selection-end-line="237" selection-end-column="37" />
               <folding />
@@ -330,11 +329,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-<<<<<<< HEAD
-=======
+
       <find>fina</find>
       <find>nvp</find>
->>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
+
       <find>referred_from</find>
       <find>encounter</find>
       <find>ttt</find>
@@ -363,11 +361,10 @@
       <find>reg</find>
       <find>enr</find>
       <find>lastViralLoadDate</find>
-<<<<<<< HEAD
+
       <find>lastViralLoadResult</find>
       <find>test_result</find>
-=======
->>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
+
     </findStrings>
     <replaceStrings>
       <replace>e.</replace>
@@ -1121,7 +1118,6 @@
 >>>>>>> c421ef7 (Dwapi one time dump to MOH Central Server)
 =======
         <state relative-caret-position="238">
->>>>>>> 5ed5875 (Updated the one time dump query to add Current_On_ART column)
           <caret line="14" column="40" lean-forward="false" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
           <folding />
         </state>
