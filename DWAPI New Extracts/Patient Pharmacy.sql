@@ -34,7 +34,7 @@ from (SELECT *
                        visit_id,
                        visit_date,
                        encounter_id,
-                       cn2.name as drug,
+                       cast(cn2.name AS CHAR CHARACTER SET latin1)                   as drug,
                        is_arv,
                        is_ctx,
                        is_dapsone,
