@@ -34,7 +34,7 @@ from (SELECT *
                        visit_id,
                        visit_date,
                        encounter_id,
-                       drug,
+                       cn2.name as drug,
                        is_arv,
                        is_ctx,
                        is_dapsone,
