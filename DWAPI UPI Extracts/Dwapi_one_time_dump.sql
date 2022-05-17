@@ -36,12 +36,14 @@ SELECT
   0 as FacilityID,
   'KHMIS' as Project,
   'KenyaEMR' as Emr,
+  hiv.date_confirmed_hiv_positive as DateHivDiagnosisConfirmed,
   reg.art_start_date as DateOfInitiation,
   reg.last_regimen as LastRegimen,
   reg.last_regimen_line as LastRegimenLine,
   disc.ExitReason AS TreatmentOutcome,
   reg.latest_vis_date  AS DateOfLastEncounter,
   lab.lastViralLoadDate AS DateOfLastViralLoad,
+  lab.lastViralLoadResult AS LastViralLoadResult,
   reg.latest_tca  AS NextAppointmentDate,
   if(cc.patient_id IS NOT NULL,'YES','NO') as  Current_On_ART
 from kenyaemr_etl.etl_hiv_enrollment hiv
@@ -61,7 +63,12 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
              where d.program_name = 'HIV'
              group by d.patient_id) disc on disc.patient_id = dm.patient_id
   left join (select lb.patient_id,
-               lb.date_test_requested as lastViralLoadDate
+               mid(max(concat(visit_date, lb.date_test_requested)), 11) as lastViralLoadDate,
+               if(mid(max(concat(visit_date, lab_test)), 11) = 856,
+                  mid(max(concat(visit_date, test_result)), 11), if(
+                      mid(max(concat(visit_date, lab_test)), 11) = 1305 and
+                      mid(max(concat(visit_date, test_result)), 11) = 1302,
+                      "LDL", "")) as lastViralLoadResult
              from kenyaemr_etl.etl_laboratory_extract lb
              where lb.lab_test in (1305,856)
              group by lb.patient_id) lab on lab.patient_id = dm.patient_id
