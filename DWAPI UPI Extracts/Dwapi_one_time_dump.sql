@@ -16,12 +16,8 @@ SELECT dm.patient_id                                                     AS Pati
        (case dm.Gender when "F" then "Female" when "M" then "Male" else "" end) AS Sex,
        (case dm.marital_status when "Never married" then "Single"
                                when "Married" then "Married-monogamous"
-                               when "Divorced" then "divorced"
-                               when "Widowed" then "widowed"
                                when "Polygamous" then "Married-polygamous"
-                               when "Separated" then "separated,"
-                               when "Unknown" then "unknown"
-                               when "Living with partner" then "cohabiting" else "" end) AS MaritalStatus,
+                               when "Living with partner" then "Cohabiting" else dm.marital_status end) AS MaritalStatus,
        dm.occupation                                                     AS Occupation,
        dm.education_level                                                AS HighestLevelOfEducation,
        dm.phone_number                                                   AS PhoneNumber,
