@@ -1,5 +1,6 @@
 select pkv.pkv                                                         as PKV,
        d.patient_id                                                    as PatientPK,
+       d.national_unique_patient_identifier                            as NUPI,
        i.siteCode                                                      as SiteCode,
        d.openmrs_id                                                    as PatientMNCH_ID,
        d.hei_no                                                        as PatientHEI_ID,
