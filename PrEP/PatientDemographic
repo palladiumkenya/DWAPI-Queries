@@ -1,6 +1,7 @@
 select d.patient_id                                                  as PatientPK,
        i.siteCode                                                    as SiteCode,
        d.unique_prep_number                                          as PrepNumber,
+       d.national_unique_patient_identifier                          as NUPI,
        d.openmrs_id                                                  as HtsNumber,
        'KenyaEMR'                                                    as Emr,
        'HMIS'                                                        as Project,

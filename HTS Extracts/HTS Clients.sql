@@ -1,4 +1,5 @@
 SELECT distinct d.patient_id                                                      as PatientPK,
+                d.national_unique_patient_identifier                              as NUPI,
                 pkv.PKV                                                           as Pkv,
                 (select FacilityName from kenyaemr_etl.etl_default_facility_info) as FacilityName,
                 (select siteCode from kenyaemr_etl.etl_default_facility_info)     as SiteCode,
