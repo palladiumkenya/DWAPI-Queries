@@ -29,7 +29,7 @@ describe("Connect and validate HTS Partner Notification Services extracts", () =
       expect(res[0]).to.have.property("Age");
       expect(res[0]).to.have.property("RelationsipToIndexClient");
       expect(res[0]).to.have.property("ScreenedForIpv");
-      expect(res[0]).to.have.property("IpvScreeningOutCome");
+      expect(res[0]).to.have.property("IpvScreeningOutcome");
       expect(res[0]).to.have.property("CurrentlyLivingWithIndexClient");
       expect(res[0]).to.have.property("KnowledgeOfHivStatus");
       expect(res[0]).to.have.property("PnsApproach");
