@@ -9,7 +9,7 @@ select pkv.pkv                                                         as PKV,
        i.FacilityName                                                  as FacilityName,
        (case d.Gender when 'F' then 'Female' when 'M' then 'Male' end) as Gender,
        d.DOB                                                           as DOB,
-       coalesce(c.hei_enrolment_date, m.mch_enrolment_date)            as VisitDate,
+       coalesce(c.hei_enrolment_date, m.mch_enrolment_date)            as FirstEnrollmentAtMnch,
        coalesce(c.hei_encounter_id, m.mch_encounter_id)                as EncounterId,
        d.occupation                                                    as Occupation,
        d.marital_status                                                as MaritalStatus,
@@ -21,10 +21,10 @@ select pkv.pkv                                                         as PKV,
        d.date_created                                                  as Date_Created,
        d.date_last_modified                                            as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
-       left join (select m.patient_id, m.visit_date as mch_enrolment_date, m.encounter_id as mch_encounter_id
-                  from kenyaemr_etl.etl_mch_enrollment m)m on d.patient_id = m.patient_id
-       left join (select c.patient_id, c.visit_date as hei_enrolment_date, c.encounter_id as hei_encounter_id
-                  from kenyaemr_etl.etl_hei_enrollment c)c on d.patient_id = c.patient_id
+       left join (select m.patient_id, min(date(m.visit_date)) as mch_enrolment_date,mid(min(concat(date(m.visit_date),m.encounter_id)),11) as mch_encounter_id
+                  from kenyaemr_etl.etl_mch_enrollment m group by m.patient_id)m on d.patient_id = m.patient_id
+       left join (select c.patient_id, min(date(c.visit_date)) as hei_enrolment_date, mid(min(concat(date(c.visit_date),c.encounter_id)),11) as hei_encounter_id
+                  from kenyaemr_etl.etl_hei_enrollment c group by c.patient_id)c on d.patient_id = c.patient_id
        left join (select a.patient_id, a.county, a.sub_county, a.ward from kenyaemr_etl.etl_person_address a)a
          on d.patient_id = a.patient_id
        left join (select e.patient_id as patient_id, e.in_school as in_school from kenyaemr_etl.etl_hiv_enrollment e)e
