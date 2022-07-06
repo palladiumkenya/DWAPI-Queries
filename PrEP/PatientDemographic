@@ -47,7 +47,3 @@ from kenyaemr_etl.etl_prep_enrolment e
          inner join kenyaemr_etl.etl_prep_behaviour_risk_assessment r on e.patient_id = r.patient_id
          join kenyaemr_etl.etl_default_facility_info i
 group by e.patient_id;
-
-select *
-from kenyaemr_etl.etl_prep_enrolment e
-where e.patient_id = 15003;
