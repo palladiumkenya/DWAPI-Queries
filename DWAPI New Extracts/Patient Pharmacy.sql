@@ -10,7 +10,7 @@ select 'Government'                                                      AS Prov
        ph.visit_date                                                     as DispenseDate,
        ph.duration                                                       AS duration,
        ph.duration                                                       AS PeriodTaken,
-       fup.next_appointment_date                                         as ExpectedReturn,
+       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)                as ExpectedReturn,
        'KenyaEMR'                                                        as Emr,
        'Kenya HMIS II'                                                   as Project,
        CASE
