@@ -27,6 +27,7 @@ SELECT t.patient_id                                                             
                then 'NP:Non-Hospital Patient' end                                  as PatientType,
        case t.is_health_worker when 1065 then 'Yes' when 1066 then 'No' end        as IsHealthWorker,
        t.relationship_with_contact                                                 as RelationshipWithContact,
+       case t.mother_hiv_status when 703 then 'Positive' when 664 then 'Negative' when 1067 then 'Unknown' end as MothersStatus,
        case t.tested_hiv_before when 1065 then 'Yes' when 1066 then 'No' end       as TestedHIVBefore,
        case t.who_performed_test
            when 5619 then 'HTS Provider'
@@ -37,7 +38,13 @@ SELECT t.patient_id                                                             
             when 664 then 'Negative'
             when 1067 then 'Unknown'
             else '' end)                                                           as ResultOfHIV,
-       t.date_tested                                                               as DateTested,
+       if(t.who_performed_test = 164952,t.date_tested,null)                             as DateTestedSelf,
+       if(t.who_performed_test = 164952,case t.test_results
+            when 703 then 'Positive'
+            when 664 then 'Negative'
+            when 1067 then 'Unknown'
+            else '' end,null)                                                           as ResultOfHIVSelf,
+       if(t.who_performed_test = 5619,t.date_tested, null)                             as DateTestedProvider,
        case t.started_on_art when 1065 then 'Yes' when 1066 then 'No' end          as StartedOnART,
        t.upn_number                                                                as CCCNumber,
        case t.ever_had_sex when 1 then 'Yes' when 0 then 'No' end                  as EverHadSex,
@@ -63,16 +70,26 @@ SELECT t.patient_id                                                             
        case t.pregnant when 1065 then 'Yes' when 1066 then 'No' end                as Pregnant,
        case t.breastfeeding_mother when 1065 then 'Yes' when 1066 then 'No' end    as BreastfeedingMother,
        case t.experienced_gbv when 1065 then 'Yes' when 1066 then 'No' end         as ExperiencedGBV,
-       case t.physical_violence when 1065 then 'Yes' when 1066 then 'No' end       as PhysicalViolence,
-       case t.sexual_violence when 1065 then 'Yes' when 1066 then 'No' end         as SexualViolence,
-       case t.ever_on_prep when 1065 then 'Yes' when 1066 then 'No' end            as EverOnPrEP,
+       t.type_of_gbv                                                               as TypeGBV,
+       t.service_received                                                          as ReceivedServices,
+       -- case t.physical_violence when 1065 then 'Yes' when 1066 then 'No' end       as PhysicalViolence,
+       -- case t.sexual_violence when 1065 then 'Yes' when 1066 then 'No' end         as SexualViolence,
+       -- case t.ever_on_prep when 1065 then 'Yes' when 1066 then 'No' end            as EverOnPrEP,
        case t.currently_on_prep when 1065 then 'Yes' when 1066 then 'No' end       as CurrentlyOnPrEP,
-       case t.ever_on_pep when 1065 then 'Yes' when 1066 then 'No' end             as EverOnPEP,
-       case t.currently_on_pep when 1 then 'Yes' when 0 then 'No' end              as CurrentlyOnPEP,
-       case t.ever_had_sti when 1065 then 'Yes' when 1066 then 'No' end            as EverHadSTI,
-       case t.currently_has_sti when 1065 then 'Yes' when 1066 then 'No' end       as CurrentlyHasSTI,
-       case t.ever_had_tb when 1065 then 'Yes' when 1066 then 'No' end             as EverHadTB,
-       case t.currently_has_tb when 1065 then 'Yes' when 1066 then 'No' end        as CurrentlyHasTB,
+       -- case t.recently_on_pep when 1065 then 'Yes' when 1066 then 'No' end         as EverOnPEP,
+       case t.recently_on_pep when 1 then 'Yes' when 0 then 'No' end              as CurrentlyOnPEP,
+       -- case t.recently_had_sti when 1065 then 'Yes' when 1066 then 'No' end        as EverHadSTI,
+       case t.recently_had_sti when 1065 then 'Yes' when 1066 then 'No' end       as CurrentlyHasSTI,
+       -- case t.ever_had_tb when 1065 then 'Yes' when 1066 then 'No' end             as EverHadTB,
+        -- case t.currently_has_tb when 1065 then 'Yes' when 1066 then 'No' end        as CurrentlyHasTB,
+       case t.tb_screened when 1065 then 'Yes' when 1066 then 'No' end  ScreenedTB,
+       case t.cough when 159799 then 'Yes' when 1066 then 'No' end as Cough,
+       case t.fever when 1494 then 'Yes' when 1066 then 'No' end as Fever,
+       case t.weight_loss when 832 then 'Yes' when 1066 then 'No' end as WeightLoss,
+       case t.night_sweats when 133027 then 'Yes' when 1066 then 'No' end as NightSweats,
+       case t.contact_with_tb_case when 124068 then 'Yes' when 1066 then 'No' end as ContactWithTBCase,
+       case t.lethargy when 116334 then 'Yes' when 1066 then 'No' end as Lethargy,
+       case t.tb_status when 1660 then 'No TB signs' when 142177 then 'Presumed TB' when 1662 then 'TB Confirmed' end as TBStatus,
        case t.shared_needle when 1065 then 'Yes' when 1066 then 'No' end           as SharedNeedle,
        case t.needle_stick_injuries when 153574 then 'Yes' when 1066 then 'No' end as NeedleStickInjuries,
        case t.traditional_procedures when 1065 then 'Yes' when 1066 then 'No' end  as TraditionalProcedures,
