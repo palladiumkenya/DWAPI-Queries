@@ -72,16 +72,9 @@ SELECT t.patient_id                                                             
        case t.experienced_gbv when 1065 then 'Yes' when 1066 then 'No' end         as ExperiencedGBV,
        t.type_of_gbv                                                               as TypeGBV,
        t.service_received                                                          as ReceivedServices,
-       -- case t.physical_violence when 1065 then 'Yes' when 1066 then 'No' end       as PhysicalViolence,
-       -- case t.sexual_violence when 1065 then 'Yes' when 1066 then 'No' end         as SexualViolence,
-       -- case t.ever_on_prep when 1065 then 'Yes' when 1066 then 'No' end            as EverOnPrEP,
        case t.currently_on_prep when 1065 then 'Yes' when 1066 then 'No' end       as CurrentlyOnPrEP,
-       -- case t.recently_on_pep when 1065 then 'Yes' when 1066 then 'No' end         as EverOnPEP,
        case t.recently_on_pep when 1 then 'Yes' when 0 then 'No' end              as CurrentlyOnPEP,
-       -- case t.recently_had_sti when 1065 then 'Yes' when 1066 then 'No' end        as EverHadSTI,
        case t.recently_had_sti when 1065 then 'Yes' when 1066 then 'No' end       as CurrentlyHasSTI,
-       -- case t.ever_had_tb when 1065 then 'Yes' when 1066 then 'No' end             as EverHadTB,
-        -- case t.currently_has_tb when 1065 then 'Yes' when 1066 then 'No' end        as CurrentlyHasTB,
        case t.tb_screened when 1065 then 'Yes' when 1066 then 'No' end  ScreenedTB,
        case t.cough when 159799 then 'Yes' when 1066 then 'No' end as Cough,
        case t.fever when 1494 then 'Yes' when 1066 then 'No' end as Fever,
@@ -95,11 +88,11 @@ SELECT t.patient_id                                                             
        case t.traditional_procedures when 1065 then 'Yes' when 1066 then 'No' end  as TraditionalProcedures,
        t.child_reasons_for_ineligibility                                           as ChildReasonsForIneligibility,
        case t.eligible_for_test when 1065 then 'Yes' when 1066 then 'No' end       as EligibleForTest,
-       t.reasons_for_ineligibility,
+       t.reasons_for_ineligibility as ReasonsForIneligibility,
        t.specific_reason_for_ineligibility                                            SpecificReasonForIneligibility,
        t.date_created                                                              as DateCreated,
        t.date_last_modified                                                        as DateLastModified
 FROM kenyaemr_etl.etl_hts_eligibility_screening t
          inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id
          LEFT JOIN openmrs.location_attribute SC ON SC.location_id = t.location_id AND SC.attribute_type_id = 1
-         LEFT JOIN openmrs.location SN ON SN.location_id = t.location_id;
+         LEFT JOIN openmrs.location SN ON SN.location_id = t.location_id group by t.encounter_id;
