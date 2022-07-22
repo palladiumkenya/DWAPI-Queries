@@ -87,6 +87,7 @@ SELECT t.patient_id                                                             
        case t.needle_stick_injuries when 153574 then 'Yes' when 1066 then 'No' end as NeedleStickInjuries,
        case t.traditional_procedures when 1065 then 'Yes' when 1066 then 'No' end  as TraditionalProcedures,
        t.child_reasons_for_ineligibility                                           as ChildReasonsForIneligibility,
+       ''                                                                          as AssessmentOutcome,
        case t.eligible_for_test when 1065 then 'Yes' when 1066 then 'No' end       as EligibleForTest,
        t.reasons_for_ineligibility as ReasonsForIneligibility,
        t.specific_reason_for_ineligibility                                            SpecificReasonForIneligibility,
