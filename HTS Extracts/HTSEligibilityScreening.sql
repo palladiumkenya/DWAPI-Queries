@@ -90,7 +90,8 @@ SELECT t.patient_id                                                             
        ''                                                                          as AssessmentOutcome,
        case t.eligible_for_test when 1065 then 'Yes' when 1066 then 'No' end       as EligibleForTest,
        t.reasons_for_ineligibility as ReasonsForIneligibility,
-       t.specific_reason_for_ineligibility                                            SpecificReasonForIneligibility,
+       t.specific_reason_for_ineligibility                                         as SpecificReasonForIneligibility,
+       case t.referred_for_testing when 1065 then 'Yes' when 1066 then 'No' end    as ReferredForTesting,
        t.date_created                                                              as DateCreated,
        t.date_last_modified                                                        as DateLastModified
 FROM kenyaemr_etl.etl_hts_eligibility_screening t
