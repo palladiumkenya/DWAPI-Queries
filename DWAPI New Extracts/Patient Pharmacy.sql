@@ -10,7 +10,7 @@ select 'Government'                                                      AS Prov
        ph.visit_date                                                     as DispenseDate,
        ph.duration                                                       AS duration,
        ph.duration                                                       AS PeriodTaken,
-       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)                as ExpectedReturn,
+       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)                 as ExpectedReturn,
        'KenyaEMR'                                                        as Emr,
        'Kenya HMIS II'                                                   as Project,
        CASE
@@ -136,6 +136,7 @@ from (SELECT *
                        drug_name                                as drugreg,
                        frequency,
                        visit_date                               as DispenseDate,
+
                        (case duration_units
                             when 'DAYS' then duration
                             when 'MONTHS' then duration * 30
@@ -155,7 +156,8 @@ from (SELECT *
                        do.date_created,
                        do.date_last_modified
                 from kenyaemr_etl.etl_drug_order do
-                order by do.patient_id, DispenseDate)
+               group by do.order_group_id,do.patient_id, do.encounter_id
+            order by do.patient_id, DispenseDate)
            ) A
       order by A.DispenseDate, A.patient_id) ph
          join kenyaemr_etl.etl_patient_demographics d on d.patient_id = ph.patient_id
@@ -166,5 +168,5 @@ from (SELECT *
          left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.encounter_id = ph.encounter_id
     and fup.patient_id = ph.patient_id
 where unique_patient_no is not null
-  and drugreg is not null
+  and drugreg is not null and ph.patient_id = 24679
 order by ph.patient_id, ph.DispenseDate;
