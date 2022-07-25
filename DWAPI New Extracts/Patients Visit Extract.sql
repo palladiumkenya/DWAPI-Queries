@@ -198,6 +198,8 @@ select distinct ''                                                              
                 case
                     when fup.next_appointment_date < '1990-01-01' then null
                     else CAST(fup.next_appointment_date AS DATE) end                   AS NextAppointmentDate,
+                case when fup.refill_date < '1990-01-01' then null
+                     else CAST(fup.refill_date AS DATE) end                   AS refillDate,
                 'KenyaEMR'                                                             as Emr,
                 'Kenya HMIS II'                                                        as Project,
                 CAST(fup.substitution_first_line_regimen_date AS DATE)                 AS SubstitutionFirstlineRegimenDate,
