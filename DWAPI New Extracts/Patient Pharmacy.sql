@@ -144,7 +144,10 @@ from (SELECT *
                             when 'DAYS' then duration
                             when 'MONTHS' then duration * 30
                             when 'WEEKS' then duration * 7 end) as PeriodTaken,
-                       DATE_ADD(visit_date, INTERVAL duration DAY) as ExpectedReturn,
+                       DATE_ADD(visit_date, INTERVAL (case duration_units
+                                                          when 'DAYS' then duration
+                                                          when 'MONTHS' then duration * 30
+                                                          when 'WEEKS' then duration * 7 end) DAY) as ExpectedReturn,
                        ''                                       AS TreatmentType,
                        ''                                       as RegimenLine,
                        drug_name                                as regimen,
