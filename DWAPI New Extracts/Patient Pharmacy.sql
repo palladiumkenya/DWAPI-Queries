@@ -168,5 +168,5 @@ from (SELECT *
          left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.encounter_id = ph.encounter_id
     and fup.patient_id = ph.patient_id
 where unique_patient_no is not null
-  and drugreg is not null and ph.patient_id = 24679
+  and drugreg is not null
 order by ph.patient_id, ph.DispenseDate;
