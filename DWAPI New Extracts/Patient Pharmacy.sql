@@ -40,10 +40,10 @@ from (SELECT *
                        is_dapsone,
                        drug_name                                                     as drugreg,
                        frequency,
-                       ''                                                            as DispenseDate,
+                       visit_date                                                    as DispenseDate,
                        duration_in_days                                              as duration,
-                       null                                                            as PeriodTaken,
-                       null                                                               ExpectedReturn,
+                       duration_in_days                                              as PeriodTaken,
+                       DATE_ADD(visit_date, INTERVAL duration_in_days DAY)           as ExpectedReturn,
                        CASE WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END AS TreatmentType,
                        ''                                                            as RegimenLine,
                        ''                                                            as regimen,
@@ -76,9 +76,9 @@ from (SELECT *
                        regimen_name                                                                        as drugreg,
                        ''                                                                                     frequency,
                        date_started                                                                        as DispenseDate,
-                       null                                                                                     duration,
-                       null                                                                                     PeriodTaken,
-                       null                                                                                     ExpectedReturn,
+                       null                                                                                as duration,
+                       null                                                                                as PeriodTaken,
+                       null                                                                                as ExpectedReturn,
                        'ARV'                                                                               AS TreatmentType,
                        e.regimen_line                                                                      as regimen_line,
                        e.regimen                                                                           as regimen,
@@ -136,13 +136,18 @@ from (SELECT *
                        drug_name                                as drugreg,
                        frequency,
                        visit_date                               as DispenseDate,
-
                        (case duration_units
                             when 'DAYS' then duration
                             when 'MONTHS' then duration * 30
                             when 'WEEKS' then duration * 7 end) as duration,
-                       ''                                       as PeriodTaken,
-                       ''                                       as ExpectedReturn,
+                       (case duration_units
+                            when 'DAYS' then duration
+                            when 'MONTHS' then duration * 30
+                            when 'WEEKS' then duration * 7 end) as PeriodTaken,
+                       DATE_ADD(visit_date, INTERVAL (case duration_units
+                                                          when 'DAYS' then duration
+                                                          when 'MONTHS' then duration * 30
+                                                          when 'WEEKS' then duration * 7 end) DAY) as ExpectedReturn,
                        ''                                       AS TreatmentType,
                        ''                                       as RegimenLine,
                        drug_name                                as regimen,
