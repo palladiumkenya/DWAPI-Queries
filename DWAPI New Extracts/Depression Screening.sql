@@ -16,4 +16,4 @@ from kenyaemr_etl.etl_depression_screening v
        join kenyaemr_etl.etl_default_facility_info s
 where d.disc_patient is null or d.Outcome_date < e.latest_enrolment_date;
 
-Fixed issues on coded reason not on fp,adverse events and allergies and chronic illnesses fields not populating, coded reason for phq9 rating
+

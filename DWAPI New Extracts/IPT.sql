@@ -85,23 +85,27 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                   from kenyaemr_etl.etl_ipt_screening s)s on v.patient_id = s.patient_id
        left join (select i.patient_id                                                              as isStarted,
                          (case i.ipt_indication
-                            when 138571 then 'HIV Positive'
-                            when 162277 then 'In Prison'
-                            when 162278 then 'Child exposed to TB' end)                            as IndicationForIPT
+                            when 138571 then 'PLHIV'
+                            when 162277 then 'Prison setting'
+                            when 162278 then 'Household contact'
+                            when 1555 then 'HCW and other Facility staff'
+                            when 5619 then 'Other clinical risk group' end)                            as IndicationForIPT
                   from kenyaemr_etl.etl_ipt_initiation i)i on v.patient_id = i.isStarted
-       left join (select d.patient_id                        as                                    disc_patient,
-                         coalesce(max(date(d.effective_discontinuation_date)), date(d.visit_date)) Outcome_date,
-                         case mid(max(concat(d.visit_date, d.discontinuation_reason)), 11)
-                           when 1267 then 'Completed'
+       left join (select o.patient_id                        as                                    disc_patient,
+                         max(date(o.visit_date)) Outcome_date,
+                         case mid(max(concat(o.visit_date, o.outcome)), 11)
+                           when 1267 then 'Treatment completed'
                            when 5240 then 'Lost to followup'
-                           when 159836 then 'Discontinue'
+                           when 159836 then 'Discontinued'
                            when 160034 then 'Died'
                            when 159492 then 'Transferred out'
-                           when 112141 then 'TB infected'
-                           when 102 then 'Drug toxicity' end as                                    IPT_disc_reason
-                  from kenyaemr_etl.etl_patient_program_discontinuation d
-                  where program_name = 'IPT'
-                  group by d.patient_id)d on d.disc_patient = v.patient_id
+                           when 112141 then 'Active TB Disease'
+                           when 102 then 'Adverse drug reaction'
+                           when 159598 then 'Poor adherence'
+                           when 5622 then 'Others' end as                                    IPT_disc_reason
+                  from kenyaemr_etl.etl_ipt_outcome o
+                  group by o.patient_id
+                 )d on d.disc_patient = v.patient_id
        join kenyaemr_etl.etl_default_facility_info site
 where de.unique_patient_no is not null
 group by v.encounter_id;

@@ -6,6 +6,7 @@ select
        '' AS SatelliteName,
        0 AS FacilityId,d.unique_patient_no as PatientID,
        d.patient_id as PatientPK,
+       d.national_unique_patient_identifier as NUPI,
        pkv.PKV as Pkv,
        i.siteCode as SiteCode,
        i.facilityName as FacilityName,
