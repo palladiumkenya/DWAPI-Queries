@@ -1,67 +1,64 @@
-select 'Government'                                                      AS Provider,
-       ''                                                                AS SatelliteName,
-       (select siteCode from kenyaemr_etl.etl_default_facility_info)     as FacilityId,
-       d.unique_patient_no                                               as PatientID,
-       d.patient_id                                                      as PatientPK,
-       (select FacilityName from kenyaemr_etl.etl_default_facility_info) as FacilityName,
-       (select siteCode from kenyaemr_etl.etl_default_facility_info)     as siteCode,
-       ph.visit_id                                                       as VisitID,
+select 'Government'                                                    AS Provider,
+       ''                                                              AS SatelliteName,
+       0                                                               as FacilityId,
+       d.unique_patient_no                                             as PatientID,
+       d.patient_id                                                    as PatientPK,
+       i.Facilityname                                                  as FacilityName,
+       i.sitecode                                                      as siteCode,
+       ph.visit_id                                                     as VisitID,
        Drug,
-       ph.visit_date                                                     as DispenseDate,
-       ph.duration                                                       AS duration,
-       ph.duration                                                       AS PeriodTaken,
-       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)                 as ExpectedReturn,
-       'KenyaEMR'                                                        as Emr,
-       'Kenya HMIS II'                                                   as Project,
+       ph.visit_date                                                   as DispenseDate,
+       ph.duration                                                     AS duration,
+       ph.duration                                                     AS PeriodTaken,
+       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)               as ExpectedReturn,
+       'KenyaEMR'                                                      as Emr,
+       'Kenya HMIS II'                                                 as Project,
        CASE
            WHEN is_arv = 1 THEN 'ARV'
-           WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END      AS TreatmentType,
+           WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END    AS TreatmentType,
        ph.RegimenLine,
        CASE
            WHEN is_ctx = 1 THEN 'CTX'
-           WHEN is_dapsone = 1 THEN 'DAPSON' END                         AS ProphylaxisType,
-       CAST(now() as Date)                                               AS DateExtracted,
+           WHEN is_dapsone = 1 THEN 'DAPSONE' END                      AS ProphylaxisType,
+       CAST(now() as Date)                                             AS DateExtracted,
        ph.date_created,
-       ph.RegimenChangedSwitched                                         as RegimenChangedSwitched,
-       ph.RegimenChangeSwitchReason                                      as RegimenChangeSwitchReason,
-       ph.StopRegimenReason                                              as StopRegimenReason,
-       ph.StopRegimenDate                                                as StopRegimenDate,
+       ph.RegimenChangedSwitched                                       as RegimenChangedSwitched,
+       ph.RegimenChangeSwitchReason                                    as RegimenChangeSwitchReason,
+       ph.StopRegimenReason                                            as StopRegimenReason,
+       ph.StopRegimenDate                                              as StopRegimenDate,
        GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified),
-                COALESCE(d.date_last_modified, ph.date_last_modified))   as date_last_modified
+                COALESCE(d.date_last_modified, ph.date_last_modified)) as date_last_modified
 from (SELECT *
       FROM (
                (select patient_id,
                        visit_id,
                        visit_date,
                        encounter_id,
-                       cast(cn2.name AS CHAR CHARACTER SET latin1)                   as drug,
+                       (case drug when 105281 then 'CTX' when 74250 then 'DAPSONE' end) as drug,
                        is_arv,
                        is_ctx,
                        is_dapsone,
-                       drug_name                                                     as drugreg,
+                       drug_name                                                        as drugreg,
                        frequency,
-                       visit_date                                                    as DispenseDate,
-                       duration_in_days                                              as duration,
-                       duration_in_days                                              as PeriodTaken,
-                       DATE_ADD(visit_date, INTERVAL duration_in_days DAY)           as ExpectedReturn,
-                       CASE WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END AS TreatmentType,
-                       ''                                                            as RegimenLine,
-                       ''                                                            as regimen,
+                       visit_date                                                       as DispenseDate,
+                       duration_in_days                                                 as duration,
+                       duration_in_days                                                 as PeriodTaken,
+                       DATE_ADD(visit_date, INTERVAL duration_in_days DAY)              as ExpectedReturn,
+                       CASE WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END    AS TreatmentType,
+                       ''                                                               as RegimenLine,
+                       ''                                                               as regimen,
                        CASE
                            WHEN is_ctx = 1 THEN 'CTX'
-                           WHEN is_dapsone = 1 THEN 'DAPSON' END                     AS ProphylaxisType,
-                       ''                                                            as previousRegimen,
-                       ''                                                            as RegimenChangedSwitched,
-                       ''                                                            as RegimenChangeSwitchReason,
-                       ''                                                            as StopRegimenReason,
-                       ''                                                            as StopRegimenDate,
-                       ''                                                            as prev_Regimen,
+                           WHEN is_dapsone = 1 THEN 'DAPSONE' END                       AS ProphylaxisType,
+                       ''                                                               as previousRegimen,
+                       ''                                                               as RegimenChangedSwitched,
+                       ''                                                               as RegimenChangeSwitchReason,
+                       ''                                                               as StopRegimenReason,
+                       ''                                                               as StopRegimenDate,
+                       ''                                                               as prev_Regimen,
                        ph.date_created,
                        ph.date_last_modified
                 from kenyaemr_etl.etl_pharmacy_extract ph
-                         left outer join concept_name cn2
-                                         on cn2.concept_id = ph.drug and cn2.concept_name_type = 'SHORT'
-                                             and cn2.locale = 'en'
                 where is_arv = 1
                 order by patient_id, DispenseDate)
                UNION ALL
@@ -129,40 +126,40 @@ from (SELECT *
                        visit_id,
                        visit_date,
                        encounter_id,
-                       drug_short_name                          as drug,
-                       1                                        as is_arv,
-                       ''                                       as is_ctx,
-                       ''                                       as is_dapsone,
-                       drug_name                                as drugreg,
+                       drug_short_name                                                             as drug,
+                       1                                                                           as is_arv,
+                       ''                                                                          as is_ctx,
+                       ''                                                                          as is_dapsone,
+                       drug_name                                                                   as drugreg,
                        frequency,
-                       visit_date                               as DispenseDate,
+                       visit_date                                                                  as DispenseDate,
                        (case duration_units
                             when 'DAYS' then duration
                             when 'MONTHS' then duration * 30
-                            when 'WEEKS' then duration * 7 end) as duration,
+                            when 'WEEKS' then duration * 7 end)                                    as duration,
                        (case duration_units
                             when 'DAYS' then duration
                             when 'MONTHS' then duration * 30
-                            when 'WEEKS' then duration * 7 end) as PeriodTaken,
+                            when 'WEEKS' then duration * 7 end)                                    as PeriodTaken,
                        DATE_ADD(visit_date, INTERVAL (case duration_units
                                                           when 'DAYS' then duration
                                                           when 'MONTHS' then duration * 30
                                                           when 'WEEKS' then duration * 7 end) DAY) as ExpectedReturn,
-                       ''                                       AS TreatmentType,
-                       ''                                       as RegimenLine,
-                       drug_name                                as regimen,
-                       ''                                       AS ProphylaxisType,
-                       ''                                       as previousRegimen,
-                       ''                                       as RegimenChangedSwitched,
-                       ''                                       as RegimenChangeSwitchReason,
-                       ''                                       as StopRegimenReason,
-                       ''                                       as StopRegimenDate,
-                       ''                                       as prev_Regimen,
+                       ''                                                                          AS TreatmentType,
+                       ''                                                                          as RegimenLine,
+                       drug_name                                                                   as regimen,
+                       ''                                                                          AS ProphylaxisType,
+                       ''                                                                          as previousRegimen,
+                       ''                                                                          as RegimenChangedSwitched,
+                       ''                                                                          as RegimenChangeSwitchReason,
+                       ''                                                                          as StopRegimenReason,
+                       ''                                                                          as StopRegimenDate,
+                       ''                                                                          as prev_Regimen,
                        do.date_created,
                        do.date_last_modified
                 from kenyaemr_etl.etl_drug_order do
-               group by do.order_group_id,do.patient_id, do.encounter_id
-            order by do.patient_id, DispenseDate)
+                group by do.order_group_id, do.patient_id, do.encounter_id
+                order by do.patient_id, DispenseDate)
            ) A
       order by A.DispenseDate, A.patient_id) ph
          join kenyaemr_etl.etl_patient_demographics d on d.patient_id = ph.patient_id
@@ -172,6 +169,6 @@ from (SELECT *
     and cn.locale = 'en'
          left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.encounter_id = ph.encounter_id
     and fup.patient_id = ph.patient_id
+         join kenyaemr_etl.etl_default_facility_info i
 where unique_patient_no is not null
-  and drugreg is not null
-order by ph.patient_id, ph.DispenseDate;
+  and drugreg is not null;
