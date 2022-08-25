@@ -15,9 +15,9 @@ select v.patient_id                                                             
        (case s.weight_loss_poor_gain when 832 then 'Yes' when 1066 then 'No' end) as NoticeableWeightLoss,
        (case s.night_sweats when 133027 then 'Yes' when 1066 then 'No' end)       as NightSweats,
        (case s.lethargy when 116334 then 'Yes' when 1066 then 'No' end)           as Lethargy,
-       concat_ws('|', case v.spatum_smear_ordered when 1065 then 'Sputum smear' end,
-                 case v.chest_xray_ordered when 1065 then 'Chest Xray' end,
-                 case v.genexpert_ordered when 1065 then 'GeneXpert' end)         as ICFActionTaken,
+       concat_ws('|', case v.spatum_smear_ordered when 307 then 'Sputum smear' end,
+                 case v.chest_xray_ordered when 12 then 'Chest Xray' end,
+                 case v.genexpert_ordered when 162202 then 'GeneXpert' end)         as ICFActionTaken,
        concat_ws('|', case v.spatum_smear_result
                           when 703 then 'Positive'
                           when 664 then 'Negative' end, case v.chest_xray_result
@@ -27,7 +27,7 @@ select v.patient_id                                                             
                      when 162203 then 'Mycobacterium Tuberculosis detected with Rifampicin resistance'
                      when 664 then 'Negative'
                      when 162204 then 'Mycobacterium Tuberculosis detected without Rifampicin resistance'
-                     when 164104 then 'Mycobacterium Tuberculosis detected with indeterminate resistance'
+                     when 164104 then 'Mycobacterium tuberculosis detected with indeterminate rifampin resistance'
                      when 163611 then 'Invalid'
                      when 1138 then 'Indeterminate' end)                          as TestResult,
        (case v.clinical_tb_diagnosis
