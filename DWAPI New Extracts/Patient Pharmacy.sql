@@ -1,33 +1,32 @@
-select 'Government'                                                    AS Provider,
-       ''                                                              AS SatelliteName,
-       0                                                               as FacilityId,
-       d.unique_patient_no                                             as PatientID,
-       d.patient_id                                                    as PatientPK,
-       i.Facilityname                                                  as FacilityName,
-       i.sitecode                                                      as siteCode,
-       ph.visit_id                                                     as VisitID,
+select 'Government'                                                 AS Provider,
+       ''                                                           AS SatelliteName,
+       0                                                            as FacilityId,
+       d.unique_patient_no                                          as PatientID,
+       d.patient_id                                                 as PatientPK,
+       i.Facilityname                                               as FacilityName,
+       i.sitecode                                                   as siteCode,
+       ph.visit_id                                                  as VisitID,
        Drug,
-       ph.visit_date                                                   as DispenseDate,
-       ph.duration                                                     AS duration,
-       ph.duration                                                     AS PeriodTaken,
-       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)               as ExpectedReturn,
-       'KenyaEMR'                                                      as Emr,
-       'Kenya HMIS II'                                                 as Project,
+       ph.visit_date                                                as DispenseDate,
+       ph.duration                                                  AS duration,
+       ph.duration                                                  AS PeriodTaken,
+       DATE_ADD(ph.visit_date, INTERVAL ph.duration DAY)            as ExpectedReturn,
+       'KenyaEMR'                                                   as Emr,
+       'Kenya HMIS II'                                              as Project,
        CASE
            WHEN is_arv = 1 THEN 'ARV'
-           WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END    AS TreatmentType,
+           WHEN is_ctx = 1 OR is_dapsone = 1 THEN 'Prophylaxis' END AS TreatmentType,
        ph.RegimenLine,
        CASE
            WHEN is_ctx = 1 THEN 'CTX'
-           WHEN is_dapsone = 1 THEN 'DAPSONE' END                      AS ProphylaxisType,
-       CAST(now() as Date)                                             AS DateExtracted,
+           WHEN is_dapsone = 1 THEN 'DAPSONE' END                   AS ProphylaxisType,
+       CAST(now() as Date)                                          AS DateExtracted,
+       ph.RegimenChangedSwitched                                    as RegimenChangedSwitched,
+       ph.RegimenChangeSwitchReason                                 as RegimenChangeSwitchReason,
+       ph.StopRegimenReason                                         as StopRegimenReason,
+       ph.StopRegimenDate                                           as StopRegimenDate,
        ph.date_created,
-       ph.RegimenChangedSwitched                                       as RegimenChangedSwitched,
-       ph.RegimenChangeSwitchReason                                    as RegimenChangeSwitchReason,
-       ph.StopRegimenReason                                            as StopRegimenReason,
-       ph.StopRegimenDate                                              as StopRegimenDate,
-       GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified),
-                COALESCE(d.date_last_modified, ph.date_last_modified)) as date_last_modified
+       ph.date_last_modified
 from (SELECT *
       FROM (
                (select patient_id,
@@ -115,8 +114,8 @@ from (SELECT *
                           '')                                                                              as StopRegimenReason,
                        if(discontinued = 1, date_discontinued, NULL)                                       as StopRegimenDate,
                        @prev_regimen := e.regimen                                                             prev_regimen,
-                       ''                                                                                  as date_created,
-                       ''                                                                                  as date_last_modified
+                       e.date_created                                                                      as date_created,
+                       e.date_last_modified                                                                as date_last_modified
                 FROM kenyaemr_etl.etl_drug_event e,
                      (SELECT @s := 0, @prev_regimen := -1, @x := 0, @prev_regimen_line := -1) s
                 where e.program = 'HIV'
