@@ -1,4 +1,6 @@
-select t.patient_id
+select 'TX_CURR'                                                                   AS 'INDICATOR',
+       count(distinct t.patient_id)                                                as 'INDICATOR_VALUE',
+       date_format(last_day(date_sub(current_date(), interval 1 MONTH)), '%Y%b%d') as 'INDICATOR_DATE'
 from(
     select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,
            greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,
