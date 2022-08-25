@@ -106,7 +106,7 @@ select ci.patient_id                                             as PatientPK,
        ''                                                        as CNS,
        ''                                                        AS Genitourinary,
        ci.date_created                                           as Date_Created,
-       ci.date_last_modified                                     as Date_Last_Modified
+       max(ci.date_last_modified)                                    as Date_Last_Modified
 from kenyaemr_etl.etl_allergy_chronic_illness ci
          left join (select e.patient_id, max(e.visit_date) as latest_enrolment_date
                     from kenyaemr_etl.etl_hiv_enrollment e
