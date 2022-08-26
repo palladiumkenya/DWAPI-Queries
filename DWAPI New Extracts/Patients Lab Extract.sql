@@ -79,13 +79,13 @@ select ''                                                                       
                                                         when 1067 then "Unknown" end),
                                   test_result)))))))))                                  as TestResult,
        NULL                                                                             as EnrollmentTest,
-       ''                                                                               as SampleType,
+       o.sample_type                                                                    as SampleType,
        'KenyaEMR'                                                                       as Emr,
        'Kenya HMIS II'                                                                  as Project,
        l.date_created                                                                   as Date_Created,
-       GREATEST(COALESCE(l.date_last_modified, d.date_last_modified),
-                COALESCE(d.date_last_modified, l.date_last_modified))                   as Date_Last_Modified
+       l.date_last_modified                                                             as Date_Last_Modified
 from kenyaemr_etl.etl_laboratory_extract l
+         left join openmrs.kenyaemr_order_entry_lab_manifest_order o on l.order_id = o.order_id
          join kenyaemr_etl.etl_patient_demographics d on d.patient_id = l.patient_id
          join kenyaemr_etl.etl_default_facility_info i
 where d.unique_patient_no is not null;
