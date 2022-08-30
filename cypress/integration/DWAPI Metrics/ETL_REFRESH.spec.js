@@ -1,7 +1,7 @@
-describe("Connect and validate TX_CURR extracts", () => {
+describe("Connect and validate ETL_REFRESH extracts", () => {
   let res = [];
-  it("Check if the TX_CURR will run without any error", () => {
-    cy.readFile("./DWAPI Metrics/TX_CURR.sql").then((querystring) => {
+  it("Check if the ETL_REFRESH.sql will run without any error", () => {
+    cy.readFile("./DWAPI Metrics/ETL_REFRESH.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 
@@ -14,9 +14,9 @@ describe("Connect and validate TX_CURR extracts", () => {
     expect(res).to.be.an("array");
 
     if (res.length > 0 && res != undefined) {
-      expect(res[0]).to.have.property("INDICATOR");
-      expect(res[0]).to.have.property("INDICATOR_DATE");
+      expect(res[0]).to.have.property("INDICATOR_NAME");
       expect(res[0]).to.have.property("INDICATOR_VALUE");
+      expect(res[0]).to.have.property("INDICATOR_MONTH");
     }
   });
 });

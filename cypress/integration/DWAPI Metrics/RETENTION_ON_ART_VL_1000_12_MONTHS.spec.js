@@ -1,7 +1,7 @@
 describe("Connect and validate RETENTION_ON_ART_VL_1000_12_MONTHS extracts", () => {
   let res = [];
   it("Check if the RETENTION_ON_ART_VL_1000_12_MONTHS  will run without any error", () => {
-    cy.readFile("./DWAPI Metrics/RETENTION_ON_ART_VL_1000_12_MONTHS").then(
+    cy.readFile("./DWAPI Metrics/RETENTION_ON_ART_VL_1000_12_MONTHS.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

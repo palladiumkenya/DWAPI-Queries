@@ -1,7 +1,7 @@
-describe("Connect and validate TX_CURR extracts", () => {
+describe("Connect and validate DWAPI ONE TIME DUMP extracts", () => {
   let res = [];
-  it("Check if the TX_CURR will run without any error", () => {
-    cy.readFile("./DWAPI Metrics/TX_CURR.sql").then((querystring) => {
+  it("Check if the DWAPI ONE TIME DUMP will run without any error", () => {
+    cy.readFile("./DWAPI Metrics/DWAPI_ONE_TIME_DUMP").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 
