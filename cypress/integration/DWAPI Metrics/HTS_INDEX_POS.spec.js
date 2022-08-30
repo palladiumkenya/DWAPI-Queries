@@ -1,7 +1,7 @@
-describe("Connect and validate TX_CURR extracts", () => {
+describe("Connect and validate HTS_INDEX_POS extracts", () => {
   let res = [];
-  it("Check if the TX_CURR will run without any error", () => {
-    cy.readFile("./DWAPI Metrics/TX_CURR.sql").then((querystring) => {
+  it("Check if the HTS_INDEX_POS will run without any error", () => {
+    cy.readFile("./DWAPI Metrics/HTS_INDEX_POS").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

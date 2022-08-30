@@ -1,7 +1,7 @@
-describe("Connect and validate TX_CURR extracts", () => {
+describe("Connect and validate HTS_INDEX extracts", () => {
   let res = [];
-  it("Check if the TX_CURR will run without any error", () => {
-    cy.readFile("./DWAPI Metrics/TX_CURR.sql").then((querystring) => {
+  it("Check if the HTS_INDEX will run without any error", () => {
+    cy.readFile("./DWAPI Metrics/HTS_INDEX").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 
@@ -15,8 +15,8 @@ describe("Connect and validate TX_CURR extracts", () => {
 
     if (res.length > 0 && res != undefined) {
       expect(res[0]).to.have.property("INDICATOR");
-      expect(res[0]).to.have.property("INDICATOR_DATE");
       expect(res[0]).to.have.property("INDICATOR_VALUE");
+      expect(res[0]).to.have.property("INDICATOR_DATE");
     }
   });
 });
