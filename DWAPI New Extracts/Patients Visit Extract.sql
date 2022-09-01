@@ -197,6 +197,10 @@ select ''                                                                     AS
                  nullif(case fup.screened_for_sti
                             when 1065 then 'Screened for STI'
                             else ''
+                            end, ''),
+                 nullif(case fup.cacx_screening
+                            when 703 then 'Screened for CaCx'
+                            when 664 then 'Screened for CaCx'
                             end, ''))                                         as PwP,
        if(fup.last_menstrual_period is not null,
           timestampdiff(week, fup.last_menstrual_period, fup.visit_date), '') as GestationAge,
@@ -236,12 +240,10 @@ select ''                                                                     AS
            when 165084 then 'MSW'
            when 165085 then 'PWUD'
            when 165100 then 'Transgender'
-           WHEN 1175 THEN 'N/A'
-           ELSE null END                                                      as KeyPopulationType,
+           WHEN 1175 THEN 'N/A' END                                           as KeyPopulationType,
        ''                                                                     as HCWConcern,
        fup.date_created                                                       as Date_Created,
-       GREATEST(COALESCE(d.date_last_modified, fup.date_last_modified),
-                COALESCE(fup.date_last_modified, d.date_last_modified))       as Date_Last_Modified
+       fup.date_last_modified                                                 as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d
          join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id = d.patient_id
          join kenyaemr_etl.etl_default_facility_info i
