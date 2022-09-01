@@ -192,7 +192,12 @@ select distinct ''                                                              
                           nullif(case fup.screened_for_sti
                                      when 1065 then 'Screened for STI'
                                      else ''
-                                     end, ''))                                         as PwP,
+                                     end, ''),
+                          nullif(case fup.cacx_screening
+                                     when 703 then 'Screened for CaCx'
+                                     when 664 then 'Screened for CaCx'
+                                     end, '')
+                    )                                         as PwP,
                 if(fup.last_menstrual_period is not null,
                    timestampdiff(week, fup.last_menstrual_period, fup.visit_date), '') as GestationAge,
                 case
