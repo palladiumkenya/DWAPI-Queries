@@ -26,8 +26,7 @@ select 'Government'                                                      AS Prov
        ph.RegimenChangeSwitchReason                                      as RegimenChangeSwitchReason,
        ph.StopRegimenReason                                              as StopRegimenReason,
        ph.StopRegimenDate                                                as StopRegimenDate,
-       GREATEST(COALESCE(ph.date_last_modified, d.date_last_modified),
-                COALESCE(d.date_last_modified, ph.date_last_modified))   as date_last_modified
+       IF(ph.date_created is Null or ph.date_created = '',NULL,GREATEST(ifnull(ph.date_last_modified,'0000-00-00'), ifnull(d.date_last_modified,'0000-00-00'))) as date_last_modified
 from (SELECT *
       FROM (
                (select patient_id,
@@ -63,6 +62,7 @@ from (SELECT *
                                          on cn2.concept_id = ph.drug and cn2.concept_name_type = 'SHORT'
                                              and cn2.locale = 'en'
                 where is_arv = 1
+               group by ph.encounter_id
                 order by patient_id, DispenseDate)
                UNION ALL
                (SELECT e.patient_id                                                                        as patient_id,
@@ -101,7 +101,7 @@ from (SELECT *
                             when 102 then 'Drug toxicity'
                             when 5622 then 'Other'
                             else '' end)                                                                   as RegimenChangeSwitchReason,
-                       if(regimen_stopped = 1260, (case reason_discontinued
+                       (case reason_discontinued
                                                        when 102 then 'Drug toxicity'
                                                        when 160567 then 'New diagnosis of Tuberculosis'
                                                        when 160569 then 'Virologic failure'
@@ -114,8 +114,7 @@ from (SELECT *
                                                        when 5622 then 'Other'
                                                        when 160559 then 'Risk of pregnancy'
                                                        when 160561 then 'New drug available'
-                                                       else '' end),
-                          '')                                                                              as StopRegimenReason,
+                                                       else '' end)                                                                              as StopRegimenReason,
                        if(discontinued = 1, date_discontinued, NULL)                                       as StopRegimenDate,
                        @prev_regimen := e.regimen                                                             prev_regimen,
                        ''                                                                                  as date_created,
@@ -123,6 +122,7 @@ from (SELECT *
                 FROM kenyaemr_etl.etl_drug_event e,
                      (SELECT @s := 0, @prev_regimen := -1, @x := 0, @prev_regimen_line := -1) s
                 where e.program = 'HIV'
+               group by e.encounter_id
                 ORDER BY e.patient_id, e.date_started)
                UNION ALL
                (select patient_id,
