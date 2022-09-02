@@ -53,4 +53,4 @@ SELECT t.patient_id                                                      as Pati
        t.date_created                                                    as Date_Created,
        t.date_last_modified                                              as Date_Last_Modified
 FROM kenyaemr_etl.etl_hts_test t
-         inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id;;
+         inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id;
