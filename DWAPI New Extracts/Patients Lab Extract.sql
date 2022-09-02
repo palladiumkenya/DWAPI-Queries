@@ -1,4 +1,5 @@
 #Lab extracts for C&T
+
 select ''                                                                               AS SatelliteName,
        0                                                                                AS FacilityId,
        d.unique_patient_no                                                              as PatientID,
