@@ -59,7 +59,7 @@ from (SELECT *
                        ph.date_last_modified
                 from kenyaemr_etl.etl_pharmacy_extract ph
                 where is_arv = 1
-               group by ph.encounter_id
+                group by ph.encounter_id
                 order by patient_id, DispenseDate)
                UNION ALL
                (SELECT e.patient_id                                                                        as patient_id,
@@ -111,7 +111,7 @@ from (SELECT *
                                                        when 5622 then 'Other'
                                                        when 160559 then 'Risk of pregnancy'
                                                        when 160561 then 'New drug available'
-                                                       else '' end)                                                                            as StopRegimenReason,
+                                                       else '' end)                                                                              as StopRegimenReason,
                        if(discontinued = 1, date_discontinued, NULL)                                       as StopRegimenDate,
                        @prev_regimen := e.regimen                                                             prev_regimen,
                        e.date_created                                                                      as date_created,
@@ -126,11 +126,11 @@ from (SELECT *
                        visit_id,
                        visit_date,
                        encounter_id,
-                       drug_short_name                                                             as drug,
-                       1                                                                           as is_arv,
-                       ''                                                                          as is_ctx,
-                       ''                                                                          as is_dapsone,
-                       drug_name                                                                   as drugreg,
+                       drug_short_name                          as drug,
+                       1                                        as is_arv,
+                       ''                                       as is_ctx,
+                       ''                                       as is_dapsone,
+                       drug_name                                as drugreg,
                        frequency,
                        visit_date                               as DispenseDate,
                        (case duration_units
@@ -145,21 +145,21 @@ from (SELECT *
                                                           when 'DAYS' then duration
                                                           when 'MONTHS' then duration * 30
                                                           when 'WEEKS' then duration * 7 end) DAY) as ExpectedReturn,
-                       ''                                                                          AS TreatmentType,
-                       ''                                                                          as RegimenLine,
-                       drug_name                                                                   as regimen,
-                       ''                                                                          AS ProphylaxisType,
-                       ''                                                                          as previousRegimen,
-                       ''                                                                          as RegimenChangedSwitched,
-                       ''                                                                          as RegimenChangeSwitchReason,
-                       ''                                                                          as StopRegimenReason,
-                       ''                                                                          as StopRegimenDate,
-                       ''                                                                          as prev_Regimen,
+                       ''                                       AS TreatmentType,
+                       ''                                       as RegimenLine,
+                       drug_name                                as regimen,
+                       ''                                       AS ProphylaxisType,
+                       ''                                       as previousRegimen,
+                       ''                                       as RegimenChangedSwitched,
+                       ''                                       as RegimenChangeSwitchReason,
+                       ''                                       as StopRegimenReason,
+                       ''                                       as StopRegimenDate,
+                       ''                                       as prev_Regimen,
                        do.date_created,
                        do.date_last_modified
                 from kenyaemr_etl.etl_drug_order do
-                group by do.order_group_id, do.patient_id, do.encounter_id
-                order by do.patient_id, DispenseDate)
+               group by do.order_group_id,do.patient_id, do.encounter_id
+            order by do.patient_id, DispenseDate)
            ) A
       order by A.DispenseDate, A.patient_id) ph
          join kenyaemr_etl.etl_patient_demographics d on d.patient_id = ph.patient_id
@@ -171,4 +171,5 @@ from (SELECT *
     and fup.patient_id = ph.patient_id
          join kenyaemr_etl.etl_default_facility_info i
 where unique_patient_no is not null
-  and drugreg is not null;
+  and drugreg is not null
+order by ph.patient_id, ph.DispenseDate;
