@@ -43,7 +43,6 @@ select ''                                                                       
        disc.ExitReason                                                                 as ExitReason,
        'KenyaEMR'                                                                      as Emr,
        'Kenya HMIS II'                                                                 as Project,
-       'Kenya HMIS II'                                                                 as Project,
        LEAST(hiv.date_created, reg.date_started)                                    as Date_Created,
        GREATEST(ifnull(hiv.date_last_modified, '0000-00-00'),
                 ifnull(disc.date_last_modified, '0000-00-00'),

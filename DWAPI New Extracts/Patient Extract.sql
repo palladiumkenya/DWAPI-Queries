@@ -56,6 +56,7 @@ select CASE WHEN prg.program = 'TB' THEN prg.status ELSE null end               
            WHEN 160563 THEN 'Transfer in'
            WHEN 164144 THEN 'New client'
            WHEN 159833 THEN 'Re-enroll'
+           WHEN 164931 THEN 'Transit'
            ELSE hiv.patient_type
            END                                                                        AS PatientType,
        if(c.client_id is not null, 'Key population', (select CASE
