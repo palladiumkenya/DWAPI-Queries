@@ -39,6 +39,8 @@ SELECT t.patient_id                                                      as Pati
            when 5622 then "O:Other"
            end                                                           as TestStrategy,
        t.test_1_result                                                   as TestResult1,
+       t.setting                                                         as Setting,
+       t.approach                                                        as Approach,
        t.test_2_result                                                   as TestResult2,
        t.final_test_result                                               as FinalTestResult,
        t.patient_given_result                                            as PatientGivenResult,
