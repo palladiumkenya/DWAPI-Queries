@@ -13,6 +13,7 @@ SELECT t.patient_id                                                      AS Pati
        t.test_2_kit_lot_no                                               as TestKitLotNumber2,
        t.test_2_kit_expiry                                               as TestKitExpiry2,
        t.test_2_result                                                   as TestResult2
+       t.syphillis_test_result                                           as SyphilisResult
 
 FROM kenyaemr_etl.etl_hts_test t
        inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id
