@@ -47,7 +47,7 @@ SELECT t.patient_id                                                             
        if(t.who_performed_test = 5619,t.date_tested, null)                             as DateTestedProvider,
        case t.started_on_art when 1065 then 'Yes' when 1066 then 'No' end          as StartedOnART,
        t.upn_number                                                                as CCCNumber,
-       case t.ever_had_sex when 1 then 'Yes' when 0 then 'No' end                  as EverHadSex,
+       case t.ever_had_sex when 1 then 'Yes' when 2 then 'No' end                  as EverHadSex,
        case t.sexually_active when 1065 then 'Yes' when 1066 then 'No' end         as SexuallyActive,
        case t.new_partner when 1065 then 'Yes' when 1066 then 'No' end             as NewPartner,
        (case t.partner_hiv_status
