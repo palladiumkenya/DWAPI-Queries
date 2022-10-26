@@ -5,6 +5,7 @@ SELECT t.patient_id                                                      as Pati
        'Kenya HMIS II'                                                   AS Project,
        demographics.openmrs_id                                           AS HtsNumber,
        t.encounter_id                                                    as EncounterId,
+       t.priority_population_type                                        as PriorityPopulationType,
        t.visit_date                                                      as TestDate,
        t.ever_tested_for_hiv                                             as EverTestedForHiv,
        t.months_since_last_test                                          as MonthsSinceLastTest,
