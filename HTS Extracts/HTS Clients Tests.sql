@@ -53,6 +53,8 @@ SELECT t.patient_id                                                      as Pati
            WHEN 2 THEN 'Repeat'
            END                                                           AS TestType,
        t.patient_consented                                               as Consent,
+       t.hts_risk_category                                               as HTSRiskCategory,
+       t.hts_risk_score                                                  as HTSRiskScore,
        t.date_created                                                    as Date_Created,
        t.date_last_modified                                              as Date_Last_Modified
 FROM kenyaemr_etl.etl_hts_test t
