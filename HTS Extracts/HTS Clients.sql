@@ -6,6 +6,7 @@ SELECT d.patient_id                                                      as Pati
        'KenyaEMR'                                                        as Emr,
        'Kenya HMIS II'                                                   AS Project,
        d.openmrs_id                                                      AS HtsNumber,
+       d.hts_recency_id                                                  as HTSRecencyId,
        d.DOB,
        case when d.Gender = 'M' then 'Male' else 'Female' end            as Gender,
        d.marital_status                                                  as MaritalStatus,
@@ -31,7 +32,7 @@ FROM kenyaemr_etl.etl_hts_test t
                             x.DOB,
                             CASE
                                 WHEN locate(';', dmLastName) > 0 THEN CONCAT(
-                                        CAST(LEFT(Gender, 1) AS CHAR CHARACTER SET utf8),
+                                        CAST(LEFT (Gender, 1) AS CHAR CHARACTER SET utf8),
                                         CAST(sxFirstName AS CHAR CHARACTER SET utf8), CAST(
                                                 SUBSTRING(dmLastName, locate(';', dmLastName) + 1, LENGTH(dmLastName))
                                             AS
@@ -39,7 +40,7 @@ FROM kenyaemr_etl.etl_hts_test t
                                         CAST(LTRIM(RTRIM(DATE_FORMAT(DOB, '%Y'))) AS CHAR CHARACTER SET utf8)
                                     )
                                 ELSE CONCAT(
-                                        CAST(LEFT(Gender, 1) AS CHAR CHARACTER SET utf8),
+                                        CAST(LEFT (Gender, 1) AS CHAR CHARACTER SET utf8),
                                         CAST(sxFirstName AS CHAR CHARACTER SET utf8),
                                         CAST(dmLastName AS CHAR CHARACTER SET utf8),
                                         CAST(LTRIM(RTRIM(DATE_FORMAT(DOB, '%Y'))) AS CHAR CHARACTER SET utf8)
