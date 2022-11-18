@@ -14,7 +14,7 @@ from (select hts.patient_id, hts.final_test_result, hts.visit_date, hts.test_typ
             group by hts.patient_id) hts
                INNER JOIN
            (select patient_id, id
-            from kenyaemr_hiv_testing_patient_contact c
+            from openmrs.kenyaemr_hiv_testing_patient_contact c
             where (c.relationship_type in (971, 972, 1528, 162221, 163565, 970, 5617))
               and c.patient_id is not NULL
               and c.voided = 0
