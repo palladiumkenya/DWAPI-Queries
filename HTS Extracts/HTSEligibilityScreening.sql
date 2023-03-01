@@ -88,12 +88,12 @@ SELECT t.patient_id                                                             
        case t.ever_had_sex
            when 1 then 'Yes'
            when 0 then 'No'
-          end                                       as EverHadSex,
+           end                                                                     as EverHadSex,
        t.sexually_active                                                           as SexuallyActive,
        t.new_partner                                                               as NewPartner,
        t.partner_hiv_status                                                        as PartnerHIVStatus,
        case t.couple_discordant when 1065 then 'Yes' when 1066 then 'No' end       as CoupleDiscordant,
-       case t.multiple_partners when 1 then 'Yes' when 0 then 'No' end             as MultiplePartners,
+       t.multiple_partners                                                         as MultiplePartners,
        t.number_partners                                                           as NumberOfPartners,
        case t.alcohol_sex
            when 1066 then 'Not at all'
