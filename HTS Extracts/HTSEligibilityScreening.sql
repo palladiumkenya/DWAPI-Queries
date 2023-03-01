@@ -86,10 +86,9 @@ SELECT t.patient_id                                                             
        case t.started_on_art when 1065 then 'Yes' when 1066 then 'No' end          as StartedOnART,
        t.upn_number                                                                as CCCNumber,
        case t.ever_had_sex
-           when 1065 then 'Yes'
-           when 1066 then 'No'
-           when 162570
-               then 'Declined to answer' end                                       as EverHadSex,
+           when 1 then 'Yes'
+           when 0 then 'No'
+          end                                       as EverHadSex,
        t.sexually_active                                                           as SexuallyActive,
        t.new_partner                                                               as NewPartner,
        t.partner_hiv_status                                                        as PartnerHIVStatus,
