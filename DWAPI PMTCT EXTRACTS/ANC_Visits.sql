@@ -91,12 +91,10 @@ select d.patient_id                                                             
            when 1065 then 'Yes'
            when 1066 then 'No'
            else 'NA' end                                                                        SyphilisTreated,
-       if(a.final_test_result = 'Positive' or e.hiv_status = 'Positive', case a.prophylaxis_given
-                                                                             when 105281 then 'Yes'
-                                                                             when 74250 then 'Yes'
-                                                                             when 1107 then 'No'
-                                                                             else 'N/A' end,
-          'NA')                                                                                 MotherProphylaxisGiven,
+       case a.prophylaxis_given
+           when 105281 then 'Yes'
+           when 74250 then 'Yes'
+           when 1107 then 'No' end                                                              MotherProphylaxisGiven,
        a.date_given_haart                                                                       DateMotherStartedHAART,
        case a.baby_azt_dispensed
            when 160123 then 'Yes'
