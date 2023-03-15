@@ -53,10 +53,10 @@ select d.patient_id                                                             
            when 115915 then 'Mastitis' end                                                Breast,
        case p.pph when 1065 then 'Present' when 1066 then 'Absent' end                 as PPH,
        case p.cs_scar
-           when 162129 then 'Wound intact and healing'
-           when 145776 then 'Caesarean Wound Disruption'
-           when 156794 then 'Infection of obstetric surgical wound'
-           when 162130 then 'Surgical wound healed'
+           when 147241 then 'Bleeding'
+           when 1115 then 'Normal'
+           when 156794 then 'Infected'
+           when 145776 then 'Gapping'
            when 1175 then 'Not Applicable' end                                         as CSScar,
        case p.gravid_uterus
            when 162111 then 'On exam, uterine fundus 12-16 week size'
@@ -83,7 +83,7 @@ select d.patient_id                                                             
            when 49 then 'Vesicovaginal Fistula'
            when 127847 then 'Rectovaginal fistula'
            when 1118 then 'Not done' end                                               as Fistula,
-       p.other_maternal_complications                                                  as MaternalComplications,
+       ''                                                                              as MaternalComplications,
        (case tb.resulting_tb_status
             when 1660 then "No TB Signs"
             when 142177 then "Presumed TB"
@@ -106,10 +106,7 @@ select d.patient_id                                                             
            when 703 then 'Positive'
            when 664 then 'Negative'
            when 1067 then 'Unknown' end                                                as PriorHIVStatus,
-       (case p.pnc_hiv_test_timing_mother
-            when 162080 then "Less than 6 weeks"
-            when 162081 then "Greater 6 weeks"
-            when 1118 then "Not Done" end)                                                MotherCameForHIVTest,
+       ''                                                                                 MotherCameForHIVTest,
        (case p.infant_prophylaxis_timing
             when 1065 then 'Less than 6 weeks'
             when 1066 then 'Greater 6 weeks' end)                                         InfactCameForHAART,
@@ -241,7 +238,8 @@ from kenyaemr_etl.etl_patient_demographics d
                                                   if(DAYNAME(ps.mebendazole) IS NOT NULL, 'Mebendazole', NULL),
                                                   if(DAYNAME(ps.long_lasting_insecticidal_net) IS NOT NULL,
                                                      'Long Lasting Insecticidal Net', NULL))) as preventive_services
-                    from kenyaemr_etl.etl_preventive_services ps) ps
+                    from kenyaemr_etl.etl_preventive_services ps
+                    group by ps.patient_id, ps.visit_date) ps
                    on p.patient_id = ps.patient_id and p.visit_date = ps.visit_date
          inner join kenyaemr_etl.etl_default_facility_info i
 group by p.visit_id;
