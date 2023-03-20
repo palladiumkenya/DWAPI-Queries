@@ -83,7 +83,7 @@ select d.patient_id                                                             
            when 49 then 'Vesicovaginal Fistula'
            when 127847 then 'Rectovaginal fistula'
            when 1118 then 'Not done' end                                               as Fistula,
-       p.other_maternal_complications                                                  as MaternalComplications,
+       ''                                                                              as MaternalComplications,
        (case tb.resulting_tb_status
             when 1660 then "No TB Signs"
             when 142177 then "Presumed TB"
