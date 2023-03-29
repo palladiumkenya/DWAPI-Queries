@@ -7,7 +7,7 @@ select d.patient_id                                                             
        l.visit_id                                                                 VisitId,
        l.visit_date                                                               VisitDate,
        l.admission_number                                                         AdmissionNumber,
-       v.anc_visits                                                               ANCVisits,
+       l.number_of_anc_visits                                                     ANCVisits,
        date(l.date_of_last_menstrual_period)                                      LMP,
        date(l.estimated_date_of_delivery)                                         EDD,
        l.date_of_delivery                                                         DateOfDelivery,
@@ -20,9 +20,10 @@ select d.patient_id                                                             
            when 118159
                then 'Assisted vaginal delivery' end                               ModeOfDelivery,
        case l.placenta_complete
-           when 163455 then 'Yes'
-           when 163456
-               then 'No' end                                                      PlacentaComplete,
+           when 703 then 'Yes'
+           when 664
+               then 'No'
+           when 1501 then 'Baby born before arrival' end                          PlacentaComplete,
        (case l.uterotonic_given
             when 81369 then "Oxytocin"
             when 104590 then "Carbetocin"
@@ -69,10 +70,8 @@ select d.patient_id                                                             
            when 1175
                then 'N/A' end                                                  as BirthWithDeformity,
        case l.teo_given
-           when 84893 then 'Yes'
-           when 1066 then 'No'
-           when 1175
-               then 'N/A' end                                                  as TetracyclineGiven,
+           when 1 then 'Yes'
+           when 0 then 'No' end                                                as TetracyclineGiven,
        case l.bf_within_one_hour when 1065 then 'Yes' when 1066 then 'No' end  as InitiatedBF,
        l.apgar_score_1min                                                      as ApgarScore1,
        l.apgar_score_5min                                                      as ApgarScore5,
@@ -81,7 +80,7 @@ select d.patient_id                                                             
             when 1065 then "Yes"
             when 1066 then "No"
             when 1175
-                then "N/A" end)                                                as KangarooCare,
+                then "                      N/A" end)                          as KangarooCare,
        (case l.chlohexidine_applied_on_code_stump
             when 1065 then "Yes"
             when 1066
@@ -95,27 +94,11 @@ select d.patient_id                                                             
             when 1118
                 then "Not Done" end)                                           as SyphilisTestResults,
        ''                                                                      as HIVStatusLastANC,
-       if(l.final_test_result is not null, 'Yes', 'No'),
-       case l.test_1_kit_name
-           when 164960 then 'Determine'
-           when 164961 then 'First Response'
-           when 165351
-               then 'Dual Kit' end                                             as HIVTest_1,
-       case l.test_1_result
-           when 703 then 'Positive'
-           when 664 then 'Negative'
-           when 163611
-               then 'Invalid' end                                              as HIV_1Results,
-       case l.test_2_kit_name
-           when 164960 then 'Determine'
-           when 164961 then 'First Response'
-           when 165351
-               then 'Dual Kit' end                                             as HIVTest_2,
-       case l.final_test_result
-           when 703 then 'Positive'
-           when 664 then 'Negative'
-           when 1138
-               then 'Invalid' end                                              as HIVTestFinalResult,
+       if(l.final_test_result is not null, 'Yes', 'No')                        as HIVTestingDone,
+       l.test_1_kit_name                                                       as HIVTest_1,
+       l.test_1_result                                                         as HIV_1Results,
+       l.test_2_kit_name                                                       as HIVTest_2,
+       l.final_test_result                                                     as HIVTestFinalResult,
        (case l.mother_on_haart_during_anc
             when 1065 then "Yes"
             when 1066 then "No"
@@ -125,7 +108,7 @@ select d.patient_id                                                             
             when 1065 then "Yes"
             when 1066 then "No"
             when 1067 then "N/A" end)                                             onARTMat,
-       if(l.baby_nvp_dispensed = 80586 or l.baby_azt_dispensed = 160123, 'Yes',
+       if(l.baby_nvp_dispensed = 1 or l.baby_azt_dispensed = 1, 'Yes',
           'No')                                                                as BabyGivenProphylaxis,
        case l.prophylaxis_given
            when 105281 then 'Yes'
