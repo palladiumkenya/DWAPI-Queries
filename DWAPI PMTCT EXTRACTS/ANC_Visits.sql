@@ -64,9 +64,9 @@ select d.patient_id                                                             
            when 1066 then 'No'
            else 'NA' end                                                                        SyphilisTreatment,
        case e.hiv_status
-           when 'Positive' then 'KP'
-           when 'Unknown' then 'Unknown'
-           when 'Negative'
+           when 703 then 'KP'
+           when 1067 then 'Unknown'
+           when 664
                then 'Negative' end                                                              HIVStatusBeforeANC,
        if(a.final_test_result is not null or a.test_1_result is not null or a.test_2_result is not null, 'Yes',
           'No')                                                                                 HIVTestingDone,
