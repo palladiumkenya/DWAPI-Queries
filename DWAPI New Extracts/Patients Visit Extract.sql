@@ -40,6 +40,11 @@ select ''                                                                     AS
        t.weight                                                               as Weight,
        concat(t.systolic_pressure, '/', t.diastolic_pressure)                 as BP,
        t.temperature                                                          as Temp,
+       case t.z_score
+           when 1115 then 'Normal (Median)'
+           when 123814 then 'Mild (-1 SD)'
+           when 123815 then 'Moderate (-2 SD)'
+           when 164131 then 'Severe (-3 SD and -4 SD)' end                    as ZScore,
        t.pulse_rate                                                           as PulseRate,
        t.respiratory_rate                                                     as RespiratoryRate,
        t.oxygen_saturation                                                    as OxygenSaturation,
@@ -254,6 +259,7 @@ from kenyaemr_etl.etl_patient_demographics d
                            t.systolic_pressure,
                            t.diastolic_pressure,
                            t.temperature,
+                           t.z_score,
                            t.pulse_rate,
                            t.respiratory_rate,
                            t.oxygen_saturation,
