@@ -207,6 +207,7 @@ select ''                                                                     AS
                             when 703 then 'Screened for CaCx'
                             when 664 then 'Screened for CaCx'
                             end, ''))                                         as PwP,
+       case fup.pwp_pead_disclosure when 1066 then 'No disclosure' when 162979 then 'Partial disclosure' when 166982 then 'Full disclosure' end as PeadsDisclosure,
        if(fup.last_menstrual_period is not null,
           timestampdiff(week, fup.last_menstrual_period, fup.visit_date), '') as GestationAge,
        case
