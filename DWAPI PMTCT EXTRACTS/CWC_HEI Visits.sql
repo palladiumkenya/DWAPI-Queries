@@ -15,6 +15,8 @@ select d.patient_id           as PatientPK,
        v.respiratory_rate     as RespiratoryRate,
        v.oxygen_saturation    as OxygenSaturation,
        v.muac                 as MUAC,
+       v.ZScoreAbsolute       as ZScoreAbsolute,
+       v.ZScore               as ZScore,
        v.weight_category      as WeightCategory,
        v.stunted              as Stunted,
        v.infant_feeding       as InfantFeeding,
@@ -57,6 +59,12 @@ from kenyaemr_etl.etl_patient_demographics d
                                  when 160910 then 'Yellow'
                                  when 127778 then 'Red'
                                  else '' end)                                                       as muac,
+                            t.z_score_absolute                                                      as ZScoreAbsolute,
+                            case t.z_score
+                                when 1115 then 'Normal (Median)'
+                                when 123814 then 'Mild (-1 SD)'
+                                when 123815 then 'Moderate (-2 SD)'
+                                when 164131 then 'Severe (-3 SD and -4 SD)' end                     as ZScore,
                             case v.weight_category
                                 when 123814 then 'Underweight(UW)'
                                 when 126598 then 'Severely Underweight(SUW)'
