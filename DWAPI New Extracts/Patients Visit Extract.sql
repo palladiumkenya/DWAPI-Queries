@@ -40,6 +40,7 @@ select ''                                                                     AS
        t.weight                                                               as Weight,
        concat(t.systolic_pressure, '/', t.diastolic_pressure)                 as BP,
        t.temperature                                                          as Temp,
+       t.z_score                                                              as ZScoreAbsolute,
        case t.z_score
            when 1115 then 'Normal (Median)'
            when 123814 then 'Mild (-1 SD)'
@@ -207,7 +208,10 @@ select ''                                                                     AS
                             when 703 then 'Screened for CaCx'
                             when 664 then 'Screened for CaCx'
                             end, ''))                                         as PwP,
-       case fup.pwp_pead_disclosure when 1066 then 'No disclosure' when 162979 then 'Partial disclosure' when 166982 then 'Full disclosure' end as PeadsDisclosure,
+       case fup.pwp_pead_disclosure
+           when 1066 then 'No disclosure'
+           when 162979 then 'Partial disclosure'
+           when 166982 then 'Full disclosure' end                             as PeadsDisclosure,
        if(fup.last_menstrual_period is not null,
           timestampdiff(week, fup.last_menstrual_period, fup.visit_date), '') as GestationAge,
        case
@@ -260,6 +264,7 @@ from kenyaemr_etl.etl_patient_demographics d
                            t.systolic_pressure,
                            t.diastolic_pressure,
                            t.temperature,
+                           t.z_score_absolute,
                            t.z_score,
                            t.pulse_rate,
                            t.respiratory_rate,
