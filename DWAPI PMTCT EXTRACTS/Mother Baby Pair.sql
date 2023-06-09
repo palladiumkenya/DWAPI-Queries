@@ -59,7 +59,7 @@ from kenyaemr_etl.etl_patient_demographics d
                                                    left join (select disc.patient_id,
                                                                      max(date(disc.visit_date)) as latest_disc_visit
                                                               from kenyaemr_etl.etl_patient_program_discontinuation disc
-                                                              where disc.program_name = 'MCH Child'
+                                                              where disc.program_name in ('MCH Child','MCH Child HEI')
                                                               group by disc.patient_id) disc
                                                              on h.patient_id = disc.patient_id
                                           where timestampdiff(MONTH, date(c.dob), date(current_date)) <= 24
