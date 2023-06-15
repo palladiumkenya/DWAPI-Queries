@@ -62,7 +62,6 @@ from kenyaemr_etl.etl_patient_demographics d
                                                               where disc.program_name in ('MCH Child','MCH Child HEI')
                                                               group by disc.patient_id) disc
                                                              on h.patient_id = disc.patient_id
-                                          where timestampdiff(MONTH, date(c.dob), date(current_date)) <= 24
                                           group by c.patient_id) c
                                          on c.patient_id = r.person_b
                               inner join openmrs.relationship_type t
