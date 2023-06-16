@@ -1,4 +1,4 @@
-select 'HTS_INDEX'                                                                 AS 'INDICATOR',
+select 'HTS_INDEX_POS'                                                                 AS 'INDICATOR',
        count(distinct a.patient_id)                                                as 'INDICATOR_VALUE',
        date_format(last_day(date_sub(current_date(), interval 1 MONTH)), '%Y%b%d') as 'INDICATOR_DATE'
 from (select hts.patient_id,
