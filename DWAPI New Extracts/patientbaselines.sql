@@ -22,28 +22,16 @@ select ''                                                                       
        NULL                                                                                    as bCD4Date,
        ''                                                                                      as bWHO,
        NULL                                                                                    as bWHODate,
-       mid(max(concat(fup.visit_date, case fup.who_stage
-                                          when 1220 then 1
-                                          when 1221 then 2
-                                          when 1222 then 3
-                                          when 1223 then 4
-                                          when 1204 then 1
-                                          when 1205 then 2
-                                          when 1206 then 3
-                                          when 1207 then 4
-           end)),
-           11)                                                                                 as lastwho,
-       DATE(left(max(concat(fup.visit_date, case fup.who_stage
-                                                when 1220 then 1
-                                                when 1221 then 2
-                                                when 1222 then 3
-                                                when 1223 then 4
-                                                when 1204 then 1
-                                                when 1205 then 2
-                                                when 1206 then 3
-                                                when 1207 then 4
-           end)),
-                 10))                                                                          as lastwhodate,
+       case mid(max(concat(fup.visit_date, fup.who_stage)), 11)
+           when 1220 then 1
+           when 1221 then 2
+           when 1222 then 3
+           when 1223 then 4
+           when 1204 then 1
+           when 1205 then 2
+           when 1206 then 3
+           when 1207 then 4 end                                                                as lastwho,
+       DATE(left(max(concat(fup.visit_date, fup.who_stage)), 10))                              as lastwhodate,
        mid(max(concat(l.visit_date, l.test_result)), 11)                                       as lastcd4,
        DATE(left(max(concat(l.visit_date, l.test_result)), 10))                                as lastcd4date,
        mid(max(if(l.visit_date > p_dates.six_month_date and l.visit_date < p_dates.twelve_month_date,
