@@ -1,4 +1,5 @@
 select v.patient_related_to as PatientPK,
+       v.uuid as uuid,
        v.patient_id as ContactPatientPK,
        s.siteCode as SiteCode,
        de.unique_patient_no as PatientID,

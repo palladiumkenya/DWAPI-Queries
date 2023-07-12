@@ -1,4 +1,5 @@
 select v.patient_id                                        as PatientPK,
+       v.uuid                                              as uuid,
        s.siteCode                                          as SiteCode,
        de.unique_patient_no                                as PatientID,
        'KenyaEMR'                                          as Emr,

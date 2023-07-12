@@ -1,5 +1,6 @@
 #Adverse events for C&T
 select a.patient_id                                                 as PatientPK,
+       a.uuid                                                       as uuid,
        s.siteCode                                                   as SiteCode,
        de.unique_patient_no                                         as PatientID,
        0                                                            AS FacilityId,

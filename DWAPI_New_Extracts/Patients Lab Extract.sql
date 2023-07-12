@@ -3,6 +3,7 @@
 select ''                                                                               AS SatelliteName,
        0                                                                                AS FacilityId,
        d.unique_patient_no                                                              as PatientID,
+       l.uuid                                                                           as uuid,
        d.patient_id                                                                     as PatientPK,
        l.encounter_id                                                                   as VisitId,
        coalesce(DATE(l.date_test_requested), DATE(l.visit_date))                        as OrderedByDate,

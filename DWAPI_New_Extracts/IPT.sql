@@ -1,4 +1,5 @@
 select v.patient_id                                                               as PatientPK,
+       v.uuid                                                                     as uuid,
        site.siteCode                                                              as SiteCode,
        de.unique_patient_no                                                       as PatientID,
        0                                                                          AS FacilityId,
@@ -17,7 +18,7 @@ select v.patient_id                                                             
        (case s.lethargy when 116334 then 'Yes' when 1066 then 'No' end)           as Lethargy,
        concat_ws('|', case v.spatum_smear_ordered when 307 then 'Sputum smear' end,
                  case v.chest_xray_ordered when 12 then 'Chest Xray' end,
-                 case v.genexpert_ordered when 162202 then 'GeneXpert' end)         as ICFActionTaken,
+                 case v.genexpert_ordered when 162202 then 'GeneXpert' end)       as ICFActionTaken,
        concat_ws('|', case v.spatum_smear_result
                           when 703 then 'Positive'
                           when 664 then 'Negative' end, case v.chest_xray_result
@@ -65,24 +66,25 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                         or d.Outcome_date < a.latest_enrolment_date
                      group by a.patient_id) e on v.patient_id = e.patient_id
          left join (select s.patient_id                                                            as patient_id,
-                            s.visit_date                                                            as visit_date,
-                            s.visit_id                                                              as visit_id,
-                            s.cough,
-                            s.fever,
-                            s.weight_loss_poor_gain,
-                            s.night_sweats,
-                            s.lethargy,
-                            concat_ws('|', (case Ifnull(s.yellow_urine, '')
-                                                when 162311 then 'Yes'
-                                                when 1066 then 'No' end), (case ifnull(s.numbness_bs_hands_feet, '')
-                                                                               when 132652 then 'Yes'
-                                                                               when 1066 then 'No' end),
-                                      (case ifnull(s.eyes_yellowness, '')
-                                           when 5192 then 'Yes'
-                                           when 1066 then 'No' end), (case ifnull(s.upper_rightQ_abdomen_tenderness, '')
-                                                                          when 124994 then 'Yes'
-                                                                          when 1066 then 'No' end)) as IPTClientWorkUp
-                     from kenyaemr_etl.etl_ipt_screening s) s on v.patient_id = s.patient_id and v.visit_date = s.visit_date
+                           s.visit_date                                                            as visit_date,
+                           s.visit_id                                                              as visit_id,
+                           s.cough,
+                           s.fever,
+                           s.weight_loss_poor_gain,
+                           s.night_sweats,
+                           s.lethargy,
+                           concat_ws('|', (case Ifnull(s.yellow_urine, '')
+                                               when 162311 then 'Yes'
+                                               when 1066 then 'No' end), (case ifnull(s.numbness_bs_hands_feet, '')
+                                                                              when 132652 then 'Yes'
+                                                                              when 1066 then 'No' end),
+                                     (case ifnull(s.eyes_yellowness, '')
+                                          when 5192 then 'Yes'
+                                          when 1066 then 'No' end), (case ifnull(s.upper_rightQ_abdomen_tenderness, '')
+                                                                         when 124994 then 'Yes'
+                                                                         when 1066 then 'No' end)) as IPTClientWorkUp
+                    from kenyaemr_etl.etl_ipt_screening s) s
+                   on v.patient_id = s.patient_id and v.visit_date = s.visit_date
          left join (select i.patient_id                                         as isStarted,
                            (case i.ipt_indication
                                 when 138571 then 'PLHIV'
@@ -104,8 +106,7 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                                when 159598 then 'Poor adherence'
                                when 5622 then 'Others' end as IPT_disc_reason
                     from kenyaemr_etl.etl_ipt_outcome o
-                    group by o.patient_id
-) d on d.disc_patient = v.patient_id
+                    group by o.patient_id) d on d.disc_patient = v.patient_id
          join kenyaemr_etl.etl_default_facility_info site
 where de.unique_patient_no is not null
 group by v.encounter_id;
