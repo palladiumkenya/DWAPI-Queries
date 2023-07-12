@@ -2,6 +2,7 @@ select ''                                                                       
        0                                                                                       AS FacilityId,
        d.unique_patient_no                                                                     as PatientID,
        d.patient_id                                                                            as PatientPK,
+       p_dates.uuid                                                                            as uuid,
        (select siteCode from kenyaemr_etl.etl_default_facility_info)                           as SiteCode,
        mid(max(if(l.visit_date <= p_dates.enrollment_date, concat(l.visit_date, test_result), null)),
            11)                                                                                 as eCd4,
@@ -57,6 +58,7 @@ select ''                                                                       
 from kenyaemr_etl.etl_patient_hiv_followup fup
          join kenyaemr_etl.etl_patient_demographics d on d.patient_id = fup.patient_id
          join (select e.patient_id,
+                      e.uuid,
                       date_add(date_add(min(e.visit_date), interval 3 month), interval 1 day)  as enrollment_date,
                       date_add(date_add(min(e.visit_date), interval 6 month), interval 1 day)  as six_month_date,
                       date_add(date_add(min(e.visit_date), interval 12 month), interval 1 day) as twelve_month_date,

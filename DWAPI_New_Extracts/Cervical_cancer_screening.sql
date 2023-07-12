@@ -1,4 +1,5 @@
 select d.patient_id                           PatientPK,
+       s.uuid                              as uuid,
        i.siteCode                             SiteCode,
        d.unique_patient_no                    PatientID,
        0                                   as FacilityId,

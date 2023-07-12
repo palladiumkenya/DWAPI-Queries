@@ -4,6 +4,7 @@ select ''                                                                       
        d.Gender,
        'Government'                                                                    AS Provider,
        d.unique_patient_no                                                             as PatientID,
+       reg.uuid                                                                        as uuid,
        d.patient_id                                                                    as PatientPK,
        timestampdiff(year, d.DOB, hiv.visit_date)                                      as AgeEnrollment,
        timestampdiff(year, d.DOB, reg.art_start_date)                                  as AgeARTStart,
@@ -43,7 +44,7 @@ select ''                                                                       
        disc.ExitReason                                                                 as ExitReason,
        'KenyaEMR'                                                                      as Emr,
        'Kenya HMIS II'                                                                 as Project,
-       LEAST(hiv.date_created, reg.date_started)                                    as Date_Created,
+       LEAST(hiv.date_created, reg.date_started)                                       as Date_Created,
        GREATEST(ifnull(hiv.date_last_modified, '0000-00-00'),
                 ifnull(disc.date_last_modified, '0000-00-00'),
                 ifnull(reg.date_last_modified, '0000-00-00'))                          as Date_Last_Modified
@@ -63,6 +64,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                           where d.program_name = 'HIV'
                           group by d.patient_id) disc on disc.patient_id = hiv.patient_id
          left outer join (select e.patient_id,
+                                 e.uuid                                                               as uuid,
                                  min(e.date_started)                                                  as art_start_date,
                                  min(e.date_started)                                                  as date_started_art_this_facility,
                                  e.date_started,
@@ -88,6 +90,7 @@ from kenyaemr_etl.etl_hiv_enrollment hiv
                                  e.date_created,
                                  e.date_last_modified
                           from (select e.patient_id,
+                                       e.uuid,
                                        p.dob,
                                        p.Gender,
                                        min(e.date_started)                                             as date_started,

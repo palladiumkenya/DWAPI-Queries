@@ -1,6 +1,7 @@
 select ''                                                                     AS SatelliteName,
        0                                                                      AS FacilityId,
        d.unique_patient_no                                                    as PatientID,
+       fup.uuid                                                               as uuid,
        d.patient_id                                                           as PatientPK,
        i.facilityName                                                         as FacilityName,
        i.siteCode                                                             as SiteCode,

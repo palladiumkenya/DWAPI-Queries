@@ -1,4 +1,5 @@
 select ci.patient_id                                             as PatientPK,
+       ci.uuid                                                   as uuid,
        s.siteCode                                                as SiteCode,
        de.unique_patient_no                                      as PatientID,
        0                                                         AS FacilityId,
@@ -106,12 +107,12 @@ select ci.patient_id                                             as PatientPK,
        ''                                                        as CNS,
        ''                                                        AS Genitourinary,
        ci.date_created                                           as Date_Created,
-       max(ci.date_last_modified)                                    as Date_Last_Modified
+       max(ci.date_last_modified)                                as Date_Last_Modified
 from kenyaemr_etl.etl_allergy_chronic_illness ci
-         left join (select e.patient_id, max(e.visit_date) as latest_enrolment_date
+         left join (select e.patient_id, max(e.visit_date) as latest_enrolment_date,uuid
                     from kenyaemr_etl.etl_hiv_enrollment e
                     group by e.patient_id) e on ci.patient_id = e.patient_id
-         left join (select pe.patient_id, max(pe.visit_date) as prep_latest_enrolment_date
+         left join (select pe.patient_id, max(pe.visit_date) as prep_latest_enrolment_date,uuid
                     from kenyaemr_etl.etl_prep_enrolment pe
                     group by pe.patient_id) pe on ci.patient_id = pe.patient_id
          left join kenyaemr_etl.etl_patient_hiv_followup v on ci.encounter_id = v.encounter_id
@@ -130,4 +131,4 @@ from kenyaemr_etl.etl_allergy_chronic_illness ci
 where (d.hiv_disc_patient is null
     or d.hiv_outcome_date < e.latest_enrolment_date)
    or (pd.PrEP_disc_patient is null or pd.PrEP_Outcome_date < pe.prep_latest_enrolment_date)
-group by ci.patient_id,ci.visit_date;
+group by ci.patient_id, ci.visit_date;
