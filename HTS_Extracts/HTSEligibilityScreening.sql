@@ -47,6 +47,7 @@ SELECT t.patient_id                                                             
             when 5622
                 then "Other" end)                                                  as HTSEntryPoint,
        t.hts_risk_category                                                         as HIVRiskCategory,
+       t.hts_risk_score                                                            as HTSRiskScore,
        case t.department
            when 160542 then 'OPD:Out-patient department'
            when 5485 then 'IPD:In-patient department'
