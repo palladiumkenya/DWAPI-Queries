@@ -69,6 +69,6 @@ from kenyaemr_etl.etl_patient_demographics d
                                             t.uuid = '8d91a210-c2cc-11de-8d13-0010c6dffd0f'
                      where (disc_hei is null or date(hei_enr_date) > date(hei_disc_date))
                        and (disc_patient is null or date(latest_hiv_enrollment) > date(hiv_disc_date))
-                       and (r.end_date is null or date(r.end_date) > date(current_date))) r
+                       and (r.end_date is null or date(r.end_date) > date(current_date)) and r.voided = 0) r
                     on r.child = d.patient_id
          join kenyaemr_etl.etl_default_facility_info i;
