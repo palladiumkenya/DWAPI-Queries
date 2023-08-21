@@ -9,7 +9,6 @@ select v.patient_id                                                             
        coalesce(v.visit_date, s.visit_date)                                                       as VisitDate,
        coalesce(v.visit_id, s.visit_id)                                                           as VisitID,
        case v.on_anti_tb_drugs when 1065 then 'Yes' when 1066 then 'No' end                       as OnTBDrugs,
-       -- case v.on_ipt when 1065 then 'Yes' when 1066 then 'No' end                 as OnIPT,
        coalesce(case v.on_ipt when 1065 then 'Yes' when 1066 then 'No' end, if(i.isStarted is not null and
                                                                                coalesce(v.visit_date, s.visit_date) between i.TPT_Initiation_date and d.Outcome_date,
                                                                                'Yes',
