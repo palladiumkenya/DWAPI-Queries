@@ -1,24 +1,32 @@
-select v.patient_id                                                               as PatientPK,
-       v.uuid                                                                     as uuid,
-       site.siteCode                                                              as SiteCode,
-       de.unique_patient_no                                                       as PatientID,
-       0                                                                          AS FacilityId,
-       'KenyaEMR'                                                                 as Emr,
-       'Kenya HMIS II'                                                            as Project,
-       site.FacilityName                                                          as FacilityName,
-       coalesce(v.visit_date, s.visit_date)                                       as VisitDate,
-       coalesce(v.visit_id, s.visit_id)                                           as VisitID,
-       case v.on_anti_tb_drugs when 1065 then 'Yes' when 1066 then 'No' end       as OnTBDrugs,
-       case v.on_ipt when 1065 then 'Yes' when 1066 then 'No' end                 as OnIPT,
-       case v.ever_on_ipt when 1065 then 'Yes' when 1066 then 'No' end            as EverOnIPT,
-       (case s.cough when 159799 then 'Yes' when 1066 then 'No' end)              as Cough,
-       (case s.fever when 1494 then 'Yes' when 1066 then 'No' end)                as Fever,
-       (case s.weight_loss_poor_gain when 832 then 'Yes' when 1066 then 'No' end) as NoticeableWeightLoss,
-       (case s.night_sweats when 133027 then 'Yes' when 1066 then 'No' end)       as NightSweats,
-       (case s.lethargy when 116334 then 'Yes' when 1066 then 'No' end)           as Lethargy,
+select v.patient_id                                                                               as PatientPK,
+       v.uuid                                                                                     as uuid,
+       site.siteCode                                                                              as SiteCode,
+       de.unique_patient_no                                                                       as PatientID,
+       0                                                                                          AS FacilityId,
+       'KenyaEMR'                                                                                 as Emr,
+       'Kenya HMIS II'                                                                            as Project,
+       site.FacilityName                                                                          as FacilityName,
+       coalesce(v.visit_date, s.visit_date)                                                       as VisitDate,
+       coalesce(v.visit_id, s.visit_id)                                                           as VisitID,
+       case v.on_anti_tb_drugs when 1065 then 'Yes' when 1066 then 'No' end                       as OnTBDrugs,
+       -- case v.on_ipt when 1065 then 'Yes' when 1066 then 'No' end                 as OnIPT,
+       coalesce(case v.on_ipt when 1065 then 'Yes' when 1066 then 'No' end, if(i.isStarted is not null and
+                                                                               coalesce(v.visit_date, s.visit_date) between i.TPT_Initiation_date and d.Outcome_date,
+                                                                               'Yes',
+                                                                               'No'))             as OnIPT,
+       i.TPT_Initiation_date                                                                      as TPTInitiationDate,
+       coalesce(case v.ever_on_ipt when 1065 then 'Yes' when 1066 then 'No' end, if(i.isStarted is not null and
+                                                                                    coalesce(v.visit_date, s.visit_date) >=
+                                                                                    i.TPT_Initiation_date,
+                                                                                    'Yes', 'No')) as EverOnIPT,
+       (case s.cough when 159799 then 'Yes' when 1066 then 'No' end)                              as Cough,
+       (case s.fever when 1494 then 'Yes' when 1066 then 'No' end)                                as Fever,
+       (case s.weight_loss_poor_gain when 832 then 'Yes' when 1066 then 'No' end)                 as NoticeableWeightLoss,
+       (case s.night_sweats when 133027 then 'Yes' when 1066 then 'No' end)                       as NightSweats,
+       (case s.lethargy when 116334 then 'Yes' when 1066 then 'No' end)                           as Lethargy,
        concat_ws('|', case v.spatum_smear_ordered when 307 then 'Sputum smear' end,
                  case v.chest_xray_ordered when 12 then 'Chest Xray' end,
-                 case v.genexpert_ordered when 162202 then 'GeneXpert' end)       as ICFActionTaken,
+                 case v.genexpert_ordered when 162202 then 'GeneXpert' end)                       as ICFActionTaken,
        concat_ws('|', case v.spatum_smear_result
                           when 703 then 'Positive'
                           when 664 then 'Negative' end, case v.chest_xray_result
@@ -27,29 +35,32 @@ select v.patient_id                                                             
                  case v.genexpert_result
                      when 162203 then 'Mycobacterium Tuberculosis detected with Rifampicin resistance'
                      when 664 then 'Negative'
-                     when 162204 then 'Mycobacterium Tuberculosis detected without Rifampicin resistance'
+                     when 162204 then 'Mycobacterium Tuberculosis detected without Rifampicin resisrctance'
                      when 164104 then 'Mycobacterium tuberculosis detected with indeterminate rifampin resistance'
                      when 163611 then 'Invalid'
-                     when 1138 then 'Indeterminate' end)                          as TestResult,
+                     when 1138 then 'Indeterminate' end)                                          as TestResult,
        (case v.clinical_tb_diagnosis
             when 703 then 'Positive'
-            when 664 then 'Negative' end)                                         as TBClinicalDiagnosis,
-       (case v.contact_invitation when 1065 then 'Yes' when 1066 then 'No' end)   as ContactsInvited,
-       (case v.evaluated_for_ipt when 1065 then 'Yes' when 1066 then 'No' end)    as EvaluatedForIPT,
-       (case started_anti_TB when 1065 then 'Yes' when 1066 then 'No' end)        as StartAntiTBs,
-       v.tb_rx_date                                                               as TBRxStartDate,
+            when 664
+                then 'Negative' end)                                                              as TBClinicalDiagnosis,
+       (case v.contact_invitation when 1065 then 'Yes' when 1066 then 'No' end)                   as ContactsInvited,
+       (case v.evaluated_for_ipt when 1065 then 'Yes' when 1066 then 'No' end)                    as EvaluatedForIPT,
+       (case started_anti_TB when 1065 then 'Yes' when 1066 then 'No' end)                        as StartAntiTBs,
+       v.tb_rx_date                                                                               as TBRxStartDate,
        (case v.tb_status
             when 1660 then 'No Signs'
             when 142177 then 'Presumed TB'
             when 1662 then 'TB Confirmed'
-            when 160737 then 'TB Screening not done' end)                         as TBScreening,
-       s.IPTClientWorkUp                                                          as IPTClientWorkUp,
-       (case ifnull(i.isStarted, '') when '' then 'No' else 'Yes' end)            as StartIPT,
-       if(ifnull(i.IndicationForIPT, ''), '', i.IndicationForIPT)                 as IndicationForIPT,
-       d.IPT_disc_reason                                                          as IPTDiscontinuation,
-       d.Outcome_date                                                             as DateOfDiscontinuation,
-       v.date_created                                                             as Date_Created,
-       v.date_last_modified                                                       as Date_Last_Modified
+            when 160737 then 'TB Screening not done' end)                                         as TBScreening,
+       s.IPTClientWorkUp                                                                          as IPTClientWorkUp,
+       if(i.isStarted is not null and i.TPT_Initiation_date =
+                                      coalesce(v.visit_date, s.visit_date),
+          'Yes', 'No')                                                                            as StartIPT,
+       if(ifnull(i.IndicationForIPT, ''), '', i.IndicationForIPT)                                 as IndicationForIPT,
+       d.IPT_disc_reason                                                                          as IPTDiscontinuation,
+       d.Outcome_date                                                                             as DateOfDiscontinuation,
+       v.date_created                                                                             as Date_Created,
+       v.date_last_modified                                                                       as Date_Last_Modified
 from kenyaemr_etl.etl_patient_hiv_followup v
          inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
          inner join (select a.patient_id
@@ -86,6 +97,7 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                     from kenyaemr_etl.etl_ipt_screening s) s
                    on v.patient_id = s.patient_id and v.visit_date = s.visit_date
          left join (select i.patient_id                                         as isStarted,
+                           i.visit_date                                         as TPT_Initiation_date,
                            (case i.ipt_indication
                                 when 138571 then 'PLHIV'
                                 when 162277 then 'Prison setting'
