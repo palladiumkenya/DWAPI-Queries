@@ -1,7 +1,7 @@
 describe("Connect and validate PNC Visits  extracts", () => {
   let res = [];
-  it("Check if the PNC_Visits.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/PNC_Visits.sql").then((querystring) => {
+  it("Check if the PNCVisits.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/PNCVisits.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

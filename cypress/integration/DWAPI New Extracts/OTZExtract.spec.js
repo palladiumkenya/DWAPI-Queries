@@ -1,7 +1,7 @@
 describe("Connect and validate OTZ extracts", () => {
   let res = [];
-  it("Check if the OTZ Extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/OTZ Extract.sql").then((querystring) => {
+  it("Check if the OTZ.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/OTZ.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

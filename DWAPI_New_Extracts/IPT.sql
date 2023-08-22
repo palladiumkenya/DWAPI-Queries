@@ -59,7 +59,8 @@ select v.patient_id                                                             
        d.IPT_disc_reason                                                                          as IPTDiscontinuation,
        d.Outcome_date                                                                             as DateOfDiscontinuation,
        v.date_created                                                                             as Date_Created,
-       v.date_last_modified                                                                       as Date_Last_Modified
+       v.date_last_modified                                                                       as Date_Last_Modified,
+       v.voided                                                                                   as voided
 from kenyaemr_etl.etl_patient_hiv_followup v
          inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
          inner join (select a.patient_id
@@ -103,7 +104,7 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                                 when 162278 then 'Household contact'
                                 when 1555 then 'HCW and other Facility staff'
                                 when 5619 then 'Other clinical risk group' end) as IndicationForIPT
-                    from kenyaemr_etl.etl_ipt_initiation i) i on v.patient_id = i.isStarted
+                    from dwapi_etl.etl_ipt_initiation i) i on v.patient_id = i.isStarted
          left join (select o.patient_id                    as disc_patient,
                            max(date(o.visit_date))            Outcome_date,
                            case mid(max(concat(o.visit_date, o.outcome)), 11)
@@ -116,7 +117,7 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                                when 102 then 'Adverse drug reaction'
                                when 159598 then 'Poor adherence'
                                when 5622 then 'Others' end as IPT_disc_reason
-                    from kenyaemr_etl.etl_ipt_outcome o
+                    from dwapi_etl.etl_ipt_outcome o
                     group by o.patient_id) d on d.disc_patient = v.patient_id
          join kenyaemr_etl.etl_default_facility_info site
 where de.unique_patient_no is not null

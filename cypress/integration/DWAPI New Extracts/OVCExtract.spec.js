@@ -1,7 +1,7 @@
 describe("Connect and validate OVC extracts", () => {
   let res = [];
-  it("Check if the OVC Extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/OVC Extract.sql").then((querystring) => {
+  it("Check if the OVC.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/OVC.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

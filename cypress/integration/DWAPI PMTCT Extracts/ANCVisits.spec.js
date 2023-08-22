@@ -1,7 +1,7 @@
 describe("Connect and validate ANC Visits extracts", () => {
   let res = [];
-  it("Check if the ANC_Visits.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/ANC_Visits.sql").then((querystring) => {
+  it("Check if the ANCVisits.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/ANCVisits.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

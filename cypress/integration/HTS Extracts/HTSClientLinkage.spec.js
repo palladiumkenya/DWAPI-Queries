@@ -1,7 +1,7 @@
 describe("Connect and validate HTS Client Linkage extracts", () => {
   let res = [];
-  it("Check if the HTS Client Linkage.sql will run without any error", () => {
-    cy.readFile("./HTS Extracts/HTS Client Linkage.sql").then((querystring) => {
+  it("Check if the HTSClientLinkage.sql will run without any error", () => {
+    cy.readFile("./HTS Extracts/HTSClientLinkage.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

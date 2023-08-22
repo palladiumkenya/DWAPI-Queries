@@ -8,13 +8,13 @@ from (
             DATE_ADD(DATE_SUB(date(last_day(date_sub(current_date(),interval 1 MONTH))),INTERVAL day(date(last_day(date_sub(current_date(),interval 1 MONTH))))-1 DAY),INTERVAL -12 MONTH) as cohort_start_date,
             date(last_day(DATE_ADD(DATE_SUB(date(last_day(date_sub(current_date(),interval 1 MONTH))),INTERVAL day(date(last_day(date_sub(current_date(),interval 1 MONTH))))-1 DAY),INTERVAL -12 MONTH))) as cohort_end_date
      from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started
-           from kenyaemr_etl.etl_drug_event e
-                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id
+           from dwapi_etl.etl_drug_event e
+                  join dwapi_etl.etl_patient_demographics p on p.patient_id=e.patient_id
            where e.program='HIV'
            group by e.patient_id) e
-            left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee'
-            left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id
-            left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id
+            left outer join dwapi_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee'
+            left outer join dwapi_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id
+            left outer join dwapi_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id
      where date(e.date_started) between DATE_ADD(DATE_SUB(date(last_day(date_sub(current_date(),interval 1 MONTH))),INTERVAL day(date(last_day(date_sub(current_date(),interval 1 MONTH))))-1 DAY),INTERVAL -12 MONTH) and
                date(last_day(DATE_ADD(DATE_SUB(date(last_day(date_sub(current_date(),interval 1 MONTH))),INTERVAL day(date(last_day(date_sub(current_date(),interval 1 MONTH))))-1 DAY),INTERVAL -12 MONTH)))
      group by e.patient_id

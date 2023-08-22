@@ -75,7 +75,7 @@ select d.openmrs_id                                                             
        (case a.on_ventillator when 1065 then 'Yes' when 1066 then 'No' end)       as PatientVentilated,
        a.date_created                                                             as DateCreated,
        a.date_last_modified                                                       as DateModified
-from kenyaemr_etl.etl_patient_demographics d
-         join kenyaemr_etl.etl_covid19_assessment a on d.patient_id = a.patient_id
+from dwapi_etl.etl_patient_demographics d
+         join dwapi_etl.etl_covid19_assessment a on d.patient_id = a.patient_id
          join kenyaemr_etl.etl_default_facility_info i
 group by a.visit_id;

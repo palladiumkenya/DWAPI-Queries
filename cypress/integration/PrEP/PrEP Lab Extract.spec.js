@@ -1,7 +1,7 @@
 describe("Connect and validate PrEP Lab extract", () => {
   let res = [];
-  it("Check if the PrEP Lab Extract.sql will run without any error", () => {
-    cy.readFile("./PrEP/PrEP Lab Extract.sql").then((querystring) => {
+  it("Check if the PrEPLabExtract.sql will run without any error", () => {
+    cy.readFile("./PrEP/PrEPLabExtract.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

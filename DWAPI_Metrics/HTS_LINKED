@@ -1,9 +1,0 @@
-select 'HTS_LINKED'                                                                AS 'INDICATOR',
-       count(distinct t.patient_id)                                                as 'INDICATOR_VALUE',
-       date_format(last_day(date_sub(current_date(), interval 1 MONTH)), '%Y%b%d') as 'INDICATOR_DATE'
-from kenyaemr_etl.etl_hts_referral_and_linkage r
-         inner join kenyaemr_etl.etl_hts_test t on r.patient_id = t.patient_id and t.final_test_result = 'Positive'
-where (r.ccc_number != '' or r.ccc_number IS NOT NULL)
-  and (r.facility_linked_to != '' or r.facility_linked_to IS NOT NULL)
-  and t.visit_date between DATE_ADD(DATE_SUB(current_date(), INTERVAL DAYOFMONTH(current_date()) - 1 DAY), INTERVAL -1
-                                    MONTH) and date(last_day(date_sub(current_date(), interval 1 MONTH)));

@@ -9,7 +9,7 @@ from (select hts.patient_id,
              r.person_a,
              r.person_b
       from (select hts.patient_id, hts.final_test_result, hts.visit_date, hts.test_type
-            from kenyaemr_etl.etl_hts_test hts
+            from dwapi_etl.etl_hts_test hts
             where hts.test_strategy = 161557
               and hts.final_test_result = 'Positive'
               and hts.patient_given_result = 'Yes'

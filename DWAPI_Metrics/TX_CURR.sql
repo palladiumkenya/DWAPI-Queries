@@ -10,12 +10,12 @@ from(
            d.effective_disc_date as effective_disc_date,
            max(d.visit_date) as date_discontinued,
            de.patient_id as started_on_drugs
-    from kenyaemr_etl.etl_patient_hiv_followup fup
-           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id
-           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id
-           left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(date(last_day(date_sub(current_date(),interval 1 MONTH))))
+    from dwapi_etl.etl_patient_hiv_followup fup
+           join dwapi_etl.etl_patient_demographics p on p.patient_id=fup.patient_id
+           join dwapi_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id
+           left outer join dwapi_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(date(last_day(date_sub(current_date(),interval 1 MONTH))))
            left outer JOIN
-             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation
+             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from dwapi_etl.etl_patient_program_discontinuation
               where date(visit_date) <= date(date(last_day(date_sub(current_date(),interval 1 MONTH))))
                 and program_name='HIV' and patient_id
               group by patient_id

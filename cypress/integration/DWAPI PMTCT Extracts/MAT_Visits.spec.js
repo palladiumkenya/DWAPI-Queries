@@ -1,7 +1,7 @@
 describe("Connect and validate MAT_Visits extracts", () => {
   let res = [];
-  it("Check if the MAT_Visits.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/MAT_Visits.sql").then((querystring) => {
+  it("Check if the MATVisits.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/MATVisits.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

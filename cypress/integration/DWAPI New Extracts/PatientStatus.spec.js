@@ -1,7 +1,7 @@
 describe("Connect and validate Patient Status extracts", () => {
   let res = [];
-  it("Check if the Patient status extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Patient status extract.sql").then(
+  it("Check if the PatientStatus.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/PatientStatus.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

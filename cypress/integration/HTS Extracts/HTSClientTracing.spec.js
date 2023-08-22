@@ -1,7 +1,7 @@
 describe("Connect and validate HTS Client Tracing extracts", () => {
   let res = [];
-  it("Check if the HTS Client Tracing.sql will run without any error", () => {
-    cy.readFile("./HTS Extracts/HTS Client Tracing.sql").then((querystring) => {
+  it("Check if the HTSClientTracing.sql will run without any error", () => {
+    cy.readFile("./HTS Extracts/HTSClientTracing.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

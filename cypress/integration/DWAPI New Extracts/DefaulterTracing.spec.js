@@ -1,7 +1,7 @@
 describe("Connect and validate DefaulterTracing extracts", () => {
   let res = [];
-  it("Check if the Defaulter Tracing.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Defaulter Tracing.sql").then(
+  it("Check if the DefaulterTracing.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/DefaulterTracing.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;
