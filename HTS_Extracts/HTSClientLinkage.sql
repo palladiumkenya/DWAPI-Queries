@@ -1,5 +1,5 @@
 select a.patient_id           as PatientPK,
-       a.uuid             as uuid,
+       a.uuid                 as uuid,
        i.FacilityName         as FacilityName,
        i.siteCode             as SiteCode,
        'KenyaEMR'             as Emr,
@@ -16,7 +16,7 @@ select a.patient_id           as PatientPK,
        a.art_start_date       as ReportedStartARTDate,
        a.date_created         as Date_Created,
        a.date_last_modified   as Date_Last_Modified,
-       a.voided           as voided
+       a.voided               as voided
 from (SELECT Distinct patient_id,
                       uuid,
                       encounter_id,
@@ -54,7 +54,7 @@ from (SELECT Distinct patient_id,
                                 on demo.patient_id = htsrl.patient_id
             UNION ALL
             SELECT DISTINCT t.patient_id,
-                            t.uuid as uuid,
+                            t.uuid                    as uuid,
                             t.encounter_id,
                             t.visit_date,
                             unique_patient_no            ccc_number,
@@ -68,10 +68,10 @@ from (SELECT Distinct patient_id,
                             t.encounter_location,
                             t.date_created,
                             t.date_last_modified,
-                            t.voided as voided
+                            t.voided                  as voided
             FROM dwapi_etl.etl_hts_test t
                      INNER JOIN dwapi_etl.etl_patient_demographics pt
-                                ON pt.patient_id = t.patient_id /*AND pt.voided = 0*/
+                                ON pt.patient_id = t.patient_id
                      INNER JOIN dwapi_etl.etl_hiv_enrollment e ON e.patient_id = t.patient_id /*AND e.voided = 0*/
                      LEFT JOIN dwapi_etl.etl_hts_referral_and_linkage l ON l.patient_id = t.patient_id
                      LEFT JOIN (SELECT patient_id, min(date_started) as art_start_date
@@ -79,7 +79,6 @@ from (SELECT Distinct patient_id,
                                 group by patient_id) ar on ar.patient_id = t.patient_id
             WHERE t.test_type = 2
               AND t.final_test_result = 'Positive'
-              AND t.referral_facility is not null
-               /* AND t.voided = 0*/) a) a
+              AND t.referral_facility is not null) a) a
          join kenyaemr_etl.etl_default_facility_info i
          left join dwapi_etl.etl_hts_referral ref on a.patient_id = ref.patient_id;

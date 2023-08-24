@@ -1,5 +1,5 @@
 select d.patient_id                                                        as PatientPK,
-       i.uuid as uuid,
+       z.uuid as uuid,
        i.siteCode                                                          as SiteCode,
        'KenyaEMR'                                                          as Emr,
        'Kenya HMIS II'                                                     as Project,
@@ -35,7 +35,7 @@ select d.patient_id                                                        as Pa
        case z.fully_immunized when 1065 then 'Yes' when 1066 then 'No' end as FullyImmunizedChild,
        z.date_created                                                      as Date_Created,
        z.date_last_modified                                                as Date_Last_Modified,
-       i.voided as voided
+       z.voided as voided
 from dwapi_etl.etl_patient_demographics d
          inner join dwapi_etl.etl_hei_immunization z on d.patient_id = z.patient_id
          join kenyaemr_etl.etl_default_facility_info i

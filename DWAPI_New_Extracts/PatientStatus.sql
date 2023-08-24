@@ -63,7 +63,8 @@ select ''                                                                       
        mid(max(concat(date(disc.visit_date), disc.trf_out_verification_date)), 11) as TOVerifiedDate,
        mid(max(concat(disc.visit_date, disc.date_died)), 11)                       as DeathDate,
        disc.date_created                                                           as Date_Created,
-       disc.date_last_modified                                                     as Date_Last_Modified
+       disc.date_last_modified                                                     as Date_Last_Modified,
+       null as voided
 from dwapi_etl.etl_patient_program_discontinuation disc
          left join (select e.patient_id                                       as patient_id,
                            max(e.visit_date)                                  as latest_enrolment_date,

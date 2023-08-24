@@ -1,5 +1,5 @@
 # Metric for DWAPI one time dump
-select 'DWAPI_ONE_TIME_DUMP_'                 as INDICATOR,
+select 'DWAPI_ONE_TIME_DUMP'                 as INDICATOR,
        count(a.PatientPK)                    AS INDICATOR_VALUE,
        date_format(current_date(), '%Y%b%d') as INDICATOR_DATE
 from (SELECT hiv.patient_id AS PatientPK

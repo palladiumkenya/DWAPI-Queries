@@ -1,34 +1,34 @@
-select d.patient_id                                                                 as PatientPK,
-       m.uuid                                                                       as uuid,
-       i.siteCode                                                                   as SiteCode,
-       d.openmrs_id                                                                 as PatientMNCHCWC_ID,
-       'KenyaEMR'                                                                   as Emr,
-       'Kenya HMIS II'                                                              as Project,
-       i.FacilityName                                                               as FacilityName,
+select d.patient_id                                                                         as PatientPK,
+       if(m.patient_id is not null, m.muuid, if(c.patient_id is not null, c.cuuid, null))   as uuid,
+       i.siteCode                                                                           as SiteCode,
+       d.openmrs_id                                                                         as PatientMNCHCWC_ID,
+       'KenyaEMR'                                                                           as Emr,
+       'Kenya HMIS II'                                                                      as Project,
+       i.FacilityName                                                                       as FacilityName,
        (case m.service_type
             when 1622 then 'ANC'
             when 164835 then 'Delivery'
             when 1623 then 'PNC'
-            else '' end)                                                            as ServiceType,
-       coalesce(c.hei_enrolment_date, m.mch_enrollment_date)                        as EnrollmentDateATMNCH,
-       m.anc_number                                                                 as MNCHNumber,
-       m.first_anc_visit                                                            as FirstVisitANC,
-       m.parity                                                                     as Parity,
-       m.gravida                                                                    as Gravidae,
-       m.lmp                                                                        as LMP,
-       coalesce(m.edd, date_add(date_add(m.lmp, interval 7 day), interval 9 month)) as EDDFromLMP,
+            else '' end)                                                                    as ServiceType,
+       coalesce(c.hei_enrolment_date, m.mch_enrollment_date)                                as EnrollmentDateATMNCH,
+       m.anc_number                                                                         as MNCHNumber,
+       m.first_anc_visit                                                                    as FirstVisitANC,
+       m.parity                                                                             as Parity,
+       m.gravida                                                                            as Gravidae,
+       m.lmp                                                                                as LMP,
+       coalesce(m.edd, date_add(date_add(m.lmp, interval 7 day), interval 9 month))         as EDDFromLMP,
        (case m.hiv_status_before_anc
             when 664 then "Negative"
             when 703 then "Positive"
             when 1067 then "Unknown"
-            else "" end)                                                            as HIVStatusBeforeANC,
-       m.test_date                                                                  as HIVTestDate,
+            else "" end)                                                                    as HIVStatusBeforeANC,
+       m.test_date                                                                          as HIVTestDate,
        (case m.partner_status
             when 664 then "Negative"
             when 703 then "Positive"
             when 1067 then "Unknown"
-            else "" end)                                                            as PartnerHIVStatus,
-       m.partner_test_date                                                          as PartnerHIVTestDate,
+            else "" end)                                                                    as PartnerHIVStatus,
+       m.partner_test_date                                                                  as PartnerHIVTestDate,
        (case m.blood_group
             when 690 then "A POSITIVE"
             when 692 then "A NEGATIVE"
@@ -38,14 +38,14 @@ select d.patient_id                                                             
             when 701 then "O NEGATIVE"
             when 1230 then "AB POSITIVE"
             when 1231 then "AB NEGATIVE"
-            else "" end)                                                            as BloodGroup,
-       coalesce(m.status_in_mnch, c.status_in_cwc)                                  as StatusAtMNCH,
-       m.date_created                                                               as Date_Created,
-       m.date_last_modified                                                         as Date_Last_Modified,
-       m.voided                                                                     as voided
+            else "" end)                                                                    as BloodGroup,
+       coalesce(m.status_in_mnch, c.status_in_cwc)                                          as StatusAtMNCH,
+       m.date_created                                                                       as Date_Created,
+       m.date_last_modified                                                                 as Date_Last_Modified,
+       if(m.patient_id is not null, m.mvoided, if(c.patient_id is not null, cvoided, null)) as voided
 from dwapi_etl.etl_patient_demographics d
          left join (select m.patient_id,
-                           m.uuid                  as uuid,
+                           m.uuid                  as muuid,
                            m.service_type          as service_type,
                            m.visit_date            as mch_enrollment_date,
                            m.anc_number            as anc_number,
@@ -62,7 +62,7 @@ from dwapi_etl.etl_patient_demographics d
                            p.status_in_prg         as status_in_mnch,
                            m.date_created          as date_created,
                            m.date_last_modified    as date_last_modified,
-                           m.voided                as voided
+                           m.voided                as mvoided
                     from dwapi_etl.etl_mch_enrollment m
                              left join (select p.patient_id                                              as prg_patient,
                                                p.date_enrolled                                           as date_enrolled,
@@ -80,7 +80,11 @@ from dwapi_etl.etl_patient_demographics d
                                         where p.program = 'MCH-Mother Services') p
                                        on m.patient_id = p.prg_patient and m.visit_date = p.date_enrolled
                     group by m.patient_id, m.visit_date) m on d.patient_id = m.patient_id
-         left join (select c.patient_id, c.visit_date as hei_enrolment_date, p.status_in_prg as status_in_cwc
+         left join (select c.patient_id,
+                           c.uuid          as cuuid,
+                           c.visit_date    as hei_enrolment_date,
+                           p.status_in_prg as status_in_cwc,
+                           c.voided        as cvoided
                     from dwapi_etl.etl_hei_enrollment c
                              left join (select p.patient_id          as prg_patient,
                                                p.date_enrolled       as date_enrolled,

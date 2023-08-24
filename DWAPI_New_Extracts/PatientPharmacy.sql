@@ -60,7 +60,7 @@ from (SELECT *
                     ph.date_created,
                     ph.date_last_modified,
                     ph.voided                                                        as voided
-             from kenyaemr_etl.etl_pharmacy_extract ph
+             from dwapi_etl.etl_pharmacy_extract ph
              where is_arv = 1
              group by ph.encounter_id
              order by patient_id, DispenseDate)

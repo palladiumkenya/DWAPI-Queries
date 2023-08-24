@@ -25,7 +25,6 @@ SELECT DISTINCT t.patient_id                                                    
                     WHEN 1065 THEN 'Yes'
                     WHEN 1066 THEN 'No'
                     END                                                           AS CurrentlyLivingWithIndexClient,
-    /*knowledgeof HIV Status*/
                 ohpc.baseline_hiv_status                                          as KnowledgeOfHivStatus,
                 pnsApprocah.name                                                  AS PnsApproach,
                 ohpc.consented_contact_listing                                    as PnsConsent,

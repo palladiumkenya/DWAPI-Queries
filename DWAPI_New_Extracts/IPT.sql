@@ -61,16 +61,16 @@ select v.patient_id                                                             
        v.date_created                                                                             as Date_Created,
        v.date_last_modified                                                                       as Date_Last_Modified,
        v.voided                                                                                   as voided
-from kenyaemr_etl.etl_patient_hiv_followup v
-         inner join kenyaemr_etl.etl_patient_demographics de on v.patient_id = de.patient_id
+from dwapi_etl.etl_patient_hiv_followup v
+         inner join dwapi_etl.etl_patient_demographics de on v.patient_id = de.patient_id
          inner join (select a.patient_id
                      from (select e.patient_id, max(e.visit_date) as latest_enrolment_date
-                           from kenyaemr_etl.etl_hiv_enrollment e
+                           from dwapi_etl.etl_hiv_enrollment e
                            group by e.patient_id) a
                               left join (select d.patient_id as              disc_patient,
                                                 coalesce(max(date(d.effective_discontinuation_date)),
                                                          date(d.visit_date)) Outcome_date
-                                         from kenyaemr_etl.etl_patient_program_discontinuation d
+                                         from dwapi_etl.etl_patient_program_discontinuation d
                                          where program_name = 'HIV'
                                          group by d.patient_id) d on a.patient_id = d.disc_patient
                      where d.disc_patient is null
@@ -94,7 +94,7 @@ from kenyaemr_etl.etl_patient_hiv_followup v
                                           when 1066 then 'No' end), (case ifnull(s.upper_rightQ_abdomen_tenderness, '')
                                                                          when 124994 then 'Yes'
                                                                          when 1066 then 'No' end)) as IPTClientWorkUp
-                    from kenyaemr_etl.etl_ipt_screening s) s
+                    from dwapi_etl.etl_ipt_screening s) s
                    on v.patient_id = s.patient_id and v.visit_date = s.visit_date
          left join (select i.patient_id                                         as isStarted,
                            i.visit_date                                         as TPT_Initiation_date,
