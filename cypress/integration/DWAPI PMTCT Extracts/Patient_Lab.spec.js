@@ -1,7 +1,7 @@
 describe("Connect and validate Patient Lab  extracts", () => {
   let res = [];
-  it("Check if the Patient_Lab.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/Patient_Lab.sql").then(
+  it("Check if the PatientLab.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/PatientLab.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

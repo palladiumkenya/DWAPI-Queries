@@ -1,7 +1,7 @@
 describe("Connect and validate Mother Baby Pair extracts", () => {
   let res = [];
-  it("Check if the Mother Baby Pair.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/Mother Baby Pair.sql").then(
+  it("Check if the MotherBabyPair.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/MotherBabyPair.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

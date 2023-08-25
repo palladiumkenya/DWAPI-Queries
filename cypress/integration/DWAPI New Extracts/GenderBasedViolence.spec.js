@@ -1,7 +1,7 @@
 describe("Connect and validate Gender Violence extracts", () => {
   let res = [];
   it("Check if the Gender based violence Extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Gender based Violence extract.sql").then(
+    cy.readFile("./DWAPI New Extracts/GenderbasedViolence.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

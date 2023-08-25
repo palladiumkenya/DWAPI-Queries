@@ -1,7 +1,7 @@
 describe("Connect and validate MNCH_Enrolment extracts", () => {
   let res = [];
-  it("Check if the MNCH_Enrolment.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/MNCH_Enrolment.sql").then(
+  it("Check if the MNCHEnrolment.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/MNCHEnrolment.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

@@ -1,7 +1,7 @@
 describe("Connect and validate PrEP adverse events extracts", () => {
   let res = [];
-  it("Check if the PrEP Adverse Events.sql will run without any error", () => {
-    cy.readFile("./PrEP/PrEP Adverse Events.sql").then((querystring) => {
+  it("Check if the PrEPAdverseEvents.sql will run without any error", () => {
+    cy.readFile("./PrEP/PrEPAdverseEvents.sql").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

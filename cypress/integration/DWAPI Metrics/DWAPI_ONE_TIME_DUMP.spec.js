@@ -1,7 +1,7 @@
 describe("Connect and validate DWAPI ONE TIME DUMP extracts", () => {
   let res = [];
   it("Check if the DWAPI ONE TIME DUMP will run without any error", () => {
-    cy.readFile("./DWAPI Metrics/DWAPI_ONE_TIME_DUMP").then((querystring) => {
+    cy.readFile("./DWAPI Metrics/DWAPI_ONE_TIME_DUMP_").then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;
 

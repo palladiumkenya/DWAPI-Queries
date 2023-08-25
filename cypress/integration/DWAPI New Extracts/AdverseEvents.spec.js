@@ -1,7 +1,7 @@
 describe("Connect and validate Adverse Events extracts", () => {
   let res = [];
-  it("Check if the Adverse Events.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Adverse Events.sql").then(
+  it("Check if the AdverseEvents.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/AdverseEvents.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

@@ -1,8 +1,8 @@
 describe("Connect and validate Drug and Alcohol Screening  extracts", () => {
   let res = [];
-  it("Check if the Drug and Alcohol Screening Extract.sql will run without any error", () => {
+  it("Check if the DrugAndAlcoholScreening.sql will run without any error", () => {
     cy.readFile(
-      "./DWAPI New Extracts/Drug and Alcohol Screening Extract.sql"
+      "./DWAPI New Extracts/DrugAndAlcoholScreening.sql"
     ).then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;

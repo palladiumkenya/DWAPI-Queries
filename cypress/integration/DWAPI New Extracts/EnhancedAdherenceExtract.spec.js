@@ -1,7 +1,7 @@
 describe("Connect and validate Enhanced Adherence extracts", () => {
   let res = [];
   it("Check if the Enhanaced Adherence Screening Extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Enhanced Adherence Extract.sql").then(
+    cy.readFile("./DWAPI New Extracts/EnhancedAdherence.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

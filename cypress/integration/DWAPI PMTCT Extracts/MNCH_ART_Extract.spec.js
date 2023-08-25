@@ -1,7 +1,7 @@
 describe("Connect and validate MNCH_ART_Extract extracts", () => {
   let res = [];
-  it("Check if the MNCH_ART_Extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI PMTCT EXTRACTS/MNCH_ART_Extract.sql").then(
+  it("Check if the MNCHART.sql will run without any error", () => {
+    cy.readFile("./DWAPI PMTCT EXTRACTS/MNCHART.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

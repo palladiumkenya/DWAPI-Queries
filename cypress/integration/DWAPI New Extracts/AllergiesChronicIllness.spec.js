@@ -2,7 +2,7 @@ describe("Connect and validate Allergies and Chronic Illness extracts", () => {
   let res = [];
   it("Check if the Allergies and Chronic illnesses.sql will run without any error", () => {
     cy.readFile(
-      "./DWAPI New Extracts/Allergies and Chronic Illnesses.sql"
+      "./DWAPI New Extracts/AllergiesAndChronicIllnesses.sql"
     ).then((querystring) => {
       return cy.task("queryDatabase", querystring).then((results, err) => {
         res = results;

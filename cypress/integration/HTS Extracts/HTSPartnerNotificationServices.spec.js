@@ -1,7 +1,7 @@
 describe("Connect and validate HTS Partner Notification Services extracts", () => {
   let res = [];
-  it("Check if the HTS Partner Notification Services.sql will run without any error", () => {
-    cy.readFile("./HTS Extracts/HTS Partner Notification Services.sql").then(
+  it("Check if the HTSPartnerNotificationServices.sql will run without any error", () => {
+    cy.readFile("./HTS Extracts/HTSPartnerNotificationServices.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

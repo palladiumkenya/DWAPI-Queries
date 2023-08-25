@@ -1,7 +1,7 @@
 describe("Connect and validate DepressionScreening extracts", () => {
   let res = [];
-  it("Check if the Depression Screening.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Depression Screening.sql").then(
+  it("Check if the DepressionScreening.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/DepressionScreening.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

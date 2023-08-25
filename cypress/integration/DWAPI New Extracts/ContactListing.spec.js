@@ -1,7 +1,7 @@
 describe("Connect and validate ContactListing extracts", () => {
   let res = [];
-  it("Check if the Contact Listing Extract.sql will run without any error", () => {
-    cy.readFile("./DWAPI New Extracts/Contact Listing Extract.sql").then(
+  it("Check if the ContactListing.sql will run without any error", () => {
+    cy.readFile("./DWAPI New Extracts/ContactListing.sql").then(
       (querystring) => {
         return cy.task("queryDatabase", querystring).then((results, err) => {
           res = results;

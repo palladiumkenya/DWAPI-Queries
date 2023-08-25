@@ -1,4 +1,5 @@
 SELECT t.patient_id                                                                as PatientPK,
+       t.uuid                                                                      as uuid,
        (select siteCode from kenyaemr_etl.etl_default_facility_info)               as SiteCode,
        (select FacilityName from kenyaemr_etl.etl_default_facility_info)           as FacilityName,
        'KenyaEMR'                                                                  as Emr,
@@ -137,9 +138,10 @@ SELECT t.patient_id                                                             
        t.reasons_for_ineligibility                                                 as ReasonsForIneligibility,
        t.specific_reason_for_ineligibility                                         as SpecificReasonForIneligibility,
        t.date_created                                                              as DateCreated,
-       t.date_last_modified                                                        as DateLastModified
-FROM kenyaemr_etl.etl_hts_eligibility_screening t
-         inner join kenyaemr_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id
+       t.date_last_modified                                                        as DateLastModified,
+       t.voided                                                                    as voided
+FROM dwapi_etl.etl_hts_eligibility_screening t
+         inner join dwapi_etl.etl_patient_demographics demographics on t.patient_id = demographics.patient_id
          LEFT JOIN openmrs.location_attribute SC ON SC.location_id = t.location_id AND SC.attribute_type_id = 1
          LEFT JOIN openmrs.location SN ON SN.location_id = t.location_id
 group by t.encounter_id;

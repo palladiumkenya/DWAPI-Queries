@@ -9,7 +9,7 @@ from (select hts.patient_id,
              r.person_a,
              r.person_b
       from (select hts.patient_id, hts.final_test_result, hts.visit_date, hts.test_type
-            from kenyaemr_etl.etl_hts_test hts
+            from dwapi_etl.etl_hts_test hts
             where hts.test_strategy = 161557
               and hts.final_test_result = 'Positive'
               and hts.patient_given_result = 'Yes'
@@ -22,7 +22,7 @@ from (select hts.patient_id,
             group by hts.patient_id) hts
                left JOIN
            (select patient_id, id
-            from openmrs.kenyaemr_hiv_testing_patient_contact c
+            from dwapi_etl.etl_patient_contact c
             where (c.relationship_type in (971, 972, 1528, 162221, 163565, 970, 5617))
               and c.patient_id is not NULL
               and c.voided = 0
