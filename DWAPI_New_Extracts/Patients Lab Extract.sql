@@ -15,6 +15,8 @@ select ''                                                                       
             when 730 then "CD4 Percent"
             when 654 then "ALT"
             when 790 then "Serum creatinine (umol/L)"
+            when 167452 then "Serum Cryptococcal Ag"
+            when 167459 then "TB LAM"
             when 856 then "HIV Viral Load"
             when 1305 then "HIV Viral Load"
             when 21 then "Hemoglobin (HGB)"
@@ -22,6 +24,8 @@ select ''                                                                       
             when 1031 then "Treponema Pallidum Hemagglutination Assay"
             when 1619 then "Rapid Plasma Reagin"
             when 1032 then "Treponema Pallidum Hemagglutination Assay, Qualitative"
+            when 307 then "Sputum for Acid Fast Bacilli"
+            when 162202 then "GeneXpert"
             else "" end)                                                                as TestName,
        date(l.visit_date)                                                               as DateSampleTaken,
        (case l.order_reason
@@ -75,11 +79,34 @@ select ''                                                                       
                                                      when 664 then "Negative"
                                                      when 1300 then "Equivocal"
                                                      when 1304 then "Poor Sample Quality" end),
-                               if(lab_test = 1619, (case test_result
-                                                        when 703 then "Positive"
-                                                        when 664 then "Negative"
-                                                        when 1067 then "Unknown" end),
-                                  test_result)))))))))                                  as TestResult,
+                               if(lab_test in (1619, 167452), (case test_result
+                                                                   when 703 then "Positive"
+                                                                   when 664 then "Negative"
+                                                                   when 1067 then "Unknown" end),
+                                  if(lab_test = 167459, (case test_result
+                                                             when 163747 then "Absent"
+                                                             when 163748 then "Present" end),
+                                     if(lab_test = 307, (case test_result
+                                                             when 1364 then "Three Plus"
+                                                             when 1362 then "One Plus"
+                                                             when 1363 then "Two Plus"
+                                                             when 664 then "Negative"
+                                                             when 159985 then "Scanty"
+                                                             when 703 then "Positive"
+                                                             when 160008 then "Contaminated specimen"
+                                                             when 164369 then "Results not available"
+                                                             when 1118 then "Not done" end),
+                                        if(lab_test = 162202, (case test_result
+                                                                   when 664 then "NEGATIVE"
+                                                                   when 162203
+                                                                       then "Mycobacterium tuberculosis detected with rifampin resistance"
+                                                                   when 162204
+                                                                       then "Mycobacterium tuberculosis detected without rifampin resistance"
+                                                                   when 164104
+                                                                       then "Mycobacterium tuberculosis detected with indeterminate rifampin resistance"
+                                                                   when 163611 then "Invalid"
+                                                                   when 1138 then "INDETERMINATE" end),
+                                           test_result))))))))))))                      as TestResult,
        NULL                                                                             as EnrollmentTest,
        o.sample_type                                                                    as SampleType,
        'KenyaEMR'                                                                       as Emr,
