@@ -184,31 +184,13 @@ select ''                                                                     AS
            when 1360 then 'Wants FP'
            else ''
            end                                                                as FamilyPlanningMethod,
-       concat_ws('|',
-                 nullif(case fup.substance_abuse_screening
-                            when 1065 then 'Screened for substance abuse'
-                            else ''
-                            end, ''),
-                 nullif(case fup.condom_provided
-                            when 1065 then 'Condoms'
-                            else ''
-                            end, ''),
-                 nullif(case fup.pwp_disclosure
-                            when 1065 then 'Disclosure'
-                            else ''
-                            end, ''),
-                 nullif(case fup.pwp_partner_tested
-                            when 1065 then 'Partner Testing'
-                            else ''
-                            end, ''),
-                 nullif(case fup.screened_for_sti
-                            when 1065 then 'Screened for STI'
-                            else ''
-                            end, ''),
-                 nullif(case fup.cacx_screening
-                            when 703 then 'Screened for CaCx'
-                            when 664 then 'Screened for CaCx'
-                            end, ''))                                         as PwP,
+       case fup.pwp_disclosure when 1065 then 'Yes' when 1066 then 'No' when 1067 then 'Unknown' when 1175 then 'N/A' end as PwP,
+       case fup.condom_provided when 1065 then 'Yes' when 1066 then 'No' when 1067 then 'Unknown' when 1175 then 'N/A' end as CondomsProvided,
+       case fup.substance_abuse_screening when 1065 then 'Yes' when 1066 then 'No' when 1067 then 'Unknown' when 1175 then 'N/A' end as SubstanceAbuseScreening,
+       case fup.screened_for_sti when 703 then 'Positive' when 664 then 'Negative' when 1118 then 'Not Done' when 1175 then 'N/A' end as ScreenedForSTI,
+       case fup.sti_partner_notification when 1065 then 'Yes' when 1066 then 'No' end as STIPartnerNotification,
+       case fup.cacx_screening when 703 then 'Positive' when 664 then 'Negative' when 1118 then 'Not Done' when 1175 then 'N/A' end as CACXScreening,
+       case fup.pwp_partner_tested when 1065 then 'Yes' when 1066 then 'No' when 1067 then 'Unknown' when 1175 then 'N/A' end as PartnerTestedOnsite,
        case fup.pwp_pead_disclosure
            when 1066 then 'No disclosure'
            when 162979 then 'Partial disclosure'
