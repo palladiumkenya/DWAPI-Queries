@@ -253,6 +253,7 @@ select ''                                                                     AS
            when 165100 then 'Transgender'
            WHEN 1175 THEN 'N/A' END                                           as KeyPopulationType,
        ''                                                                     as HCWConcern,
+       case fup.has_chronic_illnesses_cormobidities when 1065 then 'Yes' when 1066 then 'No' end as HasChronicIllness,
        fup.date_created                                                       as Date_Created,
        fup.date_last_modified                                                 as Date_Last_Modified
 from kenyaemr_etl.etl_patient_demographics d

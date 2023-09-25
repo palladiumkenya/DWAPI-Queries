@@ -98,6 +98,11 @@ select ci.patient_id                                             as PatientPK,
                         end SEPARATOR
                     '|')                                         as AllergySeverity,
        group_concat(ci.allergy_onset_date SEPARATOR '|')         as AllergyOnsetDate,
+       group_concat(case ci.is_chronic_illness_controlled
+                        when 1065 then 'Yes'
+                        when 1066 then 'No'
+                        end SEPARATOR
+                    '|')                                         as IsControlled,
        ''                                                        as Skin,
        ''                                                        as Eyes,
        ''                                                        as ENT,
@@ -109,10 +114,10 @@ select ci.patient_id                                             as PatientPK,
        ci.date_created                                           as Date_Created,
        max(ci.date_last_modified)                                as Date_Last_Modified
 from kenyaemr_etl.etl_allergy_chronic_illness ci
-         left join (select e.patient_id, max(e.visit_date) as latest_enrolment_date,uuid
+         left join (select e.patient_id, max(e.visit_date) as latest_enrolment_date, uuid
                     from kenyaemr_etl.etl_hiv_enrollment e
                     group by e.patient_id) e on ci.patient_id = e.patient_id
-         left join (select pe.patient_id, max(pe.visit_date) as prep_latest_enrolment_date,uuid
+         left join (select pe.patient_id, max(pe.visit_date) as prep_latest_enrolment_date, uuid
                     from kenyaemr_etl.etl_prep_enrolment pe
                     group by pe.patient_id) pe on ci.patient_id = pe.patient_id
          left join kenyaemr_etl.etl_patient_hiv_followup v on ci.encounter_id = v.encounter_id
