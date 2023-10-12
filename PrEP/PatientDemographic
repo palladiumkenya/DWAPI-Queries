@@ -6,6 +6,7 @@ select d.patient_id                                                      as Pati
        'KenyaEMR'                                                        as Emr,
        'HMIS'                                                            as Project,
        min(date(e.visit_date))                                           as PrEPEnrolmentDate,
+       e.prep_type                                                       as TypeOfPrEP,
        case d.gender when 'M' then 'Male' when 'F' then 'Female' end     as Sex,
        d.dob                                                             as DateOfBirth,
        d.birth_place                                                     as CountyOfBirth,
@@ -46,4 +47,4 @@ from kenyaemr_etl.etl_prep_enrolment e
          inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id
          inner join kenyaemr_etl.etl_prep_behaviour_risk_assessment r on e.patient_id = r.patient_id
          join kenyaemr_etl.etl_default_facility_info i
-group by e.patient_id;
+group by e.patient_id,e.visit_date;
