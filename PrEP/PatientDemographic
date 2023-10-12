@@ -6,6 +6,7 @@ select d.patient_id                                                      as Pati
        'KenyaEMR'                                                        as Emr,
        'HMIS'                                                            as Project,
        min(date(e.visit_date))                                           as PrEPEnrolmentDate,
+       e.prep_type                                                       as TypeOfPrEP,
        case d.gender when 'M' then 'Male' when 'F' then 'Female' end     as Sex,
        d.dob                                                             as DateOfBirth,
        d.birth_place                                                     as CountyOfBirth,
