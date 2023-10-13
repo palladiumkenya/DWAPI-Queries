@@ -49,4 +49,4 @@ from dwapi_etl.etl_prep_enrolment e
          inner join dwapi_etl.etl_patient_demographics d on e.patient_id = d.patient_id
          inner join dwapi_etl.etl_prep_behaviour_risk_assessment r on e.patient_id = r.patient_id
          join kenyaemr_etl.etl_default_facility_info i
-group by e.patient_id;
+group by e.patient_id,e.visit_date;
