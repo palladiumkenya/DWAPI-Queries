@@ -69,7 +69,7 @@ select d.patient_id                                                             
        s.date_created                                                                                         as DateCreated,
        s.date_last_modified                                                                                   as DateModified,
        s.voided                                                                                               as voided
-from kenyaemr_etl.etl_patient_demographics d
-         join kenyaemr_etl.etl_cervical_cancer_screening s on d.patient_id = s.patient_id
+from dwapi_etl.etl_patient_demographics d
+         join dwapi_etl.etl_cervical_cancer_screening s on d.patient_id = s.patient_id
          join kenyaemr_etl.etl_default_facility_info i
 group by s.visit_id;
