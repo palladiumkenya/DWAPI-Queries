@@ -59,8 +59,9 @@ select d.patient_id                                                             
        null                                                                                                   as VIATreatmentOptions,
        s.colposcopy_screening_result                                                                          as Colposcopy,
        s.colposcopy_treatment_method                                                                          as TreatmentColposcopy,
-       s.tissue_diagnosis                                                                                     as IfTissueDiagnosis,
-       s.tissue_diagnosis_date                                                                                as DateTissueDiagnosis,
+       s.breast_tissue_diagnosis                                                                              as IfTissueDiagnosis,
+       s.breast_tissue_diagnosis_date                                                                         as DateTissueDiagnosis,
+       s.reason_tissue_diagnosis_not_done                                                                     as ReasonNotDone,
        s.clinical_breast_examination_screening_result                                                         as CBE,
        s.clinical_breast_examination_treatment_method                                                         as TreatmentCBE,
        s.ultrasound_screening_result                                                                          as Ultrasound,
@@ -70,7 +71,7 @@ select d.patient_id                                                             
        reason_tissue_diagnosis_not_done                                                                       as ReasonNotDone,
        s.date_created                                                                                         as DateCreated,
        s.date_last_modified                                                                                   as DateModified,
-       s.voided                                                                                               as voided
+       s.voided
 from dwapi_etl.etl_patient_demographics d
          join dwapi_etl.etl_cervical_cancer_screening s on d.patient_id = s.patient_id
          join kenyaemr_etl.etl_default_facility_info i
