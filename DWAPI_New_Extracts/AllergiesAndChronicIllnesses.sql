@@ -34,6 +34,7 @@ select ci.patient_id                                             as PatientPK,
                         when 114662 then 'Osteoporosis'
                         when 117703 then 'Sickle Cell Anaemia'
                         when 118976 then 'Thyroid disease'
+                        when 141623 then 'Dyslipidemia'
                         end SEPARATOR
                     '|')                                         as ChronicIllness,
        group_concat(ci.chronic_illness_onset_date SEPARATOR '|') as ChronicOnsetDate,
