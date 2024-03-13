@@ -25,6 +25,7 @@ select ''                                                                       
             when 1032 then "Treponema Pallidum Hemagglutination Assay, Qualitative"
             when 307 then "Sputum for Acid Fast Bacilli"
             when 162202 then "GeneXpert"
+            when 160914 then "Post-prandial blood glucose measurement (mg/dL)"
             else "" end)                                                                as TestName,
        date(l.visit_date)                                                               as DateSampleTaken,
        (case l.order_reason
