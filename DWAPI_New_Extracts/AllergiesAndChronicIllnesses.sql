@@ -1,5 +1,5 @@
-select ci.patient_id   as PatientPK,
-       ci.uuid   as RecordUUID,
+select ci.patient_id                                             as PatientPK,
+       ci.uuid                                                   as uuid,
        s.siteCode                                                as SiteCode,
        de.unique_patient_no                                      as PatientID,
        0                                                         AS FacilityId,
@@ -35,16 +35,14 @@ select ci.patient_id   as PatientPK,
                         when 117703 then 'Sickle Cell Anaemia'
                         when 118976 then 'Thyroid disease'
                         when 141623 then 'Dyslipidemia'
-           end SEPARATOR
-                                                          '|')                                         as ChronicIllness,
+                        end SEPARATOR
+                    '|')                                         as ChronicIllness,
        group_concat(CASE ci.is_chronic_illness_controlled
                         when 1065 then 'Yes'
                         when 1066 then 'No'
                         else 'N/A'
            end SEPARATOR '|' )			                    as Controlled,
-       group_concat(case ci.chronic_illness_onset_date
-                        when ci.chronic_illness_onset_date then ci.chronic_illness_onset_date
-                        else 'N/A' end SEPARATOR '|')                      as ChronicOnsetDate,
+       group_concat(ci.chronic_illness_onset_date SEPARATOR '|') as ChronicOnsetDate,
        (case coalesce(v.has_known_allergies, p.known_allergies)
             when 1 then 'Yes'
             when 2
@@ -70,8 +68,8 @@ select ci.patient_id   as PatientPK,
                         when 162540 then 'Pollen'
                         when 162541 then 'Ragweed'
                         when 5622 then 'Other'
-           end SEPARATOR
-                                                          '|')                                         as AllergyCausativeAgent,
+                        end SEPARATOR
+                    '|')                                         as AllergyCausativeAgent,
        group_concat(case ci.allergy_reaction
                         when 1067 then 'Unknown'
                         when 121629 then 'Anaemia'
@@ -95,16 +93,16 @@ select ci.patient_id   as PatientPK,
                         when 121 then 'Myalgia'
                         when 512 then 'Rash'
                         when 5622 then 'Other'
-           end SEPARATOR
-                                                          '|')                                         as AllergicReaction,
+                        end SEPARATOR
+                    '|')                                         as AllergicReaction,
        group_concat(case ci.allergy_severity
                         when 160754 then 'Mild'
                         when 160755 then 'Moderate'
                         when 160756 then 'Severe'
                         when 160758 then 'Fatal'
                         when 1067 then 'Unknown'
-           end SEPARATOR
-                                                          '|')                                         as AllergySeverity,
+                        end SEPARATOR
+                    '|')                                         as AllergySeverity,
        group_concat(ci.allergy_onset_date SEPARATOR '|')         as AllergyOnsetDate,
        ''                                                        as Skin,
        ''                                                        as Eyes,
@@ -115,8 +113,8 @@ select ci.patient_id   as PatientPK,
        ''                                                        as CNS,
        ''                                                        AS Genitourinary,
        ci.date_created                                           as Date_Created,
-       max(ci.date_last_modified)                                    as Date_Last_Modified,
-       ci.voided as Voided
+       max(ci.date_last_modified)                                as Date_Last_Modified,
+       ci.voided as voided
 from dwapi_etl.etl_allergy_chronic_illness ci
          left join (select e.patient_id, max(e.visit_date) as latest_enrolment_date,uuid
                     from dwapi_etl.etl_hiv_enrollment e
@@ -140,4 +138,4 @@ from dwapi_etl.etl_allergy_chronic_illness ci
 where (d.hiv_disc_patient is null
     or d.hiv_outcome_date < e.latest_enrolment_date)
    or (pd.PrEP_disc_patient is null or pd.PrEP_Outcome_date < pe.prep_latest_enrolment_date)
-group by ci.patient_id, ci.visit_date
+group by ci.patient_id, ci.visit_date;
