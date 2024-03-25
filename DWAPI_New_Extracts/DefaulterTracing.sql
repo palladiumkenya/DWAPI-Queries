@@ -39,6 +39,10 @@ select d.openmrs_id                                                             
                 then 'Client stopped medications'
             when 1654 then 'Client sick at home/admitted'
             when 5622 then 'Other' end)                                       as ReasonForMissedAppointment,
+       case
+           when fup.next_appointment_date < '1990-01-01' then null
+           else CAST(fup.next_appointment_date AS DATE) end                     AS DatePromisedToCome,
+       f.missed_appointment_date                                               as DateOfMissedAppointment,
        (case f.cause_of_death
             when 165609 then 'Infection due to COVID-19'
             when 162574 then 'Death related to HIV infection'
@@ -55,5 +59,6 @@ select d.openmrs_id                                                             
        f.voided                                                               as voided
 from dwapi_etl.etl_patient_demographics d
          join dwapi_etl.etl_ccc_defaulter_tracing f on d.patient_id = f.patient_id
+    join dwapi_etl.etl_patient_hiv_followup fup on fup.patient_id = d.patient_id
          join kenyaemr_etl.etl_default_facility_info i
 group by f.visit_id;

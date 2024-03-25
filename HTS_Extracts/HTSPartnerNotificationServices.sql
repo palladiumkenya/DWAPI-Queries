@@ -6,6 +6,7 @@ SELECT DISTINCT t.patient_id                                                    
                 'Kenya HMIS II'                                                   AS Project,
                 id.identifier                                                     AS HtsNumber,
                 ohpc.patient_id                                                   AS PartnerPatientPk,
+                ohpc.patient_related_to 		                                  AS IndexPatientPk,
                 ohpc.id                                                           AS PartnerPersonId,
                 YEAR(ohpc.date_created) - YEAR(ohpc.birth_date)                   AS Age,
                 ohpc.sex,

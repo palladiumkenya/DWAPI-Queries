@@ -37,6 +37,11 @@ select ci.patient_id                                             as PatientPK,
                         when 141623 then 'Dyslipidemia'
                         end SEPARATOR
                     '|')                                         as ChronicIllness,
+       group_concat(CASE ci.is_chronic_illness_controlled
+                        when 1065 then 'Yes'
+                        when 1066 then 'No'
+                        else 'N/A'
+           end SEPARATOR '|' )			                    as Controlled,
        group_concat(ci.chronic_illness_onset_date SEPARATOR '|') as ChronicOnsetDate,
        (case coalesce(v.has_known_allergies, p.known_allergies)
             when 1 then 'Yes'

@@ -30,6 +30,7 @@ select ''                                                                     AS
            when 1207 then 4
            else ''
            end                                                                as WHOStage,
+       fup.who_stage_associated_oi                                              as WHOStagingOI,
        null                                                                   as WABStage,
        case fup.pregnancy_status
            when 1065 then 'Yes'
